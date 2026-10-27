@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './pages.css';
+@import './songs.css';
+@import './viewer.css';
+@import './editor.css';
+@import './chart.css';
+@import './score.css';

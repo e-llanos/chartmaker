@@ -1,0 +1,265 @@
+/* ==========================================================================
+   Editor: encabezado, panel de herramientas (izquierda) y vista previa (derecha)
+   ========================================================================== */
+
+/* ---------- Encabezado ---------- */
+.editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    margin-bottom: 0.75rem;
+}
+
+.editor-header h1 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #fff;
+}
+
+.editor-header button {
+    padding: 0.45rem 1.1rem;
+    border: 0;
+    border-radius: 6px;
+    background: var(--cm-accent);
+    color: #fff;
+    font: 700 0.85rem var(--cm-font);
+    cursor: pointer;
+}
+
+.editor-header button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* ---------- Disposición de dos paneles ---------- */
+.editor-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 400px) 1fr;
+    gap: 1.25rem;
+    height: calc(100dvh - 140px);
+    /* navbar + encabezado + márgenes */
+    min-height: 520px;
+}
+
+.editor-tools,
+.editor-preview {
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.editor-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: 1rem;
+    background: var(--cm-card);
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    font-family: var(--cm-font);
+    color: var(--cm-text);
+}
+
+.editor-preview {
+    padding: 0 0.25rem;
+}
+
+.editor-tools,
+.editor-preview,
+.chordpro-input {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.editor-tools::-webkit-scrollbar,
+.editor-preview::-webkit-scrollbar,
+.chordpro-input::-webkit-scrollbar {
+    display: none;
+}
+
+@media (max-width: 860px) {
+    .editor-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .editor-tools,
+    .editor-preview {
+        overflow: visible;
+    }
+}
+
+/* ---------- Grupos de herramientas ---------- */
+.tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tool-group.grow {
+    flex: 1;
+    min-height: 260px;
+}
+
+.tool-group h3 {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--cm-dim);
+}
+
+.tool-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tool-label {
+    flex: none;
+    font-size: 0.82rem;
+    color: var(--cm-dim);
+}
+
+/* ---------- Grupo plegable (<details>) ---------- */
+.tool-collapsible>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.tool-collapsible>summary::-webkit-details-marker {
+    display: none;
+}
+
+.tool-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.tool-summary-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.tool-summary-meta {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tool-chevron {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.15s;
+    opacity: 0.7;
+}
+
+.tool-collapsible[open] .tool-chevron {
+    transform: rotate(-135deg);
+}
+
+.tool-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.tool-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tool-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+/* ---------- Campos ---------- */
+.tool-input,
+.tool-select,
+.chordpro-input,
+.beat-input {
+    min-width: 0;
+    padding: 0.4rem 0.6rem;
+    background: var(--cm-bg);
+    color: var(--cm-text);
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.88rem;
+}
+
+.tool-input {
+    flex: 1;
+}
+
+.tool-select {
+    margin-left: auto;
+}
+
+.tool-field .tool-select {
+    margin-left: 0;
+}
+
+/* ---------- Agregar sección y acordes ---------- */
+.section-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+}
+
+.section-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.55rem;
+    text-align: left;
+}
+
+.chord-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+/* ---------- Texto ChordPro ---------- */
+.chordpro-input {
+    flex: 1;
+    min-height: 240px;
+    resize: vertical;
+    line-height: 1.5;
+    font-family: var(--cm-mono);
+    font-size: 0.85rem;
+}
+
+
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.stepper .ghost-btn {
+    width: 30px;
+    padding: 0.25rem 0;
+}
+
+.stepper-value {
+    min-width: 2.5ch;
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+}

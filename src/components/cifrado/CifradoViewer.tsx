@@ -1,0 +1,117 @@
+'use client';
+
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { parseSections } from '@/lib/cifrado/parseSections';
+import type { ViewMode } from '@/lib/cifrado/viewMode';
+import { computeBadges, SECTION_TYPES } from '@/lib/sections/sectionTypes';
+import type { SongCreate } from '@/lib/data/song.types';
+import type { Chart } from '@/lib/chart/chart.types';
+import {
+    transposeChordString,
+    convertChordString,
+    semitoneDistance,
+    formatKeyLabel,
+    type Notation,
+} from '@/lib/music/engine';
+import ViewerToolbar, { type SectionsLayout } from '../shared/ViewerToolbar';
+import SectionNav from '../shared/SectionNav';
+import SectionCard from '../shared/SectionCard';
+import SongHeader, { type SongMeta } from '../shared/SongHeader';
+import ExportMenu from '../shared/ExportMenu';
+import ExportHead from '../shared/ExportHead';
+import ChordLine from './ChordLine';
+
+interface CifradoViewerProps {
+    chordProText: string;
+    originalKey: string;
+    title: string;
+    meta?: SongMeta;
+    editHref?: string;
+    deleteId?: string;
+    chart?: Chart;
+}
+
+export default function CifradoViewer({
+    chordProText, originalKey, title, meta, editHref, deleteId, chart,
+}: CifradoViewerProps) {
+    const sheetRef = useRef<HTMLDivElement>(null);
+    const [layout, setLayout] = useState<SectionsLayout>('columns');
+    const [mode, setMode] = useState<ViewMode>('full');
+    const [semitones, setSemitones] = useState<number>(0);
+    const [notation, setNotation] = useState<Notation>('symbol');
+    const [highlighted, setHighlighted] = useState<string | null>(null);
+
+    const sections = useMemo(() => parseSections(chordProText), [chordProText]);
+    const badges = useMemo(() => computeBadges(sections), [sections]);
+    const displayKey = transposeChordString(originalKey, semitones, 'symbol', originalKey);
+
+    const song = useMemo<SongCreate | null>(
+        () => (meta ? { title, key: originalKey, body: chordProText, ...meta, ...(chart ? { chart } : {}) } : null),
+        [meta, title, originalKey, chordProText, chart]
+    );
+
+    const mapChord = useCallback(
+        (chord: string): string =>
+            convertChordString(
+                transposeChordString(chord, semitones, 'symbol', originalKey),
+                notation,
+                displayKey
+            ),
+        [semitones, notation, originalKey, displayKey]
+    );
+
+    return (
+        <div className="viewer">
+            {meta && <SongHeader title={title} meta={meta} editHref={editHref} deleteId={deleteId} />}
+            <ViewerToolbar
+                title={title}
+                hideTitle={Boolean(meta)}
+                currentKey={displayKey}
+                notation={notation}
+                layout={layout}
+                mode={mode}
+                onTranspose={(d: number) => setSemitones((s) => s + d)}
+                onKeyChange={(k: string) => setSemitones(semitoneDistance(originalKey, k))}
+                onNotationChange={setNotation}
+                onLayoutChange={setLayout}
+                onModeChange={setMode}
+                actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
+            />
+            <SectionNav badges={badges} scopeId="cif" />
+
+            {/* La hoja es lo que se captura al exportar a PDF o PNG */}
+            <div ref={sheetRef} className="viewer-sheet" >
+                {song && <ExportHead song={song} displayKey={displayKey} notation={notation} />}
+
+                {sections.length === 0 ? (
+                    <p className="empty-state">Agrega una sección para ver el cifrado aquí.</p>
+                ) : (
+                    <div className={`sections-layout sections-layout-${layout}`}>
+                        {sections.map((s, i) => (
+                            <SectionCard
+                                key={s.id}
+                                domId={`cif-${s.id}`}
+                                badge={badges[i]}
+                                label={s.label || SECTION_TYPES[s.type].label}
+                                note={s.note}
+                                repeat={s.repeat}
+                                highlighted={highlighted === s.id}
+                                onToggleHighlight={() =>
+                                    setHighlighted((h) => (h === s.id ? null : s.id))
+                                }
+                            >
+                                {s.lines.map((l, j) =>
+                                    'comment' in l ? (
+                                        <p key={j} className="line-comment">{l.comment}</p>
+                                    ) : (
+                                        <ChordLine key={j} tokens={l.tokens} mapChord={mapChord} mode={mode} />
+                                    )
+                                )}
+                            </SectionCard>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
