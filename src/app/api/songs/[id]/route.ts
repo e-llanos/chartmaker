@@ -20,9 +20,8 @@ export async function PATCH(req: Request, { params }: Ctx) {
     const song = await updateSong(id, parsed.value);
     if (!song) return NextResponse.json({ error: 'No encontrada' }, { status: 404 });
 
-    revalidatePath(`/songs/${id}`);
+    revalidatePath(`/songs/${id}`, 'layout'); // cabecera y las tres vistas
     revalidatePath('/songs');
-    revalidatePath(`/charts/${id}/advanced`);
     return NextResponse.json(song);
 }
 

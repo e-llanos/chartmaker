@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import type { SongInput } from '@/lib/data/song.types';
 import DeleteSongButton from './DeleteSongButton';
 
@@ -9,9 +10,10 @@ interface SongHeaderProps {
     meta: SongMeta;
     editHref?: string;
     deleteId?: string;
+    actions?: ReactNode;
 }
 
-export default function SongHeader({ title, meta, editHref, deleteId }: SongHeaderProps) {
+export default function SongHeader({ title, meta, actions }: SongHeaderProps) {
     const { artist, album, imageUrl, tempo, compas } = meta;
     return (
         <header className="song-header">
@@ -30,21 +32,7 @@ export default function SongHeader({ title, meta, editHref, deleteId }: SongHead
                     <span className="song-tag">{compas}</span>
                 </div>
             </div>
-            {(editHref || deleteId) && (
-                <div className="song-header-actions">
-                    {editHref && (
-                        <Link href={editHref} className="icon-btn"
-                            aria-label="Editar canción" title="Editar canción">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M12 20h9" />
-                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                            </svg>
-                        </Link>
-                    )}
-                    {deleteId && <DeleteSongButton id={deleteId} title={title} />}
-                </div>
-            )}
+            {actions && <div className="song-header-actions">{actions}</div>}
         </header>
     );
 }

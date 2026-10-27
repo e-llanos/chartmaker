@@ -6,6 +6,7 @@ import type { ViewMode } from '@/lib/cifrado/viewMode';
 import { computeBadges, SECTION_TYPES } from '@/lib/sections/sectionTypes';
 import type { SongCreate } from '@/lib/data/song.types';
 import type { Chart } from '@/lib/chart/chart.types';
+import type { Score } from '@/lib/score/score.types';
 import {
     transposeChordString,
     convertChordString,
@@ -19,6 +20,7 @@ import SectionCard from '../shared/SectionCard';
 import SongHeader, { type SongMeta } from '../shared/SongHeader';
 import ExportMenu from '../shared/ExportMenu';
 import ExportHead from '../shared/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
 import ChordLine from './ChordLine';
 
 interface CifradoViewerProps {
@@ -29,25 +31,33 @@ interface CifradoViewerProps {
     editHref?: string;
     deleteId?: string;
     chart?: Chart;
+    score?: Score;
+    settings?: ViewerSettings;
+    /** La cabecera la dibuja el layout de la canción. */
+    hideHeader?: boolean;
 }
 
 export default function CifradoViewer({
-    chordProText, originalKey, title, meta, editHref, deleteId, chart,
+    chordProText, originalKey, title, meta, chart, score, settings, hideHeader = false,
 }: CifradoViewerProps) {
-    const sheetRef = useRef<HTMLDivElement>(null);
+    const local = useViewerSettings();
+    const { semitones, setSemitones, notation, setNotation } = settings ?? local;
+
     const [layout, setLayout] = useState<SectionsLayout>('columns');
     const [mode, setMode] = useState<ViewMode>('full');
-    const [semitones, setSemitones] = useState<number>(0);
-    const [notation, setNotation] = useState<Notation>('symbol');
     const [highlighted, setHighlighted] = useState<string | null>(null);
-
+    const sheetRef = useRef<HTMLDivElement>(null);
     const sections = useMemo(() => parseSections(chordProText), [chordProText]);
     const badges = useMemo(() => computeBadges(sections), [sections]);
     const displayKey = transposeChordString(originalKey, semitones, 'symbol', originalKey);
 
     const song = useMemo<SongCreate | null>(
-        () => (meta ? { title, key: originalKey, body: chordProText, ...meta, ...(chart ? { chart } : {}) } : null),
-        [meta, title, originalKey, chordProText, chart]
+        () => (meta ? {
+            title, key: originalKey, body: chordProText, ...meta,
+            ...(chart ? { chart } : {}),
+            ...(score ? { score } : {}),
+        } : null),
+        [meta, title, originalKey, chordProText, chart, score]
     );
 
     const mapChord = useCallback(
@@ -62,7 +72,7 @@ export default function CifradoViewer({
 
     return (
         <div className="viewer">
-            {meta && <SongHeader title={title} meta={meta} editHref={editHref} deleteId={deleteId} />}
+            {meta && !hideHeader && <SongHeader title={title} meta={meta} />}
             <ViewerToolbar
                 title={title}
                 hideTitle={Boolean(meta)}

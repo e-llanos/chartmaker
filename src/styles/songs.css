@@ -155,19 +155,48 @@
 
 
 
-.song-tag.muted {
-    opacity: 0.6;
+.song-tab.muted {
+    opacity: 0.55;
+}
+
+.song-resources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.song-resources .song-tag {
+    font-size: 0.7rem;
+    padding: 1px 7px;
 }
 
 .chart-intro {
     margin-bottom: 14px;
 }
 
-.song-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--cm-border);
+.song-tab {
+    padding: 8px 14px;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--cm-dim);
+    font: inherit;
+    cursor: pointer;
+}
+
+.song-tab:hover {
+    color: var(--cm-text);
+}
+
+.song-tab[aria-current='true'] {
+    color: #fff;
+    border-bottom-color: var(--cm-accent);
+}
+
+.song-tab.muted {
+    opacity: 0.55;
 }
 
 .song-tab {

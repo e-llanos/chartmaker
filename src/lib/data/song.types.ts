@@ -26,5 +26,7 @@ export type SongCreate = SongInput & { chart?: Chart; score?: Score };
 /** Cambios parciales. `chart: null` elimina el chart. */
 export type SongUpdate = Partial<SongInput> & { chart?: Chart | null; score?: Score | null };
 
-export type SongSummary = Pick<Song, 'id' | 'title' | 'artist' | 'imageUrl' | 'key' | 'tempo' | 'compas' | 'updatedAt'> & { hasChart: boolean };
-
+export type SongSummary = Pick<
+    Song,
+    'id' | 'title' | 'artist' | 'imageUrl' | 'key' | 'tempo' | 'compas' | 'updatedAt'
+> & { hasChart: boolean; hasScore: boolean };

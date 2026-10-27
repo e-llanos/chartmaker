@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { beatsPerMeasure } from '@/lib/chart/chart.utils';
 import type { Chart } from '@/lib/chart/chart.types';
+import type { Score } from '@/lib/score/score.types';
 import type { SongCreate, SongInput } from '@/lib/data/song.types';
 import { computeBadges, SECTION_TYPES } from '@/lib/sections/sectionTypes';
 import {
@@ -18,21 +19,24 @@ import SectionCard from '../shared/SectionCard';
 import SongHeader from '../shared/SongHeader';
 import ExportMenu from '../shared/ExportMenu';
 import ExportHead from '../shared/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
 import MeasureBox from './MeasureBox';
 
 interface ChartViewerProps {
     song: SongInput;
     chart: Chart;
+    score?: Score;
+    settings?: ViewerSettings;
     editHref?: string;
+    hideHeader?: boolean;
 }
 
-export default function ChartViewer({ song, chart, editHref }: ChartViewerProps) {
-    const sheetRef = useRef<HTMLDivElement>(null);
+export default function ChartViewer({ song, chart, score, settings, editHref, hideHeader = false }: ChartViewerProps) {
+    const local = useViewerSettings();
+    const { semitones, setSemitones, notation, setNotation } = settings ?? local;
     const [layout, setLayout] = useState<SectionsLayout>('list');
-    const [semitones, setSemitones] = useState<number>(0);
-    const [notation, setNotation] = useState<Notation>('symbol');
     const [highlighted, setHighlighted] = useState<string | null>(null);
-
+    const sheetRef = useRef<HTMLDivElement>(null);
     const badges = useMemo(() => computeBadges(chart.sections), [chart.sections]);
     const count = beatsPerMeasure(song.compas);
     const displayKey = transposeChordString(song.key, semitones, 'symbol', song.key);
@@ -47,11 +51,14 @@ export default function ChartViewer({ song, chart, editHref }: ChartViewerProps)
         [semitones, notation, song.key, displayKey]
     );
 
-    const exportSong = useMemo<SongCreate>(() => ({ ...song, chart }), [song, chart]);
+    const exportSong = useMemo<SongCreate>(
+        () => ({ ...song, chart, ...(score ? { score } : {}) }),
+        [song, chart, score]
+    );
 
     return (
         <div className="viewer">
-            <SongHeader title={song.title} meta={song} editHref={editHref} />
+            {!hideHeader && <SongHeader title={song.title} meta={song} />}
             <ViewerToolbar
                 title={song.title}
                 hideTitle

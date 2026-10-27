@@ -19,21 +19,22 @@ import SectionNav from '../shared/SectionNav';
 import SongHeader from '../shared/SongHeader';
 import ExportMenu from '../shared/ExportMenu';
 import ExportHead from '../shared/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
 import ScoreRow from './ScoreRow';
 
 interface ScoreViewerProps {
     song: SongInput;
     score: Score;
-    /** Se incluye al exportar .chartmaker para no perderlo. */
     chart?: Chart;
+    settings?: ViewerSettings;
     editHref?: string;
+    hideHeader?: boolean;
 }
 
-export default function ScoreViewer({ song, score, chart, editHref }: ScoreViewerProps) {
+export default function ScoreViewer({ song, score, chart, settings, editHref, hideHeader }: ScoreViewerProps) {
     const sheetRef = useRef<HTMLDivElement>(null);
-    const [semitones, setSemitones] = useState<number>(0);
-    const [notation, setNotation] = useState<Notation>('symbol');
-
+    const local = useViewerSettings();
+    const { semitones, setSemitones, notation, setNotation } = settings ?? local;
     const badges = useMemo(() => computeBadges(score.sections), [score.sections]);
     const count = beatsPerMeasure(song.compas);
     const time = useMemo(() => timeSignature(song.compas), [song.compas]);
@@ -56,7 +57,7 @@ export default function ScoreViewer({ song, score, chart, editHref }: ScoreViewe
 
     return (
         <div className="viewer">
-            <SongHeader title={song.title} meta={song} editHref={editHref} />
+            {!hideHeader && <SongHeader title={song.title} meta={song} />}
             <ViewerToolbar
                 title={song.title}
                 hideTitle

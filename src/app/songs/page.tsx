@@ -48,6 +48,11 @@ async function SongList() {
                         <span className="song-info">
                             <span className="song-title">{song.title || 'Sin título'}</span>
                             <span className="song-artist">{song.artist || 'Artista desconocido'}</span>
+                            <span className="song-resources">
+                                <span className="song-tag">Cifrado</span>
+                                <span className={`song-tag${song.hasChart ? '' : ' muted'}`}>Chart</span>
+                                <span className={`song-tag${song.hasScore ? '' : ' muted'}`}>Avanzado</span>
+                            </span>
                         </span>
                         <span className="song-meta">
                             <span className="song-key">{song.key}</span>

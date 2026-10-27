@@ -3,24 +3,24 @@ import type { Metadata } from 'next';
 import { APP_NAME } from '@/lib/config';
 
 export const metadata: Metadata = {
-    title: 'Home',
-    description: 'Elige nuestros recursos.',
+  title: 'Home',
+  description: 'Elige nuestros recursos.',
 }
 
 const CARDS = [
   {
     href: '/songs',
-    title: 'Cifrados',
-    description: 'Letras con acordes, transposición y notación Nashville o romana.',
+    title: 'Canciones',
+    description: 'Cada canción reúne su cifrado, su chart y su chart avanzado en un solo lugar.',
     color: '#8a74e8',
     icon: '♪',
   },
   {
-    href: '/charts',
-    title: 'Charts',
-    description: 'Estructura de cada canción por secciones, lista para el ensayo.',
+    href: '/songs/new',
+    title: 'Nueva canción',
+    description: 'Escribe el cifrado, o importa un archivo .chartmaker, para empezar.',
     color: '#e0684a',
-    icon: '☰',
+    icon: '+',
   },
 ] as const;
 

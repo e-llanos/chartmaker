@@ -2,21 +2,20 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ScoreEditor from '@/components/score/ScoreEditor';
+import ChartEditor from '@/components/chart/ChartEditor';
 import type { Chart } from '@/lib/chart/chart.types';
 import type { SongInput } from '@/lib/data/song.types';
-import type { Score } from '@/lib/score/score.types';
+import { songPath } from '@/lib/songRoutes';
 
-interface Props {
+interface EditChartClientProps {
     id: string;
     song: SongInput;
-    initial: Score;
-    baseChart?: Chart;
+    initial: Chart;
 }
 
-export default function EditScoreClient({ id, song, initial, baseChart }: Props) {
+export default function EditChartClient({ id, song, initial }: EditChartClientProps) {
     const router = useRouter();
-    const [score, setScore] = useState<Score>(initial);
+    const [chart, setChart] = useState<Chart>(initial);
     const [saving, setSaving] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -27,13 +26,13 @@ export default function EditScoreClient({ id, song, initial, baseChart }: Props)
             const res = await fetch(`/api/songs/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ score }),
+                body: JSON.stringify({ chart }),
             });
             if (!res.ok) {
                 const data = (await res.json().catch(() => null)) as { error?: string } | null;
                 throw new Error(data?.error ?? 'No se pudo guardar');
             }
-            router.push(`/charts/${id}/advanced`);
+            router.push(songPath(id, 'chart'));
             router.refresh();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -44,13 +43,13 @@ export default function EditScoreClient({ id, song, initial, baseChart }: Props)
     return (
         <main className="page-wide">
             <div className="editor-header">
-                <h1>Chart avanzado · {song.title || 'Sin título'}</h1>
+                <h1>Editor de chart · {song.title || 'Sin título'}</h1>
                 <button type="button" onClick={handleSave} disabled={saving}>
                     {saving ? 'Guardando…' : 'Guardar'}
                 </button>
             </div>
             {error && <p role="alert" className="form-error">{error}</p>}
-            <ScoreEditor song={song} initial={initial} baseChart={baseChart} onChange={setScore} />
+            <ChartEditor song={song} initial={initial} onChange={setChart} />
         </main>
     );
 }

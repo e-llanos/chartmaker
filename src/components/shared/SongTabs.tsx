@@ -1,19 +1,34 @@
-import Link from 'next/link';
+'use client';
+
+import type { SongView } from '@/lib/songRoutes';
 
 interface SongTabsProps {
-    id: string;
-    active: 'cifrado' | 'chart' | 'advanced';
+    view: SongView;
+    onChange: (view: SongView) => void;
+    /** Qué recursos tienen contenido (el cifrado siempre se considera disponible). */
+    available: Record<SongView, boolean>;
 }
 
-export default function SongTabs({ id, active }: SongTabsProps) {
+const TABS: ReadonlyArray<{ view: SongView; label: string }> = [
+    { view: 'cifrado', label: 'Cifrado' },
+    { view: 'chart', label: 'Chart' },
+    { view: 'advanced', label: 'Chart avanzado' },
+];
+
+export default function SongTabs({ view, onChange, available }: SongTabsProps) {
     return (
         <nav className="song-tabs" aria-label="Vista de la canción">
-            <Link href={`/songs/${id}`} className="song-tab"
-                aria-current={active === 'cifrado' ? 'page' : undefined}>Cifrado</Link>
-            <Link href={`/charts/${id}`} className="song-tab"
-                aria-current={active === 'chart' ? 'page' : undefined}>Chart</Link>
-            <Link href={`/charts/${id}/advanced`} className="song-tab"
-                aria-current={active === 'advanced' ? 'page' : undefined}>Chart avanzado</Link>
+            {TABS.map((t) => (
+                <button
+                    key={t.view}
+                    type="button"
+                    className={`song-tab${available[t.view] ? '' : ' muted'}`}
+                    aria-current={view === t.view ? 'true' : undefined}
+                    onClick={() => onChange(t.view)}
+                >
+                    {t.label}
+                </button>
+            ))}
         </nav>
     );
 }

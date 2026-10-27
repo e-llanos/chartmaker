@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { promises as fs } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -10,18 +11,6 @@ import { DEFAULT_SONG_INPUT } from './song.constants';
 
 
 /* ---------- Acceso al archivo ---------- */
-/*
-async function readAll(): Promise<Song[]> {
-    try {
-        const raw = await fs.readFile(DB_PATH, 'utf-8');
-        const data: unknown = JSON.parse(raw);
-        return Array.isArray(data) ? (data as Song[]) : [];
-    } catch (err) {
-        if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
-        throw err;
-    }
-}
-    */
 
 async function readAll(): Promise<Song[]> {
     try {
@@ -54,17 +43,18 @@ function withWriteLock<T>(task: () => Promise<T>): Promise<T> {
 export async function listSongs(): Promise<SongSummary[]> {
     const songs = await readAll();
     return songs
-        .map(({ id, title, artist, imageUrl, key, tempo, compas, updatedAt, chart }) => ({
+        .map(({ id, title, artist, imageUrl, key, tempo, compas, updatedAt, chart, score }) => ({
             id, title, artist, imageUrl, key, tempo, compas, updatedAt,
             hasChart: Boolean(chart?.sections.length),
+            hasScore: Boolean(score?.sections.length),
         }))
         .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
-export async function getSongById(id: string): Promise<Song | null> {
+export const getSongById = cache(async (id: string): Promise<Song | null> => {
     const songs = await readAll();
     return songs.find((s) => s.id === id) ?? null;
-}
+});
 
 /* ---------- Escritura ---------- */
 
