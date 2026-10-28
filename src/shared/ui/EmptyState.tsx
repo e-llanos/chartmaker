@@ -1,13 +1,13 @@
 import Link from 'next/link';
 
-interface EmptyResourceProps {
+interface EmptyStateProps {
     title: string;
     description: string;
     href: string;
     cta: string;
 }
 
-export default function EmptyResource({ title, description, href, cta }: EmptyResourceProps) {
+export default function EmptyState({ title, description, href, cta }: EmptyStateProps) {
     return (
         <div className="empty-resource">
             <h2>{title}</h2>

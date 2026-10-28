@@ -6,19 +6,19 @@ import { getSectionRepeat, setSectionRepeat } from '@/domain/chordsheet/section-
 import { normalizeChord } from '@/domain/music/engine';
 import { DEFAULT_SONG_INPUT } from '@/domain/song/constants';
 import type { SongInput } from '@/domain/song/types';
-import EditorLayout from '../shared/EditorLayout';
-import CifradoToolbar from './CifradoToolbar';
-import CifradoViewer from './CifradoViewer';
+import EditorLayout from '@/shared/editor/EditorLayout';
+import ChordSheetToolbar from '@/features/chordsheet/components/ChordSheetToolbar';
+import ChordSheetViewer from '@/features/chordsheet/components/ChordSheetViewer';
 
-export type CifradoData = SongInput;
+export type ChordSheetData = SongInput;
 
-interface CifradoEditorProps {
-    initial?: Partial<CifradoData>;
-    onChange?: (data: CifradoData) => void;
+interface ChordSheetEditorProps {
+    initial?: Partial<ChordSheetData>;
+    onChange?: (data: ChordSheetData) => void;
 }
 
-export default function CifradoEditor({ initial = {}, onChange }: CifradoEditorProps) {
-    const [data, setData] = useState<CifradoData>({ ...DEFAULT_SONG_INPUT, ...initial });
+export default function ChordSheetEditor({ initial = {}, onChange }: ChordSheetEditorProps) {
+    const [data, setData] = useState<ChordSheetData>({ ...DEFAULT_SONG_INPUT, ...initial });
     const ref = useRef<HTMLTextAreaElement>(null);
     const [caret, setCaret] = useState<number>(0);
     const repeat = useMemo(() => getSectionRepeat(data.body, caret), [data.body, caret]);
@@ -41,8 +41,8 @@ export default function CifradoEditor({ initial = {}, onChange }: CifradoEditorP
         });
     }
 
-    function commit(next: Partial<CifradoData>) {
-        const d: CifradoData = { ...data, ...next };
+    function commit(next: Partial<ChordSheetData>) {
+        const d: ChordSheetData = { ...data, ...next };
         setData(d);
         onChange?.(d);
     }
@@ -78,9 +78,9 @@ export default function CifradoEditor({ initial = {}, onChange }: CifradoEditorP
 
     const tools = (
         <>
-            <CifradoToolbar
+            <ChordSheetToolbar
                 data={data}
-                onFieldChange={(field, value) => commit({ [field]: value } as Partial<CifradoData>)}
+                onFieldChange={(field, value) => commit({ [field]: value } as Partial<ChordSheetData>)}
                 onAddSection={addSection}
                 onInsertChord={(c) => insertAtCursor(`[${normalizeChord(c)}]`)}
                 onInsertNote={() => insertAtCursor('{comment: }', '{comment: '.length)}
@@ -108,7 +108,7 @@ export default function CifradoEditor({ initial = {}, onChange }: CifradoEditorP
         <EditorLayout
             tools={tools}
             preview={
-                <CifradoViewer
+                <ChordSheetViewer
                     chordProText={data.body}
                     originalKey={data.key}
                     title={data.title}

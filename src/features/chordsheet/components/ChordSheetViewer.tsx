@@ -12,16 +12,16 @@ import {
     convertChordString,
     semitoneDistance,
 } from '@/domain/music/engine';
-import ViewerToolbar, { type SectionsLayout } from '../shared/ViewerToolbar';
-import SectionNav from '../shared/SectionNav';
-import SectionCard from '../shared/SectionCard';
-import SongHeader, { type SongMeta } from '../shared/SongHeader';
-import ExportMenu from '../shared/ExportMenu';
-import ExportHead from '../shared/ExportHead';
-import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
-import ChordLine from './ChordLine';
+import ViewerToolbar, { type SectionsLayout } from '@/shared/viewer/ViewerToolbar';
+import SectionNav from '@/shared/viewer/SectionNav';
+import SectionCard from '@/shared/viewer/SectionCard';
+import SongHeader, { type SongMeta } from '@/shared/viewer/SongHeader';
+import ExportMenu from '@/shared/export/ExportMenu';
+import ExportHead from '@/shared/export/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '@/shared/viewer/useViewerSettings';
+import ChordLine from '@/features/chordsheet/components/ChordLine';
 
-interface CifradoViewerProps {
+interface ChordSheetViewerProps {
     chordProText: string;
     originalKey: string;
     title: string;
@@ -34,9 +34,9 @@ interface CifradoViewerProps {
     hideHeader?: boolean;
 }
 
-export default function CifradoViewer({
+export default function ChordSheetViewer({
     chordProText, originalKey, title, meta, chart, score, settings, hideHeader = false,
-}: CifradoViewerProps) {
+}: ChordSheetViewerProps) {
     const local = useViewerSettings();
     const { semitones, setSemitones, notation, setNotation } = settings ?? local;
 

@@ -1,7 +1,7 @@
 import { segments } from '@/domain/chart/utils';
 import { padBeats } from '@/domain/music/meter';
 import type { ChartMeasure } from '@/domain/chart/types';
-import ChordText from '../shared/ChordText';
+import ChordText from '@/shared/viewer/ChordText';
 
 interface MeasureBoxProps {
     measure: ChartMeasure;

@@ -12,13 +12,13 @@ import {
     convertChordString,
     semitoneDistance,
 } from '@/domain/music/engine';
-import ViewerToolbar from '../shared/ViewerToolbar';
-import SectionNav from '../shared/SectionNav';
-import SongHeader from '../shared/SongHeader';
-import ExportMenu from '../shared/ExportMenu';
-import ExportHead from '../shared/ExportHead';
-import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
-import ScoreRow from './ScoreRow';
+import ViewerToolbar from '@/shared/viewer/ViewerToolbar';
+import SectionNav from '@/shared/viewer/SectionNav';
+import SongHeader from '@/shared/viewer/SongHeader';
+import ExportMenu from '@/shared/export/ExportMenu';
+import ExportHead from '@/shared/export/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '@/shared/viewer/useViewerSettings';
+import ScoreRow from '@/features/score/components/ScoreRow';
 
 interface ScoreViewerProps {
     song: SongInput;

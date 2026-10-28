@@ -11,14 +11,14 @@ import {
     convertChordString,
     semitoneDistance,
 } from '@/domain/music/engine';
-import ViewerToolbar, { type SectionsLayout } from '../shared/ViewerToolbar';
-import SectionNav from '../shared/SectionNav';
-import SectionCard from '../shared/SectionCard';
-import SongHeader from '../shared/SongHeader';
-import ExportMenu from '../shared/ExportMenu';
-import ExportHead from '../shared/ExportHead';
-import { useViewerSettings, type ViewerSettings } from '../shared/useViewerSettings';
-import MeasureBox from './MeasureBox';
+import ViewerToolbar, { type SectionsLayout } from '@/shared/viewer/ViewerToolbar';
+import SectionNav from '@/shared/viewer/SectionNav';
+import SectionCard from '@/shared/viewer/SectionCard';
+import SongHeader from '@/shared/viewer/SongHeader';
+import ExportMenu from '@/shared/export/ExportMenu';
+import ExportHead from '@/shared/export/ExportHead';
+import { useViewerSettings, type ViewerSettings } from '@/shared/viewer/useViewerSettings';
+import MeasureBox from '@/features/chart/components/MeasureBox';
 
 interface ChartViewerProps {
     song: SongInput;

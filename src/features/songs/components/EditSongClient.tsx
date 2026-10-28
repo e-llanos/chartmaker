@@ -2,22 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ScoreEditor from '@/components/score/ScoreEditor';
-import type { Chart } from '@/domain/chart/types';
-import type { SongInput } from '@/domain/song/types';
-import type { Score } from '@/domain/score/types';
-import { songPath } from '@/config/routes';
+import ChordSheetEditor, { type ChordSheetData } from '@/features/chordsheet/components/ChordSheetEditor';
 
-interface Props {
+interface EditSongClientProps {
     id: string;
-    song: SongInput;
-    initial: Score;
-    baseChart?: Chart;
+    initial: ChordSheetData;
 }
 
-export default function EditScoreClient({ id, song, initial, baseChart }: Props) {
+export default function EditSongClient({ id, initial }: EditSongClientProps) {
     const router = useRouter();
-    const [score, setScore] = useState<Score>(initial);
+    const [song, setSong] = useState<ChordSheetData>(initial);
     const [saving, setSaving] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -28,14 +22,13 @@ export default function EditScoreClient({ id, song, initial, baseChart }: Props)
             const res = await fetch(`/api/songs/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ score }),
+                body: JSON.stringify(song),
             });
             if (!res.ok) {
                 const data = (await res.json().catch(() => null)) as { error?: string } | null;
                 throw new Error(data?.error ?? 'No se pudo guardar');
             }
-            router.push(songPath(id, 'advanced'));
-            router.refresh();
+            router.push(`/songs/${id}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Error desconocido');
             setSaving(false);
@@ -45,13 +38,13 @@ export default function EditScoreClient({ id, song, initial, baseChart }: Props)
     return (
         <main className="page-wide">
             <div className="editor-header">
-                <h1>Chart avanzado · {song.title || 'Sin título'}</h1>
-                <button type="button" onClick={handleSave} disabled={saving}>
+                <h1>Editor de cifrado</h1>
+                <button type="button" onClick={handleSave} disabled={saving || !song.title.trim()}>
                     {saving ? 'Guardando…' : 'Guardar'}
                 </button>
             </div>
             {error && <p role="alert" className="form-error">{error}</p>}
-            <ScoreEditor song={song} initial={initial} baseChart={baseChart} onChange={setScore} />
+            <ChordSheetEditor initial={song} onChange={setSong} />
         </main>
     );
 }

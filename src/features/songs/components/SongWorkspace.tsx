@@ -1,17 +1,17 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import ChartViewer from '@/components/chart/ChartViewer';
-import CifradoViewer from '@/components/cifrado/CifradoViewer';
-import ScoreViewer from '@/components/score/ScoreViewer';
+import ChartViewer from '@/features/chart/components/ChartViewer';
+import ChordSheetViewer from '@/features/chordsheet/components/ChordSheetViewer';
+import ScoreViewer from '@/features/score/components/ScoreViewer';
 import { toSongInput } from '@/domain/song/constants';
 import type { Song } from '@/domain/song/types';
 import { songEditPath, type SongView } from '@/config/routes';
-import EmptyResource from './EmptyResource';
-import SongActions from './SongActions';
-import SongHeader from './SongHeader';
-import SongTabs from './SongTabs';
-import { useViewerSettings } from './useViewerSettings';
+import EmptyState from '@/shared/ui/EmptyState';
+import SongActions from '@/features/songs/components/SongActions';
+import SongHeader from '@/shared/viewer/SongHeader';
+import SongTabs from '@/features/songs/components/SongTabs';
+import { useViewerSettings } from '@/shared/viewer/useViewerSettings';
 
 interface SongWorkspaceProps {
     song: Song;
@@ -51,7 +51,7 @@ export default function SongWorkspace({ song, initialView }: SongWorkspaceProps)
             {/* Los tres paneles quedan montados: al cambiar de pestaña se conserva
                 la disposición, el modo y la sección resaltada de cada uno. */}
             <div hidden={view !== 'cifrado'}>
-                <CifradoViewer
+                <ChordSheetViewer
                     chordProText={input.body}
                     originalKey={input.key}
                     title={input.title}
@@ -67,7 +67,7 @@ export default function SongWorkspace({ song, initialView }: SongWorkspaceProps)
                 {hasChart && song.chart ? (
                     <ChartViewer song={input} chart={song.chart} score={song.score} settings={settings} hideHeader />
                 ) : (
-                    <EmptyResource
+                    <EmptyState
                         title="Aún no hay chart"
                         description="Un chart muestra la canción por compases. Puedes generarlo a partir del cifrado y ajustarlo."
                         href={songEditPath(song.id, 'chart')}
@@ -80,7 +80,7 @@ export default function SongWorkspace({ song, initialView }: SongWorkspaceProps)
                 {hasScore && song.score ? (
                     <ScoreViewer song={input} score={song.score} chart={song.chart} settings={settings} hideHeader />
                 ) : (
-                    <EmptyResource
+                    <EmptyState
                         title="Aún no hay chart avanzado"
                         description="Incluye tiempos, barras de repetición, casillas y símbolos de partitura."
                         href={songEditPath(song.id, 'advanced')}

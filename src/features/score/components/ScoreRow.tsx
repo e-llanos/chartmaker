@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 import { padBeats } from '@/domain/music/meter';
 import type { ScoreMeasure } from '@/domain/score/types';
 import { barBetween } from '@/domain/score/utils';
-import ChordText from '../shared/ChordText';
-import { Bar, MarkView, SimileIcon } from './ScoreSymbols';
+import ChordText from '@/shared/viewer/ChordText';
+import { Bar, MarkView, SimileIcon } from '@/features/score/components/ScoreSymbols';
 
 interface MeasureViewProps {
     measure: ScoreMeasure;

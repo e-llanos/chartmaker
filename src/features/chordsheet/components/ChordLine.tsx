@@ -1,6 +1,6 @@
 import type { Token } from '@/domain/chordsheet/parse-sections';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
-import ChordText from '../shared/ChordText';
+import ChordText from '@/shared/viewer/ChordText';
 
 interface ChordLineProps {
     tokens: Token[];

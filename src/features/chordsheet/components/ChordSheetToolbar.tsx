@@ -5,12 +5,12 @@ import { ALL_KEYS, diatonicChords } from '@/domain/music/engine';
 import { COMPAS_OPTIONS, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
 import type { SectionType } from '@/domain/sections/section-types';
 import { REPEAT_MAX, REPEAT_MIN, type SectionRepeatInfo } from '@/domain/chordsheet/section-text';
-import type { CifradoData } from './CifradoEditor';
-import SectionTypeButtons from '../shared/SectionTypeButtons';
+import type { ChordSheetData } from '@/features/chordsheet/components/ChordSheetEditor';
+import SectionTypeButtons from '@/shared/editor/SectionTypeButtons';
 
-interface CifradoToolbarProps {
-    data: CifradoData;
-    onFieldChange: <K extends keyof CifradoData>(field: K, value: CifradoData[K]) => void;
+interface ChordSheetToolbarProps {
+    data: ChordSheetData;
+    onFieldChange: <K extends keyof ChordSheetData>(field: K, value: ChordSheetData[K]) => void;
     onAddSection: (type: SectionType) => void;
     onInsertChord: (chord: string) => void;
     onInsertNote: () => void;
@@ -18,9 +18,9 @@ interface CifradoToolbarProps {
     onRepeatChange: (n: number) => void;
 }
 
-export default function CifradoToolbar({
+export default function ChordSheetToolbar({
     data, onFieldChange, onAddSection, onInsertChord, onInsertNote, repeat, onRepeatChange
-}: CifradoToolbarProps) {
+}: ChordSheetToolbarProps) {
     const [chord, setChord] = useState<string>('');
     const palette = useMemo(() => diatonicChords(data.key), [data.key]);
 

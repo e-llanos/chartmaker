@@ -6,10 +6,10 @@ import { beatsPerMeasure } from '@/domain/music/meter';
 import type { Chart, ChartSection } from '@/domain/chart/types';
 import type { SongInput } from '@/domain/song/types';
 import { nextLabel, type SectionType } from '@/domain/sections/section-types';
-import EditorLayout from '../shared/EditorLayout';
-import SectionTypeButtons from '../shared/SectionTypeButtons';
-import ChartViewer from './ChartViewer';
-import SectionEditor from './SectionEditor';
+import EditorLayout from '@/shared/editor/EditorLayout';
+import SectionTypeButtons from '@/shared/editor/SectionTypeButtons';
+import ChartViewer from '@/features/chart/components/ChartViewer';
+import SectionEditor from '@/features/chart/components/SectionEditor';
 
 interface ChartEditorProps {
     song: SongInput;
