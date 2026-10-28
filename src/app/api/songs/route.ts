@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { createSong, listSongs } from '@/lib/data/songs';
-import { parseSongInput } from '@/lib/data/song.validation';
+import { createSong, listSongs } from '@/server/songs';
+import { parseSongInput } from '@/domain/song/validation';
 
 export async function GET() {
     return NextResponse.json(await listSongs());

@@ -1,9 +1,9 @@
 'use client';
 
-import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/lib/sections/sectionTypes';
-import { REPEAT_MAX, REPEAT_MIN } from '@/lib/cifrado/sectionText';
-import { padBeats } from '@/lib/chart/chart.utils';
-import { normalizeChord } from '@/lib/music/engine';
+import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
+import { REPEAT_MAX, REPEAT_MIN } from '@/domain/chordsheet/section-text';
+import { padBeats } from '@/domain/music/meter';
+import { normalizeChord } from '@/domain/music/engine';
 import {
     MEASURE_MARKS,
     MEASURE_MARK_KEYS,
@@ -12,8 +12,8 @@ import {
     type RightBar,
     type ScoreMeasure,
     type ScoreSection,
-} from '@/lib/score/score.types';
-import { emptyScoreMeasure, PER_ROW_OPTIONS } from '@/lib/score/score.utils';
+} from '@/domain/score/types';
+import { emptyScoreMeasure, PER_ROW_OPTIONS } from '@/domain/score/utils';
 
 interface Props {
     section: ScoreSection;

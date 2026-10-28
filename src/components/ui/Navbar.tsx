@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { APP_NAME } from '@/lib/config';
+import { APP_NAME } from '@/config/app';
 
 const LINKS = [{ href: '/songs', label: 'Canciones' }] as const;
 

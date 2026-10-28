@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import type { Notation } from '@/lib/music/engine';
+import type { Notation } from '@/domain/music/engine';
 
 export interface ViewerSettings {
     semitones: number;

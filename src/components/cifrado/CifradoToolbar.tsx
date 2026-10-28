@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ALL_KEYS, diatonicChords } from '@/lib/music/engine';
-import { COMPAS_OPTIONS, TEMPO_MAX, TEMPO_MIN } from '@/lib/data/song.constants';
-import type { SectionType } from '@/lib/sections/sectionTypes';
-import { REPEAT_MAX, REPEAT_MIN, type SectionRepeatInfo } from '@/lib/cifrado/sectionText';
+import { ALL_KEYS, diatonicChords } from '@/domain/music/engine';
+import { COMPAS_OPTIONS, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
+import type { SectionType } from '@/domain/sections/section-types';
+import { REPEAT_MAX, REPEAT_MIN, type SectionRepeatInfo } from '@/domain/chordsheet/section-text';
 import type { CifradoData } from './CifradoEditor';
 import SectionTypeButtons from '../shared/SectionTypeButtons';
 

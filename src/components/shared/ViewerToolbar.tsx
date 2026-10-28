@@ -1,8 +1,8 @@
 'use client';
 
 import type { ReactNode, SVGProps } from 'react';
-import { VIEW_MODE_LABELS, type ViewMode } from '@/lib/cifrado/viewMode';
-import { ALL_KEYS, NOTATION_LABELS, formatKeyLabel, type Notation } from '@/lib/music/engine';
+import { VIEW_MODE_LABELS, type ViewMode } from '@/domain/chordsheet/view-mode';
+import { ALL_KEYS, NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/engine';
 
 export type SectionsLayout = 'columns' | 'list';
 

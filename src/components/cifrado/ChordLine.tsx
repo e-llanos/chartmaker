@@ -1,5 +1,5 @@
-import type { Token } from '@/lib/cifrado/parseSections';
-import type { ViewMode } from '@/lib/cifrado/viewMode';
+import type { Token } from '@/domain/chordsheet/parse-sections';
+import type { ViewMode } from '@/domain/chordsheet/view-mode';
 import ChordText from '../shared/ChordText';
 
 interface ChordLineProps {

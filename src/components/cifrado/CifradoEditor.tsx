@@ -1,11 +1,11 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import { nextLabel, type SectionType } from '@/lib/sections/sectionTypes';
-import { getSectionRepeat, setSectionRepeat } from '@/lib/cifrado/sectionText';
-import { normalizeChord } from '@/lib/music/engine';
-import { DEFAULT_SONG_INPUT } from '@/lib/data/song.constants';
-import type { SongInput } from '@/lib/data/song.types';
+import { nextLabel, type SectionType } from '@/domain/sections/section-types';
+import { getSectionRepeat, setSectionRepeat } from '@/domain/chordsheet/section-text';
+import { normalizeChord } from '@/domain/music/engine';
+import { DEFAULT_SONG_INPUT } from '@/domain/song/constants';
+import type { SongInput } from '@/domain/song/types';
 import EditorLayout from '../shared/EditorLayout';
 import CifradoToolbar from './CifradoToolbar';
 import CifradoViewer from './CifradoViewer';

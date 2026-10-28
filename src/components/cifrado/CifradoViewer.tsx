@@ -1,19 +1,17 @@
 'use client';
 
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { parseSections } from '@/lib/cifrado/parseSections';
-import type { ViewMode } from '@/lib/cifrado/viewMode';
-import { computeBadges, SECTION_TYPES } from '@/lib/sections/sectionTypes';
-import type { SongCreate } from '@/lib/data/song.types';
-import type { Chart } from '@/lib/chart/chart.types';
-import type { Score } from '@/lib/score/score.types';
+import { parseSections } from '@/domain/chordsheet/parse-sections';
+import type { ViewMode } from '@/domain/chordsheet/view-mode';
+import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
+import type { SongCreate } from '@/domain/song/types';
+import type { Chart } from '@/domain/chart/types';
+import type { Score } from '@/domain/score/types';
 import {
     transposeChordString,
     convertChordString,
     semitoneDistance,
-    formatKeyLabel,
-    type Notation,
-} from '@/lib/music/engine';
+} from '@/domain/music/engine';
 import ViewerToolbar, { type SectionsLayout } from '../shared/ViewerToolbar';
 import SectionNav from '../shared/SectionNav';
 import SectionCard from '../shared/SectionCard';
@@ -33,7 +31,6 @@ interface CifradoViewerProps {
     chart?: Chart;
     score?: Score;
     settings?: ViewerSettings;
-    /** La cabecera la dibuja el layout de la canción. */
     hideHeader?: boolean;
 }
 

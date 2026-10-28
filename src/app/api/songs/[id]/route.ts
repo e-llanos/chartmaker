@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { deleteSong, getSongById, updateSong } from '@/lib/data/songs';
-import { parseSongUpdate } from '@/lib/data/song.validation';
+import { deleteSong, getSongById, updateSong } from '@/server/songs';
+import { parseSongUpdate } from '@/domain/song/validation';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -20,7 +20,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
     const song = await updateSong(id, parsed.value);
     if (!song) return NextResponse.json({ error: 'No encontrada' }, { status: 404 });
 
-    revalidatePath(`/songs/${id}`, 'layout'); // cabecera y las tres vistas
+    revalidatePath(`/songs/${id}`, 'layout');
     revalidatePath('/songs');
     return NextResponse.json(song);
 }

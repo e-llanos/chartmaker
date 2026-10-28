@@ -1,5 +1,5 @@
-import type { Chart } from '@/lib/chart/chart.types';
-import type { Score } from '@/lib/score/score.types';
+import type { Chart } from '@/domain/chart/types';
+import type { Score } from '@/domain/score/types';
 
 export interface Song {
     id: string;

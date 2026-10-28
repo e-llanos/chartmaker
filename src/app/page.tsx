@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { APP_NAME } from '@/lib/config';
+import { APP_NAME } from '@/config/app';
 
 export const metadata: Metadata = {
   title: 'Home',

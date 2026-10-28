@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import type { SongInput } from '@/lib/data/song.types';
+import type { SongInput } from '@/domain/song/types';
 import DeleteSongButton from './DeleteSongButton';
 
 export type SongMeta = Pick<SongInput, 'artist' | 'album' | 'imageUrl' | 'tempo' | 'compas'>;

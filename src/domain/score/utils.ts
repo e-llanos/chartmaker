@@ -1,7 +1,8 @@
-import { newId, padBeats } from '@/lib/chart/chart.utils';
-import type { Chart } from '@/lib/chart/chart.types';
-import type { SectionType } from '@/lib/sections/sectionTypes';
-import type { Score, ScoreMeasure, ScoreSection } from './score.types';
+import { newId } from '@/domain/shared/ids';
+import { padBeats } from '@/domain/music/meter';
+import type { Chart } from '@/domain/chart/types';
+import type { SectionType } from '@/domain/sections/section-types';
+import type { Score, ScoreMeasure, ScoreSection } from '@/domain/score/types';
 
 export const DEFAULT_PER_ROW = 4;
 export const PER_ROW_OPTIONS = [2, 3, 4, 5, 6, 8] as const;

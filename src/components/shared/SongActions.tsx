@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { songEditPath, type SongView } from '@/lib/songRoutes';
+import { songEditPath, type SongView } from '@/config/routes';
 import DeleteSongButton from './DeleteSongButton';
 
 const LABELS: Record<SongView, string> = {

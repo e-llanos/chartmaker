@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import type { SongCreate } from '@/lib/data/song.types';
-import { CHARTMAKER_EXT, serializeChartmaker } from '@/lib/data/chartmaker';
-import { downloadText, exportPdf, exportPng, safeFilename } from '@/lib/export/exportSheet';
+import type { SongCreate } from '@/domain/song/types';
+import { CHARTMAKER_EXT, serializeChartmaker } from '@/domain/song/chartmaker';
+import { downloadText, exportPdf, exportPng, safeFilename } from '@/shared/export/export-sheet';
 
 type ExportKind = 'pdf' | 'png' | 'chartmaker';
 

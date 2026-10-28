@@ -1,6 +1,6 @@
-import type { SongInput } from './song.types';
-import { parseSongInput, type Result } from './song.validation';
-import type { SongCreate } from './song.types';
+import type { SongInput } from '@/domain/song/types';
+import { parseSongInput, type Result } from '@/domain/song/validation';
+import type { SongCreate } from '@/domain/song/types';
 
 export const CHARTMAKER_EXT = '.chartmaker';
 export const CHARTMAKER_MAX_BYTES = 2 * 1024 * 1024;
