@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CifradoEditor, { type CifradoData } from '@/components/cifrado/CifradoEditor';
-import { DEFAULT_SONG_INPUT } from '@/lib/data/song.constants';
+import { DEFAULT_SONG_INPUT } from '@/domain/song/constants';
 
 export default function NewSongClient() {
     const router = useRouter();

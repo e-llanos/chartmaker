@@ -1,4 +1,4 @@
-import type { SectionType } from '@/lib/sections/sectionTypes';
+import type { SectionType } from '@/domain/sections/section-types';
 
 export interface ChartMeasure {
     beats: string[];

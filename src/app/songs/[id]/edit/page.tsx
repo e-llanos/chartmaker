@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { getSongById } from '@/lib/data/songs';
-import { toSongInput } from '@/lib/data/song.constants';
+import { getSongById } from '@/server/songs';
+import { toSongInput } from '@/domain/song/constants';
 import EditSongClient from '../EditSongClient';
 
 interface EditSongPageProps {

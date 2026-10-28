@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import SongWorkspace from '@/components/shared/SongWorkspace';
 import ViewSkeleton from '@/components/shared/ViewSkeleton';
-import { getSongById } from '@/lib/data/songs';
-import { parseView } from '@/lib/songRoutes';
+import { getSongById } from '@/server/songs';
+import { parseView } from '@/config/routes';
 
 interface PageProps {
     params: Promise<{ id: string }>;

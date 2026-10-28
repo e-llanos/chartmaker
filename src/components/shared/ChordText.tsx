@@ -1,4 +1,4 @@
-import { splitChord } from '@/lib/music/formatChord';
+import { splitChord } from '@/domain/music/format-chord';
 
 interface ChordTextProps {
   chord: string;

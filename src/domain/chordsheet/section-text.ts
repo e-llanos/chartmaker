@@ -1,4 +1,4 @@
-import { SECTION_TYPES, type SectionType } from '@/lib/sections/sectionTypes';
+import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
 
 export const REPEAT_MIN = 1;
 export const REPEAT_MAX = 99;

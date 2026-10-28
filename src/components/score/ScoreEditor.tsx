@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { beatsPerMeasure, chartFromChordPro } from '@/lib/chart/chart.utils';
-import type { Chart } from '@/lib/chart/chart.types';
-import type { SongInput } from '@/lib/data/song.types';
-import type { Score, ScoreSection } from '@/lib/score/score.types';
-import { newScoreSection, scoreFromChart } from '@/lib/score/score.utils';
-import { nextLabel, type SectionType } from '@/lib/sections/sectionTypes';
+import { chartFromChordPro } from '@/domain/chart/utils';
+import { beatsPerMeasure } from '@/domain/music/meter';
+import type { Chart } from '@/domain/chart/types';
+import type { SongInput } from '@/domain/song/types';
+import type { Score, ScoreSection } from '@/domain/score/types';
+import { newScoreSection, scoreFromChart } from '@/domain/score/utils';
+import { nextLabel, type SectionType } from '@/domain/sections/section-types';
 import EditorLayout from '../shared/EditorLayout';
 import SectionTypeButtons from '../shared/SectionTypeButtons';
 import ScoreSectionEditor from './ScoreSectionEditor';

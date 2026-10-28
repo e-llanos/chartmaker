@@ -1,4 +1,4 @@
-import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/lib/sections/sectionTypes';
+import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
 import SectionBadge from './SectionBadge';
 
 interface SectionTypeButtonsProps {

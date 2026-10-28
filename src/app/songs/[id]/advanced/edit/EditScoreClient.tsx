@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ScoreEditor from '@/components/score/ScoreEditor';
-import type { Chart } from '@/lib/chart/chart.types';
-import type { SongInput } from '@/lib/data/song.types';
-import type { Score } from '@/lib/score/score.types';
-import { songPath } from '@/lib/songRoutes';
+import type { Chart } from '@/domain/chart/types';
+import type { SongInput } from '@/domain/song/types';
+import type { Score } from '@/domain/score/types';
+import { songPath } from '@/config/routes';
 
 interface Props {
     id: string;

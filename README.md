@@ -56,7 +56,7 @@ La app queda en <http://localhost:3000>.
 | `npm run typecheck` | Genera los tipos de rutas de Next y revisa TypeScript sin compilar                  |
 | `npm run check`     | Lint, tipos y compilación en secuencia (lo que debe pasar antes de un Pull Request) |
 | `npm run clean`     | Borra la caché `.next`                                                              |
- 
+
 Si cambias la estructura de carpetas y algo no se actualiza, ejecuta `npm run clean` y vuelve a arrancar.
 
 ## Rutas
@@ -84,12 +84,15 @@ Si cambias la estructura de carpetas y algo no se actualiza, ejecuta `npm run cl
 | `PATCH`  | `/api/songs/[id]` | Actualiza campos sueltos; `chart: null` o `score: null` los eliminan |
 | `DELETE` | `/api/songs/[id]` | Elimina una canción                                                  |
 
+Toda entrada se valida en `src/domain/song/validation.ts` (tipos, longitudes, formato de tonalidad y compás, ids únicos de sección).
 
 ## Estructura del proyecto
 
 ```
+data/
+└── songs.json                Datos en ejecución (ruta configurable, ver Persistencia)
 src/
-├── app/
+├── app/                      Rutas de Next.js
 │   ├── api/songs/            Route handlers (CRUD)
 │   ├── songs/                Listado, nueva canción y detalle
 │   │   └── [id]/
@@ -100,20 +103,25 @@ src/
 │   ├── layout.tsx
 │   ├── not-found.tsx
 │   └── page.tsx              Inicio
-├── components/
+├── components/               Interfaz (se reorganizará por funcionalidades)
 │   ├── chart/                Visor y editor del chart
 │   ├── cifrado/              Visor y editor del cifrado
 │   ├── score/                Visor y editor del chart avanzado
 │   ├── shared/               Cabecera, pestañas, toolbar, menús, modales
 │   └── ui/                   Navbar y footer
-├── lib/
+├── config/                   Nombre de la app y rutas
+├── domain/                   Lógica pura de TypeScript (sin React, Next ni Node)
 │   ├── chart/                Tipos y utilidades del chart
-│   ├── cifrado/              Parser ChordPro, modos de vista, repeticiones
-│   ├── data/                 Servicio de canciones, tipos, validación, .chartmaker
-│   ├── export/               PDF y PNG
-│   ├── music/                Motor de acordes y formato de superíndices
+│   ├── chordsheet/           Parser ChordPro, modos de vista, repeticiones
+│   ├── music/                Motor de acordes, formato de superíndices, compás
 │   ├── score/                Tipos y utilidades del chart avanzado
-│   └── sections/             Tipos de sección
+│   ├── sections/             Tipos de sección
+│   ├── shared/               Utilidades comunes (ids)
+│   └── song/                 Tipos, constantes, validación y formato .chartmaker
+├── server/
+│   └── songs/                Repositorio de canciones (solo servidor)
+├── shared/
+│   └── export/               Exportación a PDF y PNG (usa el DOM)
 └── styles/
     ├── global.css            Punto de entrada
     ├── base.css              Variables, reset y foco
@@ -126,6 +134,17 @@ src/
     ├── chart.css             Chart simple
     └── score.css             Chart avanzado
 ```
+
+### Reglas de dependencia
+
+```
+app  →  components  →  domain
+app  →  server      →  domain
+```
+
+- `domain` no importa React, Next ni Node: es TypeScript puro, fácil de probar y de reutilizar.
+- `server` solo se importa desde `app` (rutas y páginas de servidor). Lleva `import 'server-only'`, así que importarlo desde un componente cliente rompe la compilación.
+- Los componentes nunca leen datos directamente: reciben lo que necesitan por props.
 
 ## Modelo de datos
 
@@ -184,9 +203,25 @@ Archivo JSON con sobre y versión, para exportar e importar canciones completas:
 
 ## Persistencia
 
-Las canciones se guardan en `src/lib/data/songs.json` y se leen con `fs`. Las escrituras son atómicas (archivo temporal y renombrado) y se serializan con una cola, para que dos peticiones simultáneas no se pisen.
+Las canciones se guardan en `data/songs.json`, fuera de `src/`, y se leen con `fs`. La ruta se puede cambiar con la variable de entorno `CHARTMAKER_DATA_FILE`:
 
-> **Importante:** este almacenamiento solo funciona en local o en un servidor con disco persistente. En plataformas serverless (Vercel y similares) el sistema de archivos es de solo lectura o efímero. Para desplegar ahí, reemplaza `readAll` y `writeAll` en `src/lib/data/songs.ts` por una base de datos; el resto de la app solo usa las funciones exportadas de ese módulo.
+```bash
+CHARTMAKER_DATA_FILE=/var/lib/chartmaker/songs.json npm run start
+```
+
+Las escrituras son atómicas (archivo temporal y renombrado) y se serializan con una cola, para que dos peticiones simultáneas no se pisen. Una canción se lee una sola vez por petición aunque la pidan varias partes de la página.
+
+El acceso a datos sigue el patrón repositorio:
+
+| Archivo                               | Función                                                                 |
+| ------------------------------------- | ----------------------------------------------------------------------- |
+| `src/server/songs/repository.ts`      | Contrato `SongRepository` (`list`, `get`, `create`, `update`, `remove`) |
+| `src/server/songs/file-repository.ts` | Implementación con archivo JSON                                         |
+| `src/server/songs/index.ts`           | Instancia el repositorio y exporta las funciones que usa la app         |
+
+> **Importante:** el almacenamiento en archivo solo funciona en local o en un servidor con disco persistente. En plataformas serverless (Vercel y similares) el sistema de archivos es de solo lectura o efímero. Para desplegar ahí, escribe otra implementación de `SongRepository` (SQLite, Postgres, etc.) y cámbiala en `src/server/songs/index.ts`; el resto de la app no se toca.
+
+El módulo de servidor usa `node:fs` y `server-only`: impórtalo únicamente desde Server Components y route handlers.
 
 ## Exportación
 
@@ -216,7 +251,7 @@ El proyecto sigue el modelo de ramas de [Git Flow](https://www.atlassian.com/es/
 | `feature/<nombre>`  | `develop` | `develop`          | Funcionalidad nueva.                                                        |
 | `release/<versión>` | `develop` | `main` y `develop` | Preparación de una versión: ajustes finales, versión y changelog.           |
 | `hotfix/<nombre>`   | `main`    | `main` y `develop` | Corrección urgente en producción.                                           |
- 
+
 Nombres de ramas en minúsculas y con guiones, por ejemplo `feature/chart-avanzado`, `release/1.2.0` o `hotfix/exportar-pdf`.
 
 

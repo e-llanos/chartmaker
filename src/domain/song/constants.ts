@@ -1,4 +1,4 @@
-import type { Song, SongInput } from './song.types';
+import type { Song, SongInput } from '@/domain/song/types';
 
 export const COMPAS_OPTIONS = ['4/4', '3/4', '2/4', '6/8', '12/8'] as const;
 export const TEMPO_MIN = 20;

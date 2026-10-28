@@ -1,18 +1,16 @@
 'use client';
 
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { beatsPerMeasure } from '@/lib/chart/chart.utils';
-import type { Chart } from '@/lib/chart/chart.types';
-import type { Score } from '@/lib/score/score.types';
-import type { SongCreate, SongInput } from '@/lib/data/song.types';
-import { computeBadges, SECTION_TYPES } from '@/lib/sections/sectionTypes';
+import { beatsPerMeasure } from '@/domain/music/meter';
+import type { Chart } from '@/domain/chart/types';
+import type { Score } from '@/domain/score/types';
+import type { SongCreate, SongInput } from '@/domain/song/types';
+import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
 import {
     transposeChordString,
     convertChordString,
     semitoneDistance,
-    formatKeyLabel,
-    type Notation,
-} from '@/lib/music/engine';
+} from '@/domain/music/engine';
 import ViewerToolbar, { type SectionsLayout } from '../shared/ViewerToolbar';
 import SectionNav from '../shared/SectionNav';
 import SectionCard from '../shared/SectionCard';

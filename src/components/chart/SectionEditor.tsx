@@ -1,10 +1,11 @@
 'use client';
 
-import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/lib/sections/sectionTypes';
-import { REPEAT_MAX, REPEAT_MIN } from '@/lib/cifrado/sectionText';
-import { emptyMeasure, padBeats } from '@/lib/chart/chart.utils';
-import { normalizeChord } from '@/lib/music/engine';
-import type { ChartMeasure, ChartSection } from '@/lib/chart/chart.types';
+import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
+import { REPEAT_MAX, REPEAT_MIN } from '@/domain/chordsheet/section-text';
+import { emptyMeasure } from '@/domain/chart/utils';
+import { padBeats } from '@/domain/music/meter';
+import { normalizeChord } from '@/domain/music/engine';
+import type { ChartMeasure, ChartSection } from '@/domain/chart/types';
 
 interface SectionEditorProps {
     section: ChartSection;

@@ -1,7 +1,7 @@
-import type { Chart, ChartMeasure, ChartSection } from '@/lib/chart/chart.types';
-import { SECTION_TYPES, type SectionType } from '@/lib/sections/sectionTypes';
-import { DEFAULT_SONG_INPUT, TEMPO_MAX, TEMPO_MIN } from './song.constants';
-import type { SongCreate, SongUpdate } from './song.types';
+import type { Chart, ChartMeasure, ChartSection } from '@/domain/chart/types';
+import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
+import { DEFAULT_SONG_INPUT, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
+import type { SongCreate, SongUpdate } from '@/domain/song/types';
 import {
     MEASURE_MARK_KEYS,
     type LeftBar,
@@ -10,7 +10,7 @@ import {
     type Score,
     type ScoreMeasure,
     type ScoreSection,
-} from '@/lib/score/score.types';
+} from '@/domain/score/types';
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 

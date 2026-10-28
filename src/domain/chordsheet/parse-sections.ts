@@ -1,4 +1,4 @@
-import { SECTION_TYPES, type SectionType } from '../sections/sectionTypes';
+import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
 
 /**
  * Convierte texto ChordPro con secciones en una estructura lista para render:

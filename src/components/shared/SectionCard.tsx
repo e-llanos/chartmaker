@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties, ReactNode } from 'react';
-import type { Badge } from '@/lib/sections/sectionTypes';
+import type { Badge } from '@/domain/sections/section-types';
 import SectionBadge from './SectionBadge';
 
 interface SectionCardProps {

@@ -1,28 +1,11 @@
-import { parseSections } from '@/lib/cifrado/parseSections';
-import { normalizeChord } from '@/lib/music/engine';
-import type { SectionType } from '@/lib/sections/sectionTypes';
-import type { Chart, ChartMeasure, ChartSection } from './chart.types';
+import { parseSections } from '@/domain/chordsheet/parse-sections';
+import { normalizeChord } from '@/domain/music/engine';
+import type { SectionType } from '@/domain/sections/section-types';
+import type { Chart, ChartMeasure, ChartSection } from '@/domain/chart/types';
+import { newId } from '@/domain/shared/ids';
+import { beatsPerMeasure, padBeats } from '@/domain/music/meter';
 
 export const DEFAULT_MEASURES = 4;
-
-export function newId(): string {
-    return `s${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-}
-
-/** Tiempos por compás: 4/4 -> 4, 3/4 -> 3, 6/8 -> 2, 12/8 -> 4. */
-export function beatsPerMeasure(compas: string): number {
-    const m = compas.match(/^(\d{1,2})\s*\/\s*(\d{1,2})$/);
-    if (!m) return 4;
-    const n = Number(m[1]);
-    const d = Number(m[2]);
-    const beats = d === 8 && n % 3 === 0 ? n / 3 : n;
-    return Math.max(1, Math.min(8, beats));
-}
-
-/** Rellena con vacíos hasta `count` tiempos, sin recortar los existentes. */
-export function padBeats(beats: string[], count: number): string[] {
-    return Array.from({ length: Math.max(count, beats.length) }, (_, i) => beats[i] ?? '');
-}
 
 export function emptyMeasure(count: number): ChartMeasure {
     return { beats: padBeats([], count) };

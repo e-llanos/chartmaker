@@ -1,6 +1,6 @@
 'use client';
 
-import type { SongView } from '@/lib/songRoutes';
+import type { SongView } from '@/config/routes';
 
 interface SongTabsProps {
     view: SongView;

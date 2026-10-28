@@ -1,5 +1,5 @@
 import { cacheLife } from 'next/cache';
-import { APP_NAME, APP_DESCRIPTION } from '@/lib/config';
+import { APP_NAME, APP_DESCRIPTION } from '@/config/app';
 
 export default async function Footer() {
     'use cache';

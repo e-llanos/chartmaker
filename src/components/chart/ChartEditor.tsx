@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { beatsPerMeasure, chartFromChordPro, newSection } from '@/lib/chart/chart.utils';
-import type { Chart, ChartSection } from '@/lib/chart/chart.types';
-import type { SongInput } from '@/lib/data/song.types';
-import { nextLabel, type SectionType } from '@/lib/sections/sectionTypes';
+import { chartFromChordPro, newSection } from '@/domain/chart/utils';
+import { beatsPerMeasure } from '@/domain/music/meter';
+import type { Chart, ChartSection } from '@/domain/chart/types';
+import type { SongInput } from '@/domain/song/types';
+import { nextLabel, type SectionType } from '@/domain/sections/section-types';
 import EditorLayout from '../shared/EditorLayout';
 import SectionTypeButtons from '../shared/SectionTypeButtons';
 import ChartViewer from './ChartViewer';
 import SectionEditor from './SectionEditor';
 
 interface ChartEditorProps {
-    /** Datos de la canción (solo lectura: se editan en el editor de cifrado). */
     song: SongInput;
     initial: Chart;
     onChange?: (chart: Chart) => void;

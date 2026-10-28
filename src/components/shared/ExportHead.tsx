@@ -1,5 +1,5 @@
-import type { SongInput } from '@/lib/data/song.types';
-import { formatKeyLabel, type Notation } from '@/lib/music/engine';
+import type { SongInput } from '@/domain/song/types';
+import { formatKeyLabel, type Notation } from '@/domain/music/engine';
 
 type HeadSong = Pick<SongInput, 'title' | 'artist' | 'album' | 'key' | 'tempo' | 'compas'>;
 
