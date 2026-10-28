@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ChartEditor from '@/components/chart/ChartEditor';
+import ChartEditor from '@/features/chart/components/ChartEditor';
 import type { Chart } from '@/domain/chart/types';
 import type { SongInput } from '@/domain/song/types';
 import { songPath } from '@/config/routes';

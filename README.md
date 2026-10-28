@@ -103,12 +103,11 @@ src/
 │   ├── layout.tsx
 │   ├── not-found.tsx
 │   └── page.tsx              Inicio
-├── components/               Interfaz (se reorganizará por funcionalidades)
-│   ├── chart/                Visor y editor del chart
-│   ├── cifrado/              Visor y editor del cifrado
-│   ├── score/                Visor y editor del chart avanzado
-│   ├── shared/               Cabecera, pestañas, toolbar, menús, modales
-│   └── ui/                   Navbar y footer
+├── features/                 Interfaz por funcionalidad
+│   ├── chart/components/     Visor y editor del chart
+│   ├── chordsheet/components/ Visor y editor del cifrado
+│   ├── score/components/     Visor y editor del chart avanzado
+│   └── songs/components/     Compone las tres vistas y gestiona la canción
 ├── config/                   Nombre de la app y rutas
 ├── domain/                   Lógica pura de TypeScript (sin React, Next ni Node)
 │   ├── chart/                Tipos y utilidades del chart
@@ -120,8 +119,12 @@ src/
 │   └── song/                 Tipos, constantes, validación y formato .chartmaker
 ├── server/
 │   └── songs/                Repositorio de canciones (solo servidor)
-├── shared/
-│   └── export/               Exportación a PDF y PNG (usa el DOM)
+├── shared/                   Piezas reutilizables sin lógica de negocio
+│   ├── editor/               EditorLayout, SectionTypeButtons
+│   ├── export/               ExportMenu, ExportHead y exportación a PDF/PNG
+│   ├── layout/               Navbar y Footer
+│   ├── ui/                   EmptyState, ViewSkeleton
+│   └── viewer/               Toolbar, tarjetas de sección, cabecera, acordes
 └── styles/
     ├── global.css            Punto de entrada
     ├── base.css              Variables, reset y foco
@@ -138,12 +141,14 @@ src/
 ### Reglas de dependencia
 
 ```
-app  →  components  →  domain
+app  →  features  →  shared  →  domain
 app  →  server      →  domain
 ```
 
 - `domain` no importa React, Next ni Node: es TypeScript puro, fácil de probar y de reutilizar.
 - `server` solo se importa desde `app` (rutas y páginas de servidor). Lleva `import 'server-only'`, así que importarlo desde un componente cliente rompe la compilación.
+- `shared` no importa `features`, `server` ni `app`.
+- `chordsheet`, `chart` y `score` no se importan entre sí: solo `songs` las compone.
 - Los componentes nunca leen datos directamente: reciben lo que necesitan por props.
 
 ## Modelo de datos

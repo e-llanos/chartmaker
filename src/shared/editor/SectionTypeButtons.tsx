@@ -1,5 +1,5 @@
 import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
-import SectionBadge from './SectionBadge';
+import SectionBadge from '@/shared/viewer/SectionBadge';
 
 interface SectionTypeButtonsProps {
   onAdd: (type: SectionType) => void;

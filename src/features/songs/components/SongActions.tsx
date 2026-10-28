@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { songEditPath, type SongView } from '@/config/routes';
-import DeleteSongButton from './DeleteSongButton';
+import DeleteSongButton from '@/features/songs/components/DeleteSongButton';
 
 const LABELS: Record<SongView, string> = {
     cifrado: 'Editar cifrado',

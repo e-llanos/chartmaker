@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { listSongs } from '@/server/songs';
-import ImportSongButton from '@/components/shared/ImportSongButton';
+import ImportSongButton from '@/features/songs/components/ImportSongButton';
 
 
 export const metadata: Metadata = {

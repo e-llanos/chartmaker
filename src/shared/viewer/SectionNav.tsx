@@ -1,7 +1,7 @@
 'use client';
 
 import type { Badge } from '@/domain/sections/section-types';
-import SectionBadge from './SectionBadge';
+import SectionBadge from '@/shared/viewer/SectionBadge';
 
 interface SectionNavProps {
   badges: Badge[];

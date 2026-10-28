@@ -2,7 +2,7 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import type { Badge } from '@/domain/sections/section-types';
-import SectionBadge from './SectionBadge';
+import SectionBadge from '@/shared/viewer/SectionBadge';
 
 interface SectionCardProps {
   domId: string;

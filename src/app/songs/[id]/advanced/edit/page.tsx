@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { toSongInput } from '@/domain/song/constants';
 import { getSongById } from '@/server/songs';
-import EditScoreClient from './EditScoreClient';
+import EditScoreClient from '@/features/songs/components/EditScoreClient';
 
 interface PageProps {
     params: Promise<{ id: string }>;

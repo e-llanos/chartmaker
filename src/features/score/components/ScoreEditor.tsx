@@ -8,10 +8,10 @@ import type { SongInput } from '@/domain/song/types';
 import type { Score, ScoreSection } from '@/domain/score/types';
 import { newScoreSection, scoreFromChart } from '@/domain/score/utils';
 import { nextLabel, type SectionType } from '@/domain/sections/section-types';
-import EditorLayout from '../shared/EditorLayout';
-import SectionTypeButtons from '../shared/SectionTypeButtons';
-import ScoreSectionEditor from './ScoreSectionEditor';
-import ScoreViewer from './ScoreViewer';
+import EditorLayout from '@/shared/editor/EditorLayout';
+import SectionTypeButtons from '@/shared/editor/SectionTypeButtons';
+import ScoreSectionEditor from '@/features/score/components/ScoreSectionEditor';
+import ScoreViewer from '@/features/score/components/ScoreViewer';
 
 interface ScoreEditorProps {
     /** Datos de la canción (solo lectura: se editan en el editor de cifrado). */

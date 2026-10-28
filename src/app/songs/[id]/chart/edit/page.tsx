@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { toSongInput } from '@/domain/song/constants';
 import { getSongById } from '@/server/songs';
-import EditChartClient from './EditChartClient';
+import EditChartClient from '@/features/songs/components/EditChartClient';
 
 interface EditChartPageProps {
     params: Promise<{ id: string }>;

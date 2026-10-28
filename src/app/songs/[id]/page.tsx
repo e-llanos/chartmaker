@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import SongWorkspace from '@/components/shared/SongWorkspace';
-import ViewSkeleton from '@/components/shared/ViewSkeleton';
+import SongWorkspace from '@/features/songs/components/SongWorkspace';
+import ViewSkeleton from '@/shared/ui/ViewSkeleton';
 import { getSongById } from '@/server/songs';
 import { parseView } from '@/config/routes';
 
