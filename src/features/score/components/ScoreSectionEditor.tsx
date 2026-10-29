@@ -1,9 +1,7 @@
 'use client';
 
-import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
-import { REPEAT_MAX, REPEAT_MIN } from '@/domain/chordsheet/section-text';
-import { padBeats } from '@/domain/music/meter';
 import { normalizeChord } from '@/domain/music/engine';
+import { padBeats } from '@/domain/music/meter';
 import {
     MEASURE_MARKS,
     MEASURE_MARK_KEYS,
@@ -14,8 +12,9 @@ import {
     type ScoreSection,
 } from '@/domain/score/types';
 import { emptyScoreMeasure, PER_ROW_OPTIONS } from '@/domain/score/utils';
+import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
 
-interface Props {
+interface ScoreSectionEditorProps {
     section: ScoreSection;
     /** Tiempos por compás. */
     count: number;
@@ -26,7 +25,9 @@ interface Props {
     onRemove: () => void;
 }
 
-export default function ScoreSectionEditor({ section, count, index, total, onChange, onMove, onRemove }: Props) {
+export default function ScoreSectionEditor({
+    section, count, index, total, onChange, onMove, onRemove,
+}: ScoreSectionEditorProps) {
     const patch = (changes: Partial<ScoreSection>) => onChange({ ...section, ...changes });
     const setMeasures = (measures: ScoreMeasure[]) => patch({ measures });
     const patchMeasure = (j: number, changes: Partial<ScoreMeasure>) =>
@@ -65,32 +66,7 @@ export default function ScoreSectionEditor({ section, count, index, total, onCha
 
     return (
         <div className="section-editor">
-            <div className="tool-row">
-                <select className="tool-select" value={section.type} aria-label="Tipo de sección"
-                    onChange={(e) => patch({ type: e.target.value as SectionType })}>
-                    {SECTION_TYPE_KEYS.map((t) => (
-                        <option key={t} value={t}>{SECTION_TYPES[t].label}</option>
-                    ))}
-                </select>
-                <input className="tool-input" value={section.label} placeholder="Nombre (ej. Verso 1)"
-                    aria-label="Nombre de la sección" onChange={(e) => patch({ label: e.target.value })} />
-            </div>
-
-            <input className="tool-input" value={section.note} placeholder="Anotación (ej. pop ballad)"
-                aria-label="Anotación" onChange={(e) => patch({ note: e.target.value })} />
-
-            <div className="tool-row">
-                <span className="tool-label">Repeticiones</span>
-                <div className="stepper">
-                    <button type="button" className="ghost-btn" aria-label="Menos repeticiones"
-                        disabled={section.repeat <= REPEAT_MIN}
-                        onClick={() => patch({ repeat: section.repeat - 1 })}>−</button>
-                    <output className="stepper-value">×{section.repeat}</output>
-                    <button type="button" className="ghost-btn" aria-label="Más repeticiones"
-                        disabled={section.repeat >= REPEAT_MAX}
-                        onClick={() => patch({ repeat: section.repeat + 1 })}>+</button>
-                </div>
-            </div>
+            <SectionMetaFields section={section} onChange={patch} notePlaceholder="Anotación (ej. pop ballad)" />
 
             <label className="tool-row">
                 <span className="tool-label">Compases por fila</span>
@@ -199,13 +175,7 @@ export default function ScoreSectionEditor({ section, count, index, total, onCha
                 </button>
             </div>
 
-            <div className="tool-row section-editor-actions">
-                <button type="button" className="ghost-btn" aria-label="Subir sección"
-                    disabled={index === 0} onClick={() => onMove(-1)}>↑</button>
-                <button type="button" className="ghost-btn" aria-label="Bajar sección"
-                    disabled={index === total - 1} onClick={() => onMove(1)}>↓</button>
-                <button type="button" className="ghost-btn danger" onClick={onRemove}>Eliminar sección</button>
-            </div>
+            <SectionActions index={index} total={total} onMove={onMove} onRemove={onRemove} />
         </div>
     );
 }

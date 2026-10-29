@@ -1,53 +1,41 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { beatsPerMeasure } from '@/domain/music/meter';
+import { useMemo, useState } from 'react';
 import type { Chart } from '@/domain/chart/types';
+import { beatsPerMeasure } from '@/domain/music/meter';
 import type { Score } from '@/domain/score/types';
-import type { SongCreate, SongInput } from '@/domain/song/types';
 import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
-import {
-    transposeChordString,
-    convertChordString,
-    semitoneDistance,
-} from '@/domain/music/engine';
-import ViewerToolbar, { type SectionsLayout } from '@/shared/viewer/ViewerToolbar';
-import SectionNav from '@/shared/viewer/SectionNav';
+import type { SongCreate, SongInput } from '@/domain/song/types';
 import SectionCard from '@/shared/viewer/SectionCard';
 import SongHeader from '@/shared/viewer/SongHeader';
-import ExportMenu from '@/shared/export/ExportMenu';
-import ExportHead from '@/shared/export/ExportHead';
-import { useViewerSettings, type ViewerSettings } from '@/shared/viewer/useViewerSettings';
-import MeasureBox from '@/features/chart/components/MeasureBox';
+import { useChordMapper, useResolvedSettings } from '@/shared/viewer/useChordMapper';
+import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
+import ViewerFrame from '@/shared/viewer/ViewerFrame';
+import type { SectionsLayout } from '@/shared/viewer/ViewerToolbar';
+import MeasureBox from './MeasureBox';
 
 interface ChartViewerProps {
     song: SongInput;
     chart: Chart;
+    /** Se incluye al exportar .chartmaker para no perderlo. */
     score?: Score;
+    /** Ajustes compartidos entre pestañas; si se omite, el visor usa los suyos. */
     settings?: ViewerSettings;
-    editHref?: string;
+    /** La cabecera la dibuja el contenedor de la canción. */
     hideHeader?: boolean;
 }
 
-export default function ChartViewer({ song, chart, score, settings, editHref, hideHeader = false }: ChartViewerProps) {
-    const local = useViewerSettings();
-    const { semitones, setSemitones, notation, setNotation } = settings ?? local;
+export default function ChartViewer({
+    song, chart, score, settings: sharedSettings, hideHeader = false,
+}: ChartViewerProps) {
+    const settings = useResolvedSettings(sharedSettings);
+    const { displayKey, mapChord } = useChordMapper(song.key, settings);
+
     const [layout, setLayout] = useState<SectionsLayout>('list');
     const [highlighted, setHighlighted] = useState<string | null>(null);
-    const sheetRef = useRef<HTMLDivElement>(null);
+
     const badges = useMemo(() => computeBadges(chart.sections), [chart.sections]);
     const count = beatsPerMeasure(song.compas);
-    const displayKey = transposeChordString(song.key, semitones, 'symbol', song.key);
-
-    const mapChord = useCallback(
-        (chord: string): string =>
-            convertChordString(
-                transposeChordString(chord, semitones, 'symbol', song.key),
-                notation,
-                displayKey
-            ),
-        [semitones, notation, song.key, displayKey]
-    );
 
     const exportSong = useMemo<SongCreate>(
         () => ({ ...song, chart, ...(score ? { score } : {}) }),
@@ -55,56 +43,45 @@ export default function ChartViewer({ song, chart, score, settings, editHref, hi
     );
 
     return (
-        <div className="viewer">
-            {!hideHeader && <SongHeader title={song.title} meta={song} />}
-            <ViewerToolbar
-                title={song.title}
-                hideTitle
-                currentKey={displayKey}
-                notation={notation}
-                layout={layout}
-                onTranspose={(d: number) => setSemitones((s) => s + d)}
-                onKeyChange={(k: string) => setSemitones(semitoneDistance(song.key, k))}
-                onNotationChange={setNotation}
-                onLayoutChange={setLayout}
-                actions={<ExportMenu sheetRef={sheetRef} song={exportSong} />}
-            />
-            <SectionNav badges={badges} scopeId="chart" />
-
-            <div ref={sheetRef} className="viewer-sheet">
-                <ExportHead song={song} displayKey={displayKey} notation={notation} />
-
-                {chart.sections.length === 0 ? (
-                    <p className="empty-state">
-                        Este chart está vacío.{editHref && ' Usa el botón de editar para crearlo.'}
-                    </p>
-                ) : (
-                    <div className={`sections-layout sections-layout-${layout}`}>
-                        {chart.sections.map((s, i) => (
-                            <SectionCard
-                                key={s.id}
-                                domId={`chart-${s.id}`}
-                                badge={badges[i]}
-                                label={s.label || SECTION_TYPES[s.type].label}
-                                note={s.note}
-                                repeat={s.repeat}
-                                highlighted={highlighted === s.id}
-                                onToggleHighlight={() => setHighlighted((h) => (h === s.id ? null : s.id))}
-                            >
-                                {s.measures.length === 0 ? (
-                                    <p className="line-comment">Sin compases.</p>
-                                ) : (
-                                    <div className="measures-grid">
-                                        {s.measures.map((m, j) => (
-                                            <MeasureBox key={j} measure={m} count={count} mapChord={mapChord} />
-                                        ))}
-                                    </div>
-                                )}
-                            </SectionCard>
-                        ))}
-                    </div>
-                )}
+        <ViewerFrame
+            header={hideHeader ? null : <SongHeader title={song.title} meta={song} />}
+            title={song.title}
+            hideTitle
+            song={exportSong}
+            settings={settings}
+            originalKey={song.key}
+            displayKey={displayKey}
+            badges={badges}
+            navScope="chart"
+            layout={layout}
+            onLayoutChange={setLayout}
+            isEmpty={chart.sections.length === 0}
+            emptyMessage="Este chart está vacío."
+        >
+            <div className={`sections-layout sections-layout-${layout}`}>
+                {chart.sections.map((s, i) => (
+                    <SectionCard
+                        key={s.id}
+                        domId={`chart-${s.id}`}
+                        badge={badges[i]}
+                        label={s.label || SECTION_TYPES[s.type].label}
+                        note={s.note}
+                        repeat={s.repeat}
+                        highlighted={highlighted === s.id}
+                        onToggleHighlight={() => setHighlighted((h) => (h === s.id ? null : s.id))}
+                    >
+                        {s.measures.length === 0 ? (
+                            <p className="line-comment">Sin compases.</p>
+                        ) : (
+                            <div className="measures-grid">
+                                {s.measures.map((m, j) => (
+                                    <MeasureBox key={j} measure={m} count={count} mapChord={mapChord} />
+                                ))}
+                            </div>
+                        )}
+                    </SectionCard>
+                ))}
             </div>
-        </div>
+        </ViewerFrame>
     );
 }
