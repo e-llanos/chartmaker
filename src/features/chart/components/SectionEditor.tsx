@@ -1,11 +1,10 @@
 'use client';
 
-import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
-import { REPEAT_MAX, REPEAT_MIN } from '@/domain/chordsheet/section-text';
-import { emptyMeasure } from '@/domain/chart/utils';
-import { padBeats } from '@/domain/music/meter';
-import { normalizeChord } from '@/domain/music/engine';
 import type { ChartMeasure, ChartSection } from '@/domain/chart/types';
+import { emptyMeasure } from '@/domain/chart/utils';
+import { normalizeChord } from '@/domain/music/engine';
+import { padBeats } from '@/domain/music/meter';
+import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
 
 interface SectionEditorProps {
     section: ChartSection;
@@ -32,13 +31,14 @@ export default function SectionEditor({
         setMeasures(section.measures.map((x, i) => (i === m ? { ...x, beats } : x)));
     }
 
+    /** Alterna las repeticiones del compás entre 1 y 4. */
     function cycleRepeat(m: number) {
         const measure = section.measures[m];
         if (!measure) return;
-        const current = measure.repeat ?? 1;
-        const next = current >= 4 ? 1 : current + 1;
-        const { repeat: _old, ...rest } = measure;
-        setMeasures(section.measures.map((x, i) => (i === m ? (next > 1 ? { ...rest, repeat: next } : rest) : x)));
+        const next = (measure.repeat ?? 1) >= 4 ? 1 : (measure.repeat ?? 1) + 1;
+        const updated: ChartMeasure = { beats: measure.beats };
+        if (next > 1) updated.repeat = next;
+        setMeasures(section.measures.map((x, i) => (i === m ? updated : x)));
     }
 
     function duplicate(m: number) {
@@ -54,32 +54,7 @@ export default function SectionEditor({
 
     return (
         <div className="section-editor">
-            <div className="tool-row">
-                <select className="tool-select" value={section.type} aria-label="Tipo de sección"
-                    onChange={(e) => patch({ type: e.target.value as SectionType })}>
-                    {SECTION_TYPE_KEYS.map((t) => (
-                        <option key={t} value={t}>{SECTION_TYPES[t].label}</option>
-                    ))}
-                </select>
-                <input className="tool-input" value={section.label} placeholder="Nombre (ej. Verso 1)"
-                    aria-label="Nombre de la sección" onChange={(e) => patch({ label: e.target.value })} />
-            </div>
-
-            <input className="tool-input" value={section.note} placeholder="Anotación (ej. Pad & Piano)"
-                aria-label="Anotación" onChange={(e) => patch({ note: e.target.value })} />
-
-            <div className="tool-row">
-                <span className="tool-label">Repeticiones</span>
-                <div className="stepper">
-                    <button type="button" className="ghost-btn" aria-label="Menos repeticiones"
-                        disabled={section.repeat <= REPEAT_MIN}
-                        onClick={() => patch({ repeat: section.repeat - 1 })}>−</button>
-                    <output className="stepper-value">×{section.repeat}</output>
-                    <button type="button" className="ghost-btn" aria-label="Más repeticiones"
-                        disabled={section.repeat >= REPEAT_MAX}
-                        onClick={() => patch({ repeat: section.repeat + 1 })}>+</button>
-                </div>
-            </div>
+            <SectionMetaFields section={section} onChange={patch} notePlaceholder="Anotación (ej. Pad & Piano)" />
 
             <div className="measure-fields">
                 {section.measures.map((m, j) => {
@@ -117,13 +92,7 @@ export default function SectionEditor({
                 </button>
             </div>
 
-            <div className="tool-row section-editor-actions">
-                <button type="button" className="ghost-btn" aria-label="Subir sección"
-                    disabled={index === 0} onClick={() => onMove(-1)}>↑</button>
-                <button type="button" className="ghost-btn" aria-label="Bajar sección"
-                    disabled={index === total - 1} onClick={() => onMove(1)}>↓</button>
-                <button type="button" className="ghost-btn danger" onClick={onRemove}>Eliminar sección</button>
-            </div>
+            <SectionActions index={index} total={total} onMove={onMove} onRemove={onRemove} />
         </div>
     );
 }

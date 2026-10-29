@@ -107,7 +107,9 @@ src/
 │   ├── chart/components/     Visor y editor del chart
 │   ├── chordsheet/components/ Visor y editor del cifrado
 │   ├── score/components/     Visor y editor del chart avanzado
-│   └── songs/components/     Compone las tres vistas y gestiona la canción
+│   └── songs/                Compone las tres vistas y gestiona la canción
+│       ├── components/       SongWorkspace, ResourceEditorPage y acciones
+│       └── hooks/            useSaveSong
 ├── config/                   Nombre de la app y rutas
 ├── domain/                   Lógica pura de TypeScript (sin React, Next ni Node)
 │   ├── chart/                Tipos y utilidades del chart
@@ -120,11 +122,11 @@ src/
 ├── server/
 │   └── songs/                Repositorio de canciones (solo servidor)
 ├── shared/                   Piezas reutilizables sin lógica de negocio
-│   ├── editor/               EditorLayout, SectionTypeButtons
+│   ├── editor/               EditorLayout, SectionTypeButtons, SectionMetaFields
 │   ├── export/               ExportMenu, ExportHead y exportación a PDF/PNG
 │   ├── layout/               Navbar y Footer
 │   ├── ui/                   EmptyState, ViewSkeleton
-│   └── viewer/               Toolbar, tarjetas de sección, cabecera, acordes
+│   └── viewer/               ViewerFrame, toolbar, tarjetas de sección, cabecera, acordes
 └── styles/
     ├── global.css            Punto de entrada
     ├── base.css              Variables, reset y foco
