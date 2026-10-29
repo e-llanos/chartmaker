@@ -128,16 +128,19 @@ src/
 │   ├── ui/                   EmptyState, ViewSkeleton
 │   └── viewer/               ViewerFrame, toolbar, tarjetas de sección, cabecera, acordes
 └── styles/
-    ├── global.css            Punto de entrada
+    ├── global.css            Punto de entrada único (importa el resto en orden)
     ├── base.css              Variables, reset y foco
     ├── layout.css            Estructura, navbar y footer
     ├── components.css        Botones, etiquetas, modales, menús
-    ├── pages.css             Inicio y not-found
-    ├── songs.css             Listado, cabecera y pestañas
-    ├── viewer.css            Visor del cifrado y hoja exportable
-    ├── editor.css            Paneles de edición
-    ├── chart.css             Chart simple
-    └── score.css             Chart avanzado
+    ├── app/
+    │   └── pages.css         Inicio y not-found
+    ├── features/
+    │   ├── songs.css         Listado, cabecera y pestañas
+    │   ├── chart.css         Chart simple
+    │   └── score.css         Chart avanzado
+    └── shared/
+        ├── viewer.css        Visor del cifrado y hoja exportable
+        └── editor.css        Paneles de edición
 ```
 
 ### Reglas de dependencia
@@ -244,7 +247,7 @@ La cabecera exportada muestra título, artista y álbum, y una línea con tono, 
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/) (`feat`, `fix`, `refactor`, `docs`, `style`, `chore`…).
 - **Componentes**: Server Components por defecto; `'use client'` solo donde hay estado o eventos.
 - **Datos dinámicos**: con `cacheComponents`, cualquier lectura de `params`, `searchParams` o del JSON debe ir dentro de un `<Suspense>`.
-- **Estilos**: variables de diseño en `base.css` (`--cm-*`) y una hoja por área, importadas desde `src/styles/global.css`.
+- **Estilos**: variables de diseño en `base.css` (`--cm-*`) y una hoja por área, organizadas en `app/`, `shared/` y `features/` como el código y cargadas, en orden, desde `src/styles/global.css`.
 
 
 ### Git Flow

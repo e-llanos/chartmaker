@@ -3,9 +3,9 @@
 @import './base.css';
 @import './layout.css';
 @import './components.css';
-@import './pages.css';
-@import './songs.css';
-@import './viewer.css';
-@import './editor.css';
-@import './chart.css';
-@import './score.css';
+@import './app/pages.css';
+@import './features/songs.css';
+@import './shared/viewer.css';
+@import './shared/editor.css';
+@import './features/chart.css';
+@import './features/score.css';
