@@ -1,17 +1,29 @@
 {
   "name": "chartmaker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Cifrados, charts y charts avanzados para equipos de alabanza y músicos",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "typecheck": "next typegen && tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run build",
+    "clean": "node -e \"require('node:fs').rmSync('.next', { recursive: true, force: true })\""
   },
   "dependencies": {
+    "chordsheetjs": "^18.0.0",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^4.2.1",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

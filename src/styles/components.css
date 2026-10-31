@@ -1,0 +1,378 @@
+/* ==========================================================================
+   Componentes compartidos: botones, etiquetas, insignias, mensajes
+   Se usan en varias pantallas, por eso no viven en viewer/editor.
+   ========================================================================== */
+
+/* ---------- Botones ---------- */
+.primary-btn,
+.ghost-btn,
+.chip,
+.section-btn {
+    font: inherit;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--cm-border);
+    background: var(--cm-bg);
+    color: var(--cm-text);
+}
+
+.primary-btn,
+.ghost-btn {
+    /* Funcionan igual como <button> y como <Link> */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.primary-btn {
+    flex: none;
+    padding: 0.4rem 0.8rem;
+    background: var(--cm-accent);
+    border-color: var(--cm-accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+.ghost-btn {
+    padding: 0.4rem 0.7rem;
+}
+
+.ghost-btn:hover,
+.chip:hover,
+.section-btn:hover {
+    border-color: var(--cm-dim);
+}
+
+.ghost-btn.danger:hover {
+    border-color: #c45b5b;
+    color: #e08a8a;
+}
+
+.chip {
+    padding: 0.25rem 0.6rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    color: var(--cm-text);
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.icon-btn svg {
+    stroke: currentColor;
+}
+
+a.icon-btn:hover,
+button.icon-btn:hover,
+a.icon-btn:focus-visible {
+    background: color-mix(in srgb, var(--cm-accent) 20%, transparent);
+    border-color: var(--cm-accent);
+    color: var(--cm-accent);
+}
+
+/* Variante de peligro: debe ir después del hover genérico */
+a.icon-btn.danger:hover,
+button.icon-btn.danger:hover {
+    background: color-mix(in srgb, var(--cm-danger) 20%, transparent);
+    border-color: var(--cm-danger);
+    color: var(--cm-danger);
+}
+
+.danger-btn {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--cm-danger);
+    border-radius: 6px;
+    background: var(--cm-danger);
+    color: #fff;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.danger-btn:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
+
+.danger-btn:disabled,
+.ghost-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* ---------- Etiquetas ---------- */
+.song-tag {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.18);
+}
+
+/* ---------- Insignias circulares de sección ---------- */
+.badge {
+    --c: #888;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--c);
+    color: var(--c);
+    background: transparent;
+    font: 700 0.7rem var(--cm-font);
+}
+
+button.badge {
+    cursor: pointer;
+}
+
+button.badge:hover {
+    background: color-mix(in srgb, var(--c) 18%, transparent);
+}
+
+.badge-sm {
+    width: 22px;
+    height: 22px;
+    font-size: 0.6rem;
+}
+
+/* ---------- Mensajes ---------- */
+.empty-state {
+    color: var(--cm-dim);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+}
+
+.hint {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--cm-dim);
+}
+
+.form-error {
+    margin: 0 0 12px;
+    color: var(--cm-danger);
+}
+
+
+/* ---------- Modal (<dialog>) ---------- */
+.modal {
+    width: min(420px, calc(100vw - 32px));
+    padding: 0;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.modal-body h2 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    color: #fff;
+}
+
+.modal-body p {
+    margin: 0 0 8px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+
+/* ---------- Menú desplegable (<details>) ---------- */
+.menu-wrap {
+    position: relative;
+}
+
+.menu {
+    position: relative;
+}
+
+.menu>summary {
+    list-style: none;
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    cursor: pointer;
+}
+
+.menu>summary::-webkit-details-marker {
+    display: none;
+}
+
+.menu>summary:hover,
+.menu[open]>summary {
+    border-color: var(--cm-accent);
+}
+
+.menu-list {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    min-width: 220px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--cm-card);
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* Más específico que ".viewer-controls button" (ancho fijo de 30px) */
+.viewer-controls .menu-list button,
+.menu-list button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0.45rem 0.6rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--cm-text);
+    text-align: left;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.menu-list button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--cm-accent) 18%, transparent);
+}
+
+.menu-list button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.menu-list small {
+    color: var(--cm-dim);
+}
+
+.menu-error,
+.import-error {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    margin: 0;
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.import-wrap {
+    position: relative;
+}
+
+.empty-resource {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 56px 16px;
+    text-align: center;
+    border: 1px dashed var(--cm-border);
+    border-radius: 12px;
+}
+
+.empty-resource h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #fff;
+}
+
+.empty-resource p {
+    max-width: 44ch;
+    margin: 0 0 8px;
+    color: var(--cm-dim);
+    line-height: 1.5;
+}
+
+
+.skeleton {
+    border-radius: 8px;
+    background: linear-gradient(90deg,
+            var(--cm-card) 25%,
+            color-mix(in srgb, var(--cm-border) 60%, var(--cm-card)) 50%,
+            var(--cm-card) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-bar {
+    height: 34px;
+    max-width: 420px;
+    margin-bottom: 20px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.skeleton-card {
+    height: 220px;
+}
+
+@keyframes skeleton-pulse {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none;
+    }
+}
+
+.lb {
+    color: var(--cm-dim);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}

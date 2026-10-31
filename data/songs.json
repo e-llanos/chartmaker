@@ -1,0 +1,1340 @@
+[
+  {
+    "title": "Canción de ejemplo 1",
+    "artist": "Artista de ejemplo",
+    "album": "Álbum de ejemplo",
+    "key": "Am",
+    "tempo": 100,
+    "compas": "4/4",
+    "body": "{start_of_intro: Intro}\n{comment: Pad & Piano}\n[Am] [Fsus2] [C] [Am] [Fsus2] [C]\n{end_of_intro}\n\n{start_of_verse: Verso 1}\n[Am]Primera línea de la [F6]letra de ejem[C]plo\n[Am]Segunda línea con [F]más acordes [C]aquí\n{end_of_verse}\n\n{start_of_prechorus: Pre coro}\n{comment: Entran guitarras}\n[G]Línea de pre [Am]coro de [F2]ejemplo\n[Gadd4]Otra línea [Am7]para probar [Gsus4]todo\n{end_of_prechorus}\n\n{start_of_chorus: Coro}\n{comment: Banda completa}\n[F2]Línea del [C]coro\n[G]Otra línea del [Am]coro\n{end_of_chorus}\n",
+    "id": "1",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-27T00:39:45.290Z",
+    "chart": {
+      "sections": [
+        {
+          "id": "smvpykk67cf2b",
+          "type": "intro",
+          "label": "Intro",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Fsus2",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Fsus2",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpykk67z5y1",
+          "type": "verse",
+          "label": "Verso 1",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F6",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpykk67it3l",
+          "type": "prechorus",
+          "label": "Pre coro",
+          "note": "Entran guitarras",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "G",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F2",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Gadd4",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Am7",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Gsus4",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpykk6703fq",
+          "type": "chorus",
+          "label": "Coro",
+          "note": "Banda completa",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "F2",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "G",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Am",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "title": "No hay lugar más alto",
+    "artist": "Miel San Marcos",
+    "album": "Como en el cielo",
+    "key": "F",
+    "tempo": 68,
+    "compas": "4/4",
+    "body": "{start_of_intro: Intro}\n{comment: Pad & Piano}\n[A#] [C] [Dm] [F] \n{end_of_intro}\n\n{start_of_verse: Verso 1}\n{comment: Pad & Piano}\n​A tus pi[F]es arde mi coraz[C]ón\n\n​A tus pi[Dm]es entrego lo que [A#]soy\n\n​Es el lug[F]ar de mi seguri[C]dad\n\n​Donde [Dm]nadie me puede señal[A#]ar\n\n{end_of_verse}\n\n{start_of_prechorus: Pre coro}\n\n​Me perdon[A#]aste, me acercaste a tu pres[C]encia\n\n​Me levant[Dm]aste, hoy me postro a ador[C]arte\n\n{end_of_prechorus}\n\n{start_of_chorus: Coro}\n                               \n​No hay lugar más [A#]alto, más gr[C]ande\n\n​Que estar a tus [Dm]pies, que estar a tus [F]pies\n\n{end_of_chorus}\n\n{start_of_bridge: Puente}\n​Y a[A#]quí permanece[C]ré, post[F]rado a [C]       tus pi[Dm]es\n\n​Y a[A#]quí permanece[C]ré a los pies de C[Dm]risto\n\n{end_of_bridge}\n\n{start_of_verse: Verso 1}\n​A tus pi[F]es arde mi coraz[C]ón\n\n​A tus pi[Dm]es entrego lo que [A#]soy\n\n​Es el lug[F]ar de mi seguri[C]dad\n\n​Donde [Dm]nadie me puede señal[A#]ar\n\n{end_of_verse}\n\n{start_of_prechorus: Pre coro}\n\n​Me perdon[A#]aste, me acercaste a tu pres[C]encia\n\n​Me levant[Dm]aste, hoy me postro a ador[C]arte\n\n{end_of_prechorus}\n\n{start_of_chorus: Coro 2}\n{repeat: 2}\n​No hay lugar más [A#]alto, más gr[C]ande\n\n​Que estar a tus [Dm]pies, que estar a tus [F]pies\n{end_of_chorus}\n\n{end_of_chorus}\n\n{start_of_bridge: Puente}\n​Y a[A#]quí permanece[C]ré, post[F]rado a [C]       tus pi[Dm]es\n\n​Y a[A#]quí permanece[C]ré a los pies de C[Dm]risto\n\n{end_of_bridge}\n\n{start_of_outro: Final}\n{comment: Pad & Piano}\n[A#] [C] [Dm] [F] \n{end_of_outro}\n\n\n",
+    "id": "cadcd94e-f2c8-43ad-9632-75c3bdf14398",
+    "imageUrl": "https://multitracks.blob.core.windows.net/public/images/albums/520/743.jpg",
+    "createdAt": "2026-10-26T03:12:39.415Z",
+    "updatedAt": "2026-10-27T02:36:11.832Z",
+    "chart": {
+      "sections": [
+        {
+          "id": "smvpyhu0zrval",
+          "type": "intro",
+          "label": "Intro",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu0zl067",
+          "type": "verse",
+          "label": "Verso 1",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu0z9g12",
+          "type": "prechorus",
+          "label": "Pre coro",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu0z0sat",
+          "type": "chorus",
+          "label": "Coro",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu10v2o6",
+          "type": "bridge",
+          "label": "Puente",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu100ga1",
+          "type": "verse",
+          "label": "Verso 1",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu10mmfi",
+          "type": "prechorus",
+          "label": "Pre coro",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu10o1zy",
+          "type": "chorus",
+          "label": "Coro 2",
+          "note": "",
+          "repeat": 2,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu103cbe",
+          "type": "bridge",
+          "label": "Puente",
+          "note": "",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvpyhu10hdyf",
+          "type": "outro",
+          "label": "Final",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "score": {
+      "sections": [
+        {
+          "id": "smvq2nlx8jyeq",
+          "type": "intro",
+          "label": "Intro",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8sorf",
+          "type": "verse",
+          "label": "Verso 1",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8cxpr",
+          "type": "prechorus",
+          "label": "Pre coro",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8liii",
+          "type": "chorus",
+          "label": "Coro",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8qf3f",
+          "type": "bridge",
+          "label": "Puente",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8ehlk",
+          "type": "verse",
+          "label": "Verso 1",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8q1a0",
+          "type": "prechorus",
+          "label": "Pre coro",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8pddd",
+          "type": "chorus",
+          "label": "Coro 2",
+          "note": "",
+          "repeat": 2,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ],
+              "left": "repeat"
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ],
+              "right": "repeat"
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8q1zb",
+          "type": "bridge",
+          "label": "Puente",
+          "note": "",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            }
+          ]
+        },
+        {
+          "id": "smvq2nlx8y683",
+          "type": "outro",
+          "label": "Final",
+          "note": "Pad & Piano",
+          "repeat": 1,
+          "perRow": 4,
+          "measures": [
+            {
+              "beats": [
+                "A#",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "C",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "Dm",
+                "",
+                "",
+                ""
+              ]
+            },
+            {
+              "beats": [
+                "F",
+                "",
+                "",
+                ""
+              ],
+              "right": "final"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Visualizador del cifrado (detalle y vista previa del editor)
+   ========================================================================== */
+
+.viewer {
+    font-family: var(--cm-font);
+    color: var(--cm-text);
+}
+
+/* ---------- Barra superior ---------- */
+.viewer-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.25rem 0 0.75rem;
+}
+
+.viewer-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ---------- Controles de la barra ---------- */
+.viewer-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+}
+
+.control-group {
+    display: flex;
+    flex-flow: row nowrap;
+    /* siempre en una fila: los iconos van uno al lado del otro */
+    align-items: center;
+    flex: none;
+    gap: 0.5rem;
+}
+
+.viewer-controls select,
+.viewer-controls button,
+.viewer-controls .menu>summary {
+    height: 34px;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    padding: 0 0.7rem;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.viewer-controls button,
+.viewer-controls .menu>summary {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    padding: 0;
+}
+
+.viewer-controls select:hover,
+.viewer-controls button:hover,
+.viewer-controls .menu>summary:hover {
+    border-color: var(--cm-dim);
+}
+
+/* Transposición: − tono + como un solo bloque */
+.control-transpose {
+    gap: 0;
+}
+
+.control-transpose>* {
+    border-radius: 0;
+}
+
+.control-transpose>*+* {
+    margin-left: -1px;
+}
+
+.control-transpose> :first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.control-transpose> :last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.control-transpose select {
+    width: auto;
+    min-width: 64px;
+    text-align: center;
+}
+
+.control-transpose> :hover,
+.control-transpose> :focus-visible {
+    position: relative;
+    z-index: 1;
+}
+
+.layout-toggle {
+    display: inline-grid;
+    place-items: center;
+}
+
+.layout-toggle {
+    display: inline-grid;
+    place-items: center;
+}
+
+/* ---------- Navegación por insignias ---------- */
+.section-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding-bottom: 1rem;
+}
+
+/* ---------- Disposición de las secciones ---------- */
+.sections-layout {
+    width: 100%;
+}
+
+.sections-layout-columns {
+    column-count: 2;
+    column-gap: 16px;
+}
+
+.sections-layout-columns .section-card {
+    break-inside: avoid;
+    /* una tarjeta no se parte entre columnas */
+    margin-bottom: 16px;
+    /* en multicolumna el gap solo separa columnas */
+}
+
+@media (max-width: 640px) {
+    .sections-layout-columns {
+        column-count: 1;
+    }
+}
+
+/* Lista: una debajo de otra, a todo el ancho */
+.sections-layout-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+
+/* ---------- Tarjeta de sección ---------- */
+.section-card {
+    min-width: 0;
+    margin: 0;
+    padding: 0.6rem 0.8rem 0.4rem;
+    background: var(--cm-card);
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+}
+
+.section-card.highlighted {
+    border-color: var(--c);
+    box-shadow: 0 0 0 1px var(--c);
+}
+
+.section-head {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.55rem;
+    cursor: pointer;
+}
+
+.section-head:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.section-name {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cm-text);
+}
+
+.section-repeat {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c) 18%, transparent);
+    color: var(--c);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.section-note {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--cm-dim);
+    text-align: right;
+}
+
+/* ---------- Cifrado: acorde encima del texto que le sigue ---------- */
+.chord-line {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+    line-height: 1.25;
+}
+
+.tk {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.ch {
+    min-height: 1.1em;
+    padding-right: 0.35em;
+    white-space: pre;
+    font-size: 0.82rem;
+}
+
+.ly {
+    white-space: pre;
+    font-size: 0.82rem;
+    color: var(--cm-text);
+}
+
+.chords-only .ch {
+    padding-right: 0.8em;
+}
+
+.chord {
+    font-weight: 700;
+    color: var(--cm-chord);
+}
+
+.chord sup {
+    font-size: 0.65em;
+    line-height: 0;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+}
+
+.line-comment {
+    margin: 0 0 0.55rem;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--cm-dim);
+}
+
+
+.lyrics-only .ly {
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+}
+
+/* ---------- Hoja exportable (PDF / PNG) ---------- */
+.export-only {
+    display: none;
+}
+
+.viewer-sheet.export-light {
+    --cm-bg: #ffffff;
+    --cm-card: #ffffff;
+    --cm-border: #cfd2d9;
+    --cm-text: #1b1c20;
+    --cm-dim: #5f6270;
+    --cm-chord: #000000;
+    width: 900px;
+    max-width: none;
+    padding: 32px;
+    background: #ffffff;
+    color: var(--cm-text);
+}
+
+.export-light .export-only {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.export-head {
+    padding-bottom: 6px;
+}
+
+.export-head h1 {
+    margin: 0 0 6px;
+    font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.export-head p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #222;
+}
+
+.export-sep {
+    margin: 0 0.6em;
+    color: #222;
+}

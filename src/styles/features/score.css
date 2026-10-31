@@ -1,0 +1,535 @@
+/* ==========================================================================
+   Chart avanzado: compases con tiempos, barras, repeticiones y símbolos
+   ========================================================================== */
+
+.score {
+    overflow-x: auto;
+    padding: 4px 0 8px;
+}
+
+.score-section {
+    --c: var(--cm-dim);
+    margin-bottom: 26px;
+}
+
+.export-light .score {
+    overflow: visible;
+}
+
+.export-light .score-section {
+    margin-bottom: 20px;
+}
+
+/* ---------- Cabecera de sección ---------- */
+.score-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.45rem 2rem;
+}
+
+.score-label {
+    padding: 1px 9px;
+    border: 1.5px solid var(--c);
+    border-radius: 3px;
+    color: var(--cm-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.score-repeat {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--c);
+}
+
+.score-note {
+    margin-left: auto;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--cm-dim);
+}
+
+.score-empty {
+    margin-left: 2rem;
+}
+
+/* ---------- Fila ---------- */
+.score-row {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 14px;
+    color: var(--cm-text);
+}
+
+.score-gutter {
+    flex: none;
+    width: 2rem;
+    display: grid;
+    place-items: center;
+}
+
+.score-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.2rem;
+    line-height: 0.95;
+}
+
+.score-time b {
+    font-weight: 800;
+}
+
+/* ---------- Barras ---------- */
+.bar {
+    flex: none;
+    align-self: stretch;
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    margin-top: 22px;
+}
+
+.bar-line {
+    display: block;
+}
+
+.bar-line.thin {
+    width: 2px;
+    background: currentColor;
+}
+
+.bar-line.thick {
+    width: 5px;
+    background: currentColor;
+}
+
+.bar-dots {
+    display: block;
+    width: 6px;
+    background:
+        radial-gradient(circle at 50% 36%, currentColor 1.7px, transparent 2.3px),
+        radial-gradient(circle at 50% 64%, currentColor 1.7px, transparent 2.3px);
+}
+
+/* ---------- Compás ---------- */
+.sm {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 66px;
+    padding: 0 0.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.sm-ghost {
+    flex: 1 1 0;
+}
+
+.sm-ending {
+    padding-top: 20px;
+}
+
+/* Casilla de repetición (1., 2., 3.) */
+.sm-volta {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18px;
+    padding-left: 5px;
+    border-top: 1.5px solid currentColor;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 16px;
+}
+
+.sm-volta.start {
+    border-left: 1.5px solid currentColor;
+}
+
+/* Símbolos sobre el compás */
+.sm-marks {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.3rem;
+    min-height: 22px;
+    margin-bottom: 2px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.sm-marks>span {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.3rem;
+}
+
+.sm-marks-r {
+    margin-left: auto;
+    text-align: right;
+}
+
+.sm-mark-text {
+    white-space: nowrap;
+}
+
+.sym {
+    display: block;
+    width: 18px;
+    height: 20px;
+}
+
+.sym-wide {
+    width: 22px;
+    height: 16px;
+}
+
+.sym-big {
+    width: 26px;
+    height: 26px;
+}
+
+/* Tiempos */
+.sm-beats {
+    display: grid;
+    align-items: center;
+    min-height: 36px;
+    text-align: center;
+}
+
+.sm-beat {
+    display: flex;
+    justify-content: center;
+    white-space: nowrap;
+    font-size: 1.05rem;
+}
+
+.sm-beat .chord {
+    font-size: 1.05rem;
+}
+
+.sm-beat.empty {
+    color: var(--cm-dim);
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.sm-simile {
+    display: grid;
+    place-items: center;
+}
+
+.sm-note {
+    margin-top: 2px;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--cm-dim);
+    text-align: center;
+}
+
+/* ---------- Editor ---------- */
+.score-measures {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.score-measure-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.55rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    background: var(--cm-card);
+}
+
+.score-measure-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.score-measure-actions {
+    display: flex;
+    gap: 3px;
+}
+
+.score-measure-actions button {
+    width: 26px;
+    height: 22px;
+    padding: 0;
+    font-size: 0.72rem;
+    line-height: 1;
+    background: transparent;
+    color: var(--cm-dim);
+    border: 1px solid var(--cm-border);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.score-measure-actions button:hover:not(:disabled) {
+    color: #fff;
+    border-color: var(--cm-dim);
+}
+
+.score-measure-actions button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.score-measure-actions .danger:hover {
+    border-color: #c45b5b;
+    color: #e08a8a;
+}
+
+.score-measure-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.score-measure-grid .tool-select {
+    width: 100%;
+}
+
+.score-measure-flags {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.chip-toggle {
+    padding: 0.3rem 0.6rem;
+    font: inherit;
+    font-size: 0.8rem;
+    color: var(--cm-text);
+    background: var(--cm-bg);
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.chip-toggle[aria-pressed='true'] {
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 25%, transparent);
+    color: #fff;
+}
+
+.marks-menu {
+    flex: 1;
+    font-size: 0.8rem;
+}
+
+.marks-menu>summary {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    background: var(--cm-bg);
+    cursor: pointer;
+    list-style: none;
+}
+
+.marks-menu>summary::-webkit-details-marker {
+    display: none;
+}
+
+.marks-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+    padding: 8px 4px 2px;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+
+.strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.tile-wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.tile-volta {
+    height: 16px;
+    padding-left: 4px;
+    border-top: 1.5px solid #c8cad0;
+    border-left: 1.5px solid #c8cad0;
+    font-size: 0.65rem;
+    line-height: 14px;
+}
+
+.tile-volta.empty {
+    border: 0;
+}
+
+.tile {
+    position: relative;
+    height: 50px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    padding: 0 6px;
+    border: 1.5px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-bg);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tile:hover {
+    border-color: var(--cm-dim);
+}
+
+.tile[aria-pressed='true'] {
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 14%, var(--cm-bg));
+}
+
+.tile-bar {
+    color: var(--cm-dim);
+    font-size: 0.75rem;
+}
+
+.tile-chords {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    overflow: hidden;
+    font-size: 0.8rem;
+}
+
+.tile-chords .dim {
+    color: var(--cm-dim);
+    font-weight: 400;
+}
+
+.tile-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cm-accent);
+}
+
+.tile-add {
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border: 1px dashed #4a4d55;
+    border-radius: 8px;
+    background: none;
+    color: var(--cm-dim);
+    cursor: pointer;
+}
+
+.tile-add:hover {
+    border-color: var(--cm-dim);
+    color: #fff;
+}
+
+.inspector {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--cm-accent) 45%, var(--cm-border));
+    border-radius: 10px;
+    background: var(--cm-bg);
+}
+
+.inspector-head {
+    display: grid;
+    grid-template-columns: 1fr repeat(4, 24px);
+    align-items: center;
+    gap: 4px;
+}
+
+.inspector-head strong {
+    min-width: 0;
+    overflow: hidden;
+    color: #fff;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inspector-head .ed-btn {
+    width: 24px;
+    height: 24px;
+    min-width: 0;
+    padding: 0;
+}
+
+.inspector-field {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.inspector .beat-input,
+.inspector .tool-input {
+    background: var(--cm-card);
+}
+
+.inspector .beat-input {
+    height: 30px;
+    padding: 0;
+}
+
+.inspector .ed-btn:not([aria-pressed='true']) {
+    background: var(--cm-card);
+}
+
+.bars-row {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mark-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.mark-btn {
+    width: 32px;
+    height: 32px;
+}
+
+.mark-btn .sym {
+    width: 16px;
+    height: 16px;
+}
+
+.mark-chip {
+    height: 28px;
+    font-size: 0.75rem;
+}
