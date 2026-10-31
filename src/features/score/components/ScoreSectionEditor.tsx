@@ -1,18 +1,75 @@
 'use client';
 
+import { useState } from 'react';
 import { normalizeChord } from '@/domain/music/engine';
 import { padBeats } from '@/domain/music/meter';
 import {
     MEASURE_MARKS,
-    MEASURE_MARK_KEYS,
     type LeftBar,
     type MeasureMark,
     type RightBar,
     type ScoreMeasure,
     type ScoreSection,
 } from '@/domain/score/types';
-import { emptyScoreMeasure, PER_ROW_OPTIONS } from '@/domain/score/utils';
+import { emptyScoreMeasure } from '@/domain/score/utils';
 import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
+import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, PlusIcon, TrashIcon } from '@/shared/ui/Icons';
+import BarIcon, { type BarIconKind } from './BarIcon';
+import { MarkView, SimileIcon } from './ScoreSymbols';
+
+const ICON_MARKS: MeasureMark[] = ['segno', 'coda', 'fermata'];
+const TEXT_MARKS: MeasureMark[] = ['toCoda', 'dc', 'ds', 'dcCoda', 'dsCoda', 'fine'];
+const PER_ROW_CHOICES: number[] = [2, 4, 6, 8];
+
+const LEFT_OPTIONS: Array<{ value: LeftBar | undefined; icon: BarIconKind; label: string }> = [
+    { value: undefined, icon: 'single', label: 'Barra simple' },
+    { value: 'double', icon: 'double', label: 'Barra doble' },
+    { value: 'repeat', icon: 'repeat-start', label: 'Repetición |:' },
+];
+
+const RIGHT_OPTIONS: Array<{ value: RightBar | undefined; icon: BarIconKind; label: string }> = [
+    { value: undefined, icon: 'single', label: 'Barra simple' },
+    { value: 'double', icon: 'double', label: 'Barra doble' },
+    { value: 'repeat', icon: 'repeat-end', label: 'Repetición :|' },
+    { value: 'final', icon: 'final', label: 'Barra final' },
+];
+
+const leftGlyph = (m: ScoreMeasure) => (m.left === 'repeat' ? '|:' : m.left === 'double' ? '‖' : '|');
+const rightGlyph = (m: ScoreMeasure) =>
+    m.right === 'repeat' ? ':|' : m.right === 'double' ? '‖' : m.right === 'final' ? '|]' : '|';
+
+interface MeasureTileProps {
+    measure: ScoreMeasure;
+    count: number;
+    index: number;
+    selected: boolean;
+    onSelect: () => void;
+}
+
+/** Vista reducida de un compás en la tira: barras, acordes por tiempo y casilla. */
+function MeasureTile({ measure, count, index, selected, onSelect }: MeasureTileProps) {
+    const beats = padBeats(measure.beats, count);
+    return (
+        <div className="tile-wrap">
+            <span className={`tile-volta${measure.ending ? '' : ' empty'}`}>
+                {measure.ending ? `${measure.ending}.` : ''}
+            </span>
+            <button type="button" className="tile" aria-pressed={selected}
+                aria-label={`Compás ${index + 1}`} onClick={onSelect}>
+                <span className="tile-bar">{leftGlyph(measure)}</span>
+                <span className="tile-chords">
+                    {measure.simile
+                        ? '%'
+                        : beats.map((b, i) => (
+                            <span key={i} className={b.trim() ? undefined : 'dim'}>{b.trim() || '/'}</span>
+                        ))}
+                </span>
+                <span className="tile-bar">{rightGlyph(measure)}</span>
+                {(measure.marks?.length || measure.note) ? <i className="tile-dot" /> : null}
+            </button>
+        </div>
+    );
+}
 
 interface ScoreSectionEditorProps {
     section: ScoreSection;
@@ -28,15 +85,24 @@ interface ScoreSectionEditorProps {
 export default function ScoreSectionEditor({
     section, count, index, total, onChange, onMove, onRemove,
 }: ScoreSectionEditorProps) {
+    const [selected, setSelected] = useState<number>(0);
+    const sel = Math.min(selected, section.measures.length - 1);
+    const m = section.measures[sel];
+
+    // Si una canción antigua tiene otro valor (3, 5…), se muestra además de las cuatro opciones
+    const rowChoices = PER_ROW_CHOICES.includes(section.perRow)
+        ? PER_ROW_CHOICES
+        : [...PER_ROW_CHOICES, section.perRow].sort((a, b) => a - b);
+
     const patch = (changes: Partial<ScoreSection>) => onChange({ ...section, ...changes });
     const setMeasures = (measures: ScoreMeasure[]) => patch({ measures });
     const patchMeasure = (j: number, changes: Partial<ScoreMeasure>) =>
-        setMeasures(section.measures.map((m, i) => (i === j ? { ...m, ...changes } : m)));
+        setMeasures(section.measures.map((x, i) => (i === j ? { ...x, ...changes } : x)));
 
     function setBeat(j: number, b: number, value: string) {
-        const m = section.measures[j];
-        if (!m) return;
-        const beats = padBeats(m.beats, Math.max(count, m.beats.length));
+        const measure = section.measures[j];
+        if (!measure) return;
+        const beats = padBeats(measure.beats, Math.max(count, measure.beats.length));
         beats[b] = value;
         patchMeasure(j, { beats });
     }
@@ -46,11 +112,21 @@ export default function ScoreSectionEditor({
         patchMeasure(j, { marks: marks.includes(mark) ? marks.filter((x) => x !== mark) : [...marks, mark] });
     }
 
+    function addMeasure() {
+        setMeasures([...section.measures, emptyScoreMeasure(count)]);
+        setSelected(section.measures.length);
+    }
+
     function duplicate(j: number) {
-        const m = section.measures[j];
-        if (!m) return;
-        const copy: ScoreMeasure = { ...m, beats: [...m.beats], ...(m.marks ? { marks: [...m.marks] } : {}) };
+        const measure = section.measures[j];
+        if (!measure) return;
+        const copy: ScoreMeasure = {
+            ...measure,
+            beats: [...measure.beats],
+            ...(measure.marks ? { marks: [...measure.marks] } : {}),
+        };
         setMeasures([...section.measures.slice(0, j + 1), copy, ...section.measures.slice(j + 1)]);
+        setSelected(j + 1);
     }
 
     function moveMeasure(j: number, dir: -1 | 1) {
@@ -62,37 +138,66 @@ export default function ScoreSectionEditor({
         next[j] = b;
         next[t] = a;
         setMeasures(next);
+        setSelected(t);
+    }
+
+    function removeMeasure(j: number) {
+        setMeasures(section.measures.filter((_, i) => i !== j));
+        setSelected(Math.max(0, j - 1));
     }
 
     return (
         <div className="section-editor">
-            <SectionMetaFields section={section} onChange={patch} notePlaceholder="Anotación (ej. pop ballad)" />
+            <SectionMetaFields
+                section={section}
+                onChange={patch}
+                notePlaceholder="Anotación (ej. pop ballad)"
+                repeatIcon={false}
+            />
 
-            <label className="tool-row">
-                <span className="tool-label">Compases por fila</span>
-                <select className="tool-select" value={section.perRow}
-                    onChange={(e) => patch({ perRow: Number(e.target.value) })}>
-                    {PER_ROW_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
-                </select>
-            </label>
+            <div className="inspector-field">
+                <span className="lb">Por fila</span>
+                <div className="seg">
+                    {rowChoices.map((n) => (
+                        <button key={n} type="button" aria-pressed={section.perRow === n}
+                            onClick={() => patch({ perRow: n })}>{n}</button>
+                    ))}
+                </div>
+            </div>
 
-            <div className="score-measures">
-                {section.measures.map((m, j) => (
-                    <div className="score-measure-editor" key={j}>
-                        <div className="score-measure-title">
-                            <strong>Compás {j + 1}</strong>
-                            <span className="score-measure-actions">
-                                <button type="button" title="Mover a la izquierda" disabled={j === 0}
-                                    onClick={() => moveMeasure(j, -1)}>←</button>
-                                <button type="button" title="Mover a la derecha" disabled={j === section.measures.length - 1}
-                                    onClick={() => moveMeasure(j, 1)}>→</button>
-                                <button type="button" title="Duplicar compás" onClick={() => duplicate(j)}>⧉</button>
-                                <button type="button" className="danger" title="Eliminar compás"
-                                    onClick={() => setMeasures(section.measures.filter((_, i) => i !== j))}>✕</button>
-                            </span>
-                        </div>
+            <span className="lb">Compases · toca uno para editarlo</span>
+            <div className="strip">
+                {section.measures.map((measure, j) => (
+                    <MeasureTile key={j} measure={measure} count={count} index={j}
+                        selected={j === sel} onSelect={() => setSelected(j)} />
+                ))}
+                <div className="tile-wrap">
+                    <span className="tile-volta empty" />
+                    <button type="button" className="tile-add" aria-label="Agregar compás"
+                        title="Agregar compás" onClick={addMeasure}><PlusIcon /></button>
+                </div>
+            </div>
 
-                        <div className="measure-field-beats">
+            {m && (
+                <div className="inspector">
+                    <div className="inspector-head">
+                        <strong>Compás {sel + 1}</strong>
+                        <button type="button" className="ed-btn mini" disabled={sel === 0}
+                            aria-label="Mover a la izquierda" title="Mover a la izquierda"
+                            onClick={() => moveMeasure(sel, -1)}><ArrowLeftIcon /></button>
+                        <button type="button" className="ed-btn mini" disabled={sel === section.measures.length - 1}
+                            aria-label="Mover a la derecha" title="Mover a la derecha"
+                            onClick={() => moveMeasure(sel, 1)}><ArrowRightIcon /></button>
+                        <button type="button" className="ed-btn mini" aria-label="Duplicar compás"
+                            title="Duplicar compás" onClick={() => duplicate(sel)}><CopyIcon /></button>
+                        <button type="button" className="ed-btn mini danger" aria-label="Eliminar compás"
+                            title="Eliminar compás" onClick={() => removeMeasure(sel)}><TrashIcon /></button>
+                    </div>
+
+                    <div className="inspector-field">
+                        <span className="lb">Tiempos</span>
+                        <div className="measure-beats"
+                            style={{ gridTemplateColumns: `repeat(${Math.max(count, m.beats.length)}, 1fr)` }}>
                             {padBeats(m.beats, count).map((beat, b) => (
                                 <input
                                     key={b}
@@ -100,80 +205,91 @@ export default function ScoreSectionEditor({
                                     value={beat}
                                     disabled={Boolean(m.simile)}
                                     placeholder={String(b + 1)}
-                                    aria-label={`Compás ${j + 1}, tiempo ${b + 1}`}
-                                    onChange={(e) => setBeat(j, b, e.target.value)}
+                                    aria-label={`Compás ${sel + 1}, tiempo ${b + 1}`}
+                                    onChange={(e) => setBeat(sel, b, e.target.value)}
                                     onBlur={(e) => {
                                         const clean = normalizeChord(e.target.value.trim());
-                                        if (clean !== beat) setBeat(j, b, clean);
+                                        if (clean !== beat) setBeat(sel, b, clean);
                                     }}
                                 />
                             ))}
                         </div>
+                    </div>
 
-                        <div className="score-measure-grid">
-                            <label className="tool-field">
-                                <span className="tool-label">Barra inicial</span>
-                                <select className="tool-select" value={m.left ?? ''}
-                                    onChange={(e) => patchMeasure(j, { left: (e.target.value || undefined) as LeftBar | undefined })}>
-                                    <option value="">Simple</option>
-                                    <option value="double">Doble</option>
-                                    <option value="repeat">Repetición |:</option>
-                                </select>
-                            </label>
-                            <label className="tool-field">
-                                <span className="tool-label">Barra final</span>
-                                <select className="tool-select" value={m.right ?? ''}
-                                    onChange={(e) => patchMeasure(j, { right: (e.target.value || undefined) as RightBar | undefined })}>
-                                    <option value="">Simple</option>
-                                    <option value="double">Doble</option>
-                                    <option value="repeat">Repetición :|</option>
-                                    <option value="final">Final</option>
-                                </select>
-                            </label>
-                            <label className="tool-field">
-                                <span className="tool-label">Casilla</span>
-                                <select className="tool-select" value={m.ending ?? ''}
-                                    onChange={(e) => patchMeasure(j, {
-                                        ending: e.target.value ? (Number(e.target.value) as 1 | 2 | 3) : undefined,
-                                    })}>
-                                    <option value="">Ninguna</option>
-                                    <option value="1">1.</option>
-                                    <option value="2">2.</option>
-                                    <option value="3">3.</option>
-                                </select>
-                            </label>
+                    <div className="bars-row">
+                        <div className="ed-group">
+                            <span className="lb">Inicio</span>
+                            <div className="ed-group-row">
+                                {LEFT_OPTIONS.map((o) => (
+                                    <button key={o.label} type="button" className="ed-btn"
+                                        aria-pressed={m.left === o.value} aria-label={o.label} title={o.label}
+                                        onClick={() => patchMeasure(sel, { left: o.value })}>
+                                        <BarIcon kind={o.icon} />
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-
-                        <input className="tool-input" value={m.note ?? ''} placeholder="Nota del compás (opcional)"
-                            aria-label={`Nota del compás ${j + 1}`}
-                            onChange={(e) => patchMeasure(j, { note: e.target.value || undefined })} />
-
-                        <div className="score-measure-flags">
-                            <button type="button" className="chip-toggle" aria-pressed={Boolean(m.simile)}
-                                title="Repetir el compás anterior"
-                                onClick={() => patchMeasure(j, { simile: m.simile ? undefined : true })}>
-                                % Repetir compás
-                            </button>
-                            <details className="marks-menu">
-                                <summary>Símbolos{m.marks?.length ? ` (${m.marks.length})` : ''}</summary>
-                                <div className="marks-list">
-                                    {MEASURE_MARK_KEYS.map((k) => (
-                                        <label key={k} className="check">
-                                            <input type="checkbox" checked={m.marks?.includes(k) ?? false}
-                                                onChange={() => toggleMark(j, k)} />
-                                            {MEASURE_MARKS[k]}
-                                        </label>
-                                    ))}
-                                </div>
-                            </details>
+                        <span className="ed-divider" />
+                        <div className="ed-group">
+                            <span className="lb">Fin</span>
+                            <div className="ed-group-row">
+                                {RIGHT_OPTIONS.map((o) => (
+                                    <button key={o.label} type="button" className="ed-btn"
+                                        aria-pressed={m.right === o.value} aria-label={o.label} title={o.label}
+                                        onClick={() => patchMeasure(sel, { right: o.value })}>
+                                        <BarIcon kind={o.icon} />
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                ))}
-                <button type="button" className="add-measure"
-                    onClick={() => setMeasures([...section.measures, emptyScoreMeasure(count)])}>
-                    + Agregar compás
-                </button>
-            </div>
+
+                    <div className="ed-group">
+                        <span className="lb">Casilla</span>
+                        <div className="ed-group-row">
+                            {([1, 2, 3] as const).map((n) => (
+                                <button key={n} type="button" className="ed-btn"
+                                    aria-pressed={m.ending === n}
+                                    aria-label={`Casilla ${n} (otra vez para quitarla)`}
+                                    title={`Casilla ${n}`}
+                                    onClick={() => patchMeasure(sel, { ending: m.ending === n ? undefined : n })}>
+                                    {n}.
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="ed-group">
+                        <span className="lb">Símbolos</span>
+                        <div className="mark-grid">
+                            {ICON_MARKS.map((k) => (
+                                <button key={k} type="button" className="ed-btn mark-btn"
+                                    aria-pressed={m.marks?.includes(k) ?? false}
+                                    aria-label={MEASURE_MARKS[k]} title={MEASURE_MARKS[k]}
+                                    onClick={() => toggleMark(sel, k)}>
+                                    <MarkView mark={k} />
+                                </button>
+                            ))}
+                            <button type="button" className="ed-btn mark-btn" aria-pressed={Boolean(m.simile)}
+                                aria-label="Repetir el compás anterior" title="Repetir el compás anterior"
+                                onClick={() => patchMeasure(sel, { simile: m.simile ? undefined : true })}>
+                                <SimileIcon />
+                            </button>
+                            {TEXT_MARKS.map((k) => (
+                                <button key={k} type="button" className="ed-btn text mark-chip"
+                                    aria-pressed={m.marks?.includes(k) ?? false}
+                                    onClick={() => toggleMark(sel, k)}>
+                                    {MEASURE_MARKS[k]}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <input className="tool-input" value={m.note ?? ''} placeholder="Nota del compás (opcional)"
+                        aria-label={`Nota del compás ${sel + 1}`}
+                        onChange={(e) => patchMeasure(sel, { note: e.target.value || undefined })} />
+                </div>
+            )}
 
             <SectionActions index={index} total={total} onMove={onMove} onRemove={onRemove} />
         </div>

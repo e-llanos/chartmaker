@@ -37,8 +37,8 @@
     display: grid;
     grid-template-columns: minmax(320px, 400px) 1fr;
     gap: 1.25rem;
-    height: calc(100dvh - 140px);
     /* navbar + encabezado + márgenes */
+    height: calc(100dvh - 140px);
     min-height: 520px;
 }
 
@@ -58,12 +58,20 @@
     border-radius: 8px;
     font-family: var(--cm-font);
     color: var(--cm-text);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+}
+
+/* Los bloques del panel no se comprimen: si no caben, el panel hace scroll */
+.editor-tools>* {
+    flex-shrink: 0;
 }
 
 .editor-preview {
     padding: 0 0.25rem;
 }
 
+/* Sin barras de desplazamiento visibles (el scroll sigue funcionando) */
 .editor-tools,
 .editor-preview,
 .chordpro-input {
@@ -213,7 +221,7 @@
     margin-left: 0;
 }
 
-/* ---------- Agregar sección y acordes ---------- */
+/* ---------- Editor de cifrado: agregar sección y acordes ---------- */
 .section-buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -234,7 +242,6 @@
     gap: 0.35rem;
 }
 
-/* ---------- Texto ChordPro ---------- */
 .chordpro-input {
     flex: 1;
     min-height: 240px;
@@ -244,7 +251,137 @@
     font-size: 0.85rem;
 }
 
+/* ---------- Controles de icono (compartidos por los editores de chart) ---------- */
+.ed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 7px;
+    background: var(--cm-bg);
+    color: var(--cm-icon);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
 
+.ed-btn:hover:not(:disabled) {
+    border-color: var(--cm-dim);
+    color: #fff;
+}
+
+.ed-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.ed-btn[aria-pressed='true'] {
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 25%, transparent);
+    color: #fff;
+}
+
+.ed-btn.mini {
+    width: auto;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 6px;
+}
+
+.ed-btn.mini svg {
+    width: 14px;
+    height: 14px;
+}
+
+.ed-btn.text {
+    width: auto;
+    padding: 0 9px;
+}
+
+.ed-btn.danger:hover:not(:disabled) {
+    border-color: var(--cm-danger-border);
+    color: var(--cm-danger-text);
+}
+
+.ed-danger {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--cm-danger-border);
+    border-radius: 7px;
+    background: none;
+    color: var(--cm-danger-text);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.ed-danger:hover {
+    background: var(--cm-danger-bg);
+}
+
+.ed-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ed-group-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.ed-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--cm-border);
+}
+
+/* Selector unido (por ejemplo, "Por fila") */
+.seg {
+    display: flex;
+    max-width: 200px;
+    border: 1px solid var(--cm-border);
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.seg button {
+    flex: 1;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-left: 1px solid var(--cm-border);
+    background: var(--cm-card);
+    color: var(--cm-icon);
+    font: inherit;
+    cursor: pointer;
+}
+
+.seg button:first-child {
+    border-left: 0;
+}
+
+.seg button:hover {
+    color: #fff;
+}
+
+.seg button[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--cm-accent) 25%, transparent);
+    color: #fff;
+}
+
+/* Contador de repeticiones */
 .stepper {
     display: flex;
     align-items: center;
@@ -262,4 +399,234 @@
     text-align: center;
     font-weight: 700;
     color: #fff;
+}
+
+/* ---------- Barra de secciones y agregar ---------- */
+.sections-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sections-toolbar-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sections-toolbar-text h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.icon-row {
+    display: flex;
+    gap: 6px;
+}
+
+.add-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 9px 12px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+}
+
+.section-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.section-add .badge {
+    width: 30px;
+    height: 30px;
+}
+
+.section-add-btn {
+    all: unset;
+    display: inline-flex;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.section-add-btn:hover .badge {
+    background: color-mix(in srgb, var(--c) 18%, transparent);
+}
+
+.section-add-btn:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
+
+/* ---------- Sección plegable ---------- */
+.acc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.acc {
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+}
+
+.acc.open {
+    border-color: var(--cm-accent);
+}
+
+/* Cabecera: asa de arrastre + botón que pliega y despliega */
+.acc-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px 0 8px;
+}
+
+.acc-grip {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 18px;
+    height: 28px;
+    color: var(--cm-icon-dim);
+    cursor: grab;
+    user-select: none;
+}
+
+.acc-grip:hover {
+    color: var(--cm-text);
+}
+
+.acc-grip:active {
+    cursor: grabbing;
+}
+
+.acc-toggle {
+    all: unset;
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    cursor: pointer;
+}
+
+.acc-toggle:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.acc-title {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.acc-title strong,
+.acc-title small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.acc-title strong {
+    color: var(--cm-text-strong);
+}
+
+.acc-title small {
+    color: var(--cm-dim);
+    font-size: 0.75rem;
+}
+
+.acc-chevron {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--cm-border);
+    border-radius: 7px;
+    color: var(--cm-icon);
+    transition: transform 0.15s;
+}
+
+.acc.open .acc-chevron {
+    transform: rotate(180deg);
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 25%, transparent);
+    color: #fff;
+}
+
+/* Cuerpo */
+.acc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 12px 12px;
+}
+
+/* El editor de sección ya no necesita su propia tarjeta */
+.acc-body .section-editor {
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+.acc-body .tool-input,
+.acc-body .tool-select,
+.acc-body .beat-input,
+.acc-body .ed-btn:not([aria-pressed='true']) {
+    background: var(--cm-card);
+}
+
+/* Arrastrar y soltar */
+.acc.dragging {
+    opacity: 0.4;
+}
+
+.acc.drop-target {
+    border-color: var(--cm-accent);
+    box-shadow: 0 0 0 1px var(--cm-accent);
+}
+
+/* ---------- Campos de la sección ---------- */
+.meta-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px;
+}
+
+.meta-row .tool-select {
+    width: 100%;
+    margin-left: 0;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cm-dim);
+}
+
+.field-row>span {
+    flex: 1;
+}
+
+.section-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--cm-border);
 }
