@@ -2,6 +2,7 @@
 
 import { REPEAT_MAX, REPEAT_MIN } from '@/domain/chordsheet/section-text';
 import { SECTION_TYPES, SECTION_TYPE_KEYS, type SectionType } from '@/domain/sections/section-types';
+import { ArrowDownIcon, ArrowUpIcon, MinusIcon, PlusIcon, RepeatIcon, TrashIcon } from '@/shared/ui/Icons';
 
 /** Campos que comparten las secciones del chart y del chart avanzado. */
 export interface MetaSection {
@@ -15,15 +16,16 @@ interface SectionMetaFieldsProps {
     section: MetaSection;
     onChange: (changes: Partial<MetaSection>) => void;
     notePlaceholder?: string;
+    /** Icono junto a "Repetir sección" (el chart simple lo lleva; el avanzado no). */
+    repeatIcon?: boolean;
 }
-
 /** Tipo, nombre, anotación y repeticiones de una sección. */
 export default function SectionMetaFields({
-    section, onChange, notePlaceholder = 'Anotación (ej. Pad & Piano)',
+    section, onChange, notePlaceholder = 'Anotación (ej. Pad & Piano)', repeatIcon = true,
 }: SectionMetaFieldsProps) {
     return (
         <>
-            <div className="tool-row">
+            <div className="meta-row">
                 <select className="tool-select" value={section.type} aria-label="Tipo de sección"
                     onChange={(e) => onChange({ type: e.target.value as SectionType })}>
                     {SECTION_TYPE_KEYS.map((t) => (
@@ -37,16 +39,17 @@ export default function SectionMetaFields({
             <input className="tool-input" value={section.note} placeholder={notePlaceholder}
                 aria-label="Anotación" onChange={(e) => onChange({ note: e.target.value })} />
 
-            <div className="tool-row">
-                <span className="tool-label">Repeticiones</span>
+            <div className="field-row">
+                {repeatIcon && <RepeatIcon />}
+                <span>Repetir sección</span>
                 <div className="stepper">
-                    <button type="button" className="ghost-btn" aria-label="Menos repeticiones"
+                    <button type="button" className="ed-btn" aria-label="Menos repeticiones"
                         disabled={section.repeat <= REPEAT_MIN}
-                        onClick={() => onChange({ repeat: section.repeat - 1 })}>−</button>
+                        onClick={() => onChange({ repeat: section.repeat - 1 })}><MinusIcon /></button>
                     <output className="stepper-value">×{section.repeat}</output>
-                    <button type="button" className="ghost-btn" aria-label="Más repeticiones"
+                    <button type="button" className="ed-btn" aria-label="Más repeticiones"
                         disabled={section.repeat >= REPEAT_MAX}
-                        onClick={() => onChange({ repeat: section.repeat + 1 })}>+</button>
+                        onClick={() => onChange({ repeat: section.repeat + 1 })}><PlusIcon /></button>
                 </div>
             </div>
         </>
@@ -63,12 +66,14 @@ interface SectionActionsProps {
 /** Subir, bajar y eliminar una sección. */
 export function SectionActions({ index, total, onMove, onRemove }: SectionActionsProps) {
     return (
-        <div className="tool-row section-editor-actions">
-            <button type="button" className="ghost-btn" aria-label="Subir sección"
-                disabled={index === 0} onClick={() => onMove(-1)}>↑</button>
-            <button type="button" className="ghost-btn" aria-label="Bajar sección"
-                disabled={index === total - 1} onClick={() => onMove(1)}>↓</button>
-            <button type="button" className="ghost-btn danger" onClick={onRemove}>Eliminar sección</button>
+        <div className="section-footer">
+            <button type="button" className="ed-btn" aria-label="Subir sección" title="Subir sección"
+                disabled={index === 0} onClick={() => onMove(-1)}><ArrowUpIcon /></button>
+            <button type="button" className="ed-btn" aria-label="Bajar sección" title="Bajar sección"
+                disabled={index === total - 1} onClick={() => onMove(1)}><ArrowDownIcon /></button>
+            <button type="button" className="ed-danger" onClick={onRemove}>
+                <TrashIcon /> Eliminar
+            </button>
         </div>
     );
 }

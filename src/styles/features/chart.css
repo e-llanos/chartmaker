@@ -166,3 +166,65 @@
 .section-editor-actions .ghost-btn.danger {
     margin-left: auto;
 }
+
+
+.measure-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.measure-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-card);
+}
+
+.measure-card-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.measure-card-head .lb,
+.measure-card-head .measure-num {
+    flex: 1;
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.measure-beats {
+    display: grid;
+    gap: 3px;
+}
+
+.acc-body .measure-card .beat-input {
+    height: 30px;
+    padding: 0;
+    background: var(--cm-bg);
+}
+
+.measure-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 84px;
+    border: 1px dashed #4a4d55;
+    border-radius: 10px;
+    background: none;
+    color: var(--cm-dim);
+    font: inherit;
+    cursor: pointer;
+}
+
+.measure-add:hover {
+    border-color: var(--cm-dim);
+    color: #fff;
+}

@@ -1,17 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import type { Chart, ChartSection } from '@/domain/chart/types';
 import { chartFromChordPro, newSection } from '@/domain/chart/utils';
 import { beatsPerMeasure } from '@/domain/music/meter';
-import type { Chart, ChartSection } from '@/domain/chart/types';
+import { computeBadges, nextLabel, SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
 import type { SongInput } from '@/domain/song/types';
-import { nextLabel, type SectionType } from '@/domain/sections/section-types';
 import EditorLayout from '@/shared/editor/EditorLayout';
+import SectionPanel, { sectionSummary } from '@/shared/editor/SectionPanel';
+import SectionsToolbar from '@/shared/editor/SectionsToolbar';
 import SectionTypeButtons from '@/shared/editor/SectionTypeButtons';
-import ChartViewer from '@/features/chart/components/ChartViewer';
-import SectionEditor from '@/features/chart/components/SectionEditor';
+import { useAccordion } from '@/shared/editor/useAccordion';
+import { useReorder } from '@/shared/editor/useReorder';
+import ChartViewer from './ChartViewer';
+import SectionEditor from './SectionEditor';
 
 interface ChartEditorProps {
+    /** Datos de la canción (solo lectura: se editan en el editor de cifrado). */
     song: SongInput;
     initial: Chart;
     onChange?: (chart: Chart) => void;
@@ -19,7 +24,12 @@ interface ChartEditorProps {
 
 export default function ChartEditor({ song, initial, onChange }: ChartEditorProps) {
     const [chart, setChart] = useState<Chart>(initial);
+    const accordion = useAccordion(initial.sections[0] ? [initial.sections[0].id] : []);
+    const reorder = useReorder(chart.sections, (sections) => commit({ sections }));
+
     const bpm = beatsPerMeasure(song.compas);
+    const badges = computeBadges(chart.sections);
+    const totalMeasures = chart.sections.reduce((sum, s) => sum + s.measures.length, 0);
 
     function commit(next: Chart) {
         setChart(next);
@@ -28,7 +38,9 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
 
     function addSection(type: SectionType) {
         const count = chart.sections.filter((s) => s.type === type).length;
-        commit({ sections: [...chart.sections, newSection(type, nextLabel(type, count), bpm)] });
+        const section = newSection(type, nextLabel(type, count), bpm);
+        commit({ sections: [...chart.sections, section] });
+        accordion.show(section.id);
     }
 
     function updateSection(index: number, next: ChartSection) {
@@ -37,62 +49,67 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
 
     function moveSection(index: number, dir: -1 | 1) {
         const target = index + dir;
-        if (target < 0 || target >= chart.sections.length) return;
-        const sections = [...chart.sections];
-        const a = sections[index];
-        const b = sections[target];
+        const a = chart.sections[index];
+        const b = chart.sections[target];
         if (!a || !b) return;
+        const sections = [...chart.sections];
         sections[index] = b;
         sections[target] = a;
         commit({ sections });
     }
 
-    function removeSection(index: number) {
-        commit({ sections: chart.sections.filter((_, i) => i !== index) });
-    }
-
     function generate() {
         if (chart.sections.length > 0 && !window.confirm('Esto reemplazará el chart actual. ¿Continuar?')) return;
-        commit(chartFromChordPro(song.body, song.compas));
+        const next = chartFromChordPro(song.body, song.compas);
+        commit(next);
+        accordion.set(next.sections[0] ? [next.sections[0].id] : []);
     }
 
     const tools = (
         <>
-            <div className="tool-group">
-                <h3>Chart</h3>
-                <p className="hint">
-                    {song.title || 'Sin título'} · {song.key} · {song.compas} ({bpm} tiempos por compás).
-                    Estos datos se editan en el editor de cifrado.
-                </p>
-                <button type="button" className="ghost-btn" onClick={generate}>
-                    Generar desde el cifrado
-                </button>
+            <SectionsToolbar
+                subtitle={`${chart.sections.length} secciones · ${totalMeasures} compases`}
+                generateLabel="Generar desde el cifrado"
+                onCollapseAll={accordion.collapseAll}
+                onExpandAll={() => accordion.set(chart.sections.map((s) => s.id))}
+                onGenerate={generate}
+            />
+
+            <div className="add-row">
+                <span className="lb">Agregar</span>
+                <SectionTypeButtons compact onAdd={addSection} />
             </div>
 
-            <div className="tool-group">
-                <h3>Agregar sección</h3>
-                <SectionTypeButtons onAdd={addSection} />
-            </div>
-
-            <div className="tool-group">
-                <h3>Secciones</h3>
-                {chart.sections.length === 0 ? (
-                    <p className="hint">Agrega una sección o genera el chart desde el cifrado.</p>
-                ) : (
-                    chart.sections.map((s, i) => (
-                        <SectionEditor
-                            key={s.id}
-                            section={s}
-                            bpm={bpm}
-                            index={i}
-                            total={chart.sections.length}
-                            onChange={(next) => updateSection(i, next)}
-                            onMove={(dir) => moveSection(i, dir)}
-                            onRemove={() => removeSection(i)}
-                        />
-                    ))
-                )}
-            </div>
+            {chart.sections.length === 0 ? (
+                <p className="hint">Agrega una sección o genera el chart desde el cifrado.</p>
+            ) : (
+                <div className="acc-list">
+                    {chart.sections.map((s, i) => {
+                        const open = accordion.isOpen(s.id);
+                        return (
+                            <SectionPanel
+                                key={s.id}
+                                badge={badges[i]}
+                                title={s.label || SECTION_TYPES[s.type].label}
+                                summary={sectionSummary(s.measures.length, s.repeat, s.note, { showRepeat: open })}
+                                open={open}
+                                onToggle={() => accordion.toggle(s.id)}
+                                drag={reorder.props(i)}
+                            >
+                                <SectionEditor
+                                    section={s}
+                                    bpm={bpm}
+                                    index={i}
+                                    total={chart.sections.length}
+                                    onChange={(next) => updateSection(i, next)}
+                                    onMove={(dir) => moveSection(i, dir)}
+                                    onRemove={() => commit({ sections: chart.sections.filter((_, k) => k !== i) })}
+                                />
+                            </SectionPanel>
+                        );
+                    })}
+                </div>
+            )}
         </>
     );
 

@@ -5,6 +5,7 @@ import { emptyMeasure } from '@/domain/chart/utils';
 import { normalizeChord } from '@/domain/music/engine';
 import { padBeats } from '@/domain/music/meter';
 import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
+import { CloseIcon, CopyIcon, PlusIcon, RepeatIcon } from '@/shared/ui/Icons';
 
 interface SectionEditorProps {
     section: ChartSection;
@@ -35,7 +36,8 @@ export default function SectionEditor({
     function cycleRepeat(m: number) {
         const measure = section.measures[m];
         if (!measure) return;
-        const next = (measure.repeat ?? 1) >= 4 ? 1 : (measure.repeat ?? 1) + 1;
+        const current = measure.repeat ?? 1;
+        const next = current >= 4 ? 1 : current + 1;
         const updated: ChartMeasure = { beats: measure.beats };
         if (next > 1) updated.repeat = next;
         setMeasures(section.measures.map((x, i) => (i === m ? updated : x)));
@@ -48,25 +50,40 @@ export default function SectionEditor({
         setMeasures([...section.measures.slice(0, m + 1), copy, ...section.measures.slice(m + 1)]);
     }
 
-    function removeMeasure(m: number) {
-        setMeasures(section.measures.filter((_, i) => i !== m));
-    }
-
     return (
         <div className="section-editor">
             <SectionMetaFields section={section} onChange={patch} notePlaceholder="Anotación (ej. Pad & Piano)" />
 
-            <div className="measure-fields">
+            <span className="lb">Compases</span>
+            <div className="measure-cards">
                 {section.measures.map((m, j) => {
                     const repeat = m.repeat ?? 1;
+                    const beats = padBeats(m.beats, bpm);
                     return (
-                        <div className="measure-field" key={j}>
-                            <div className="measure-field-beats">
-                                {padBeats(m.beats, bpm).map((beat, b) => (
+                        <div className="measure-card" key={j}>
+                            <div className="measure-card-head">
+                                <span className="measure-num">{j + 1}</span>
+                                <button type="button" className="ed-btn mini" aria-pressed={repeat > 1}
+                                    aria-label={`Repetir compás ${j + 1}`}
+                                    title={repeat > 1 ? `Repetido ×${repeat} (clic para cambiar)` : 'Repetir compás'}
+                                    onClick={() => cycleRepeat(j)}>
+                                    <RepeatIcon />{repeat > 1 && <span>×{repeat}</span>}
+                                </button>
+                                <button type="button" className="ed-btn mini" aria-label={`Duplicar compás ${j + 1}`}
+                                    title="Duplicar compás" onClick={() => duplicate(j)}><CopyIcon /></button>
+                                <button type="button" className="ed-btn mini danger" aria-label={`Eliminar compás ${j + 1}`}
+                                    title="Eliminar compás"
+                                    onClick={() => setMeasures(section.measures.filter((_, i) => i !== j))}>
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                            <div className="measure-beats" style={{ gridTemplateColumns: `repeat(${beats.length}, 1fr)` }}>
+                                {beats.map((beat, b) => (
                                     <input
                                         key={b}
                                         className="beat-input"
                                         value={beat}
+                                        placeholder={String(b + 1)}
                                         aria-label={`Compás ${j + 1}, tiempo ${b + 1}`}
                                         onChange={(e) => setBeat(j, b, e.target.value)}
                                         onBlur={(e) => {
@@ -76,19 +93,12 @@ export default function SectionEditor({
                                     />
                                 ))}
                             </div>
-                            <div className="measure-field-actions">
-                                <button type="button" aria-pressed={repeat > 1} title="Repetir compás"
-                                    onClick={() => cycleRepeat(j)}>{repeat > 1 ? `×${repeat}` : '×'}</button>
-                                <button type="button" title="Duplicar compás" onClick={() => duplicate(j)}>⧉</button>
-                                <button type="button" className="danger" title="Eliminar compás"
-                                    onClick={() => removeMeasure(j)}>✕</button>
-                            </div>
                         </div>
                     );
                 })}
-                <button type="button" className="add-measure"
+                <button type="button" className="measure-add"
                     onClick={() => setMeasures([...section.measures, emptyMeasure(bpm)])}>
-                    + Agregar compás
+                    <PlusIcon /> Compás
                 </button>
             </div>
 
