@@ -1,4 +1,5 @@
-import { diatonicChords } from './chords';
+import { diatonicChords, type HarmonicFunction } from './chords';
+import { parseNote } from './notes';
 import { buildScale } from './scales';
 
 export interface ProgressionStep {
@@ -15,6 +16,19 @@ export interface Progression {
     mode: 'major' | 'minor';
     steps: ProgressionStep[];
     note: string;
+}
+
+export interface CircleKey {
+    major: string;
+    /** Relativa menor con sufijo: "Am". */
+    minor: string;
+    /** Relativa menor sin sufijo: "A". */
+    minorRoot: string;
+    signature: string;
+    /** Alteraciones de la armadura: positivo = sostenidos, negativo = bemoles. */
+    accidentals: number;
+    majorPc: number;
+    minorPc: number;
 }
 
 const d = (degree: number, seventh = false): ProgressionStep => ({ degree, ...(seventh ? { seventh } : {}) });
@@ -94,14 +108,67 @@ export function resolveProgression(root: string, p: Progression): Array<{ symbol
 }
 
 /** Las doce tonalidades mayores por quintas, con su armadura y su relativa menor. */
-export function circleOfFifths(): Array<{ major: string; minor: string; signature: string }> {
+export function circleOfFifths(): CircleKey[] {
     const keys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'];
     return keys.flatMap((major) => {
         const scale = buildScale(major, 'major');
         if (!scale) return [];
         const sharps = scale.notes.filter((n) => n.name.includes('#')).length;
         const flats = scale.notes.filter((n) => n.name.includes('b')).length;
-        const signature = sharps ? `${sharps} ♯` : flats ? `${flats} ♭` : 'Sin alteraciones';
-        return [{ major, minor: `${scale.notes[5]?.name ?? ''}m`, signature }];
+        const minorRoot = scale.notes[5]?.name ?? '';
+        return [{
+            major,
+            minor: `${minorRoot}m`,
+            minorRoot,
+            signature: sharps ? `${sharps} ♯` : flats ? `${flats} ♭` : 'Sin alteraciones',
+            accidentals: sharps - flats,
+            majorPc: scale.notes[0]?.pc ?? 0,
+            minorPc: scale.notes[5]?.pc ?? 0,
+        }];
+    });
+}
+
+
+const SHARP_ORDER = ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
+const FLAT_ORDER = ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'];
+
+/** Notas alteradas de una armadura: 2 -> [F#, C#]; -3 -> [Bb, Eb, Ab]. */
+export function keySignature(accidentals: number): string[] {
+    return accidentals >= 0 ? SHARP_ORDER.slice(0, accidentals) : FLAT_ORDER.slice(0, -accidentals);
+}
+
+export interface CircleRole {
+    ring: 'outer' | 'inner';
+    /** Posición en el círculo (0 = arriba, en sentido horario). */
+    index: number;
+    fn: HarmonicFunction;
+    roman: string;
+    symbol: string;
+    tonic: boolean;
+}
+
+/** Qué acordes de la tonalidad ocupan una posición del círculo (los disminuidos no tienen sitio). */
+export function circleRoles(root: string, minor: boolean): CircleRole[] {
+    const keys = circleOfFifths();
+    const scale = buildScale(root, minor ? 'natural-minor' : 'major');
+    const chords = scale ? diatonicChords(scale) : null;
+    if (!chords) return [];
+    return chords.flatMap((c) => {
+        const info = c.triad;
+        const pc = parseNote(c.root)?.pc;
+        if (!info || !c.fn || pc === undefined) return [];
+        const isMajor = info.symbol === c.root;
+        const isMinor = info.symbol === `${c.root}m`;
+        if (!isMajor && !isMinor) return [];
+        const index = keys.findIndex((k) => (isMajor ? k.majorPc : k.minorPc) === pc);
+        if (index < 0) return [];
+        return [{
+            ring: isMajor ? 'outer' : 'inner',
+            index,
+            fn: c.fn,
+            roman: info.roman,
+            symbol: info.symbol,
+            tonic: c.degree === 1,
+        } as CircleRole];
     });
 }

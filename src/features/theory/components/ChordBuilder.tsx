@@ -3,13 +3,16 @@
 import { useMemo, useState } from 'react';
 import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
 import { formatChordSymbol, formatNote, intervalName, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
-import Keyboard from './Keyboard';
 import NameStyleToggle from './NameStyleToggle';
+import InstrumentControls from './InstrumentControls';
+import InstrumentView from './InstrumentView';
+import { useInstrument } from './useInstrument';
 
 export default function ChordBuilder() {
     const [root, setRoot] = useState<string>('C');
     const [quality, setQuality] = useState<string>('maj');
     const [style, setStyle] = useState<NameStyle>('symbol');
+    const instrument = useInstrument();
 
     const chord = useMemo(() => buildChord(root, quality), [root, quality]);
     if (!chord) return null;
@@ -21,13 +24,13 @@ export default function ChordBuilder() {
             <div className="th-controls">
                 <label className="th-field">
                     <span className="lb">Raíz</span>
-                    <select className="tool-select" value={root} onChange={(e) => setRoot(e.target.value)}>
+                    <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
                         {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
                     </select>
                 </label>
                 <label className="th-field">
                     <span className="lb">Tipo de acorde</span>
-                    <select className="tool-select" value={quality} onChange={(e) => setQuality(e.target.value)}>
+                    <select className="th-select" value={quality} onChange={(e) => setQuality(e.target.value)}>
                         {CHORD_GROUPS.map((g) => (
                             <optgroup key={g.id} label={g.label}>
                                 {CHORD_QUALITIES.filter((q) => q.group === g.id).map((q) => (
@@ -38,6 +41,7 @@ export default function ChordBuilder() {
                     </select>
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
+                <InstrumentControls state={instrument} />
             </div>
 
             <section className="th-card">
@@ -60,7 +64,7 @@ export default function ChordBuilder() {
                     <div><dt>Intervalos</dt><dd>{chord.notes.map((n) => intervalName(n.degree)).join(' · ')}</dd></div>
                 </dl>
 
-                <Keyboard notes={chord.notes} style={style} />
+                <InstrumentView notes={chord.notes} style={style} instrument={instrument.instrument} tuning={instrument.tuning} />
             </section>
 
             <section className="th-card">

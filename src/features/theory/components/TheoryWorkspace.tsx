@@ -6,6 +6,7 @@ import ChordBuilder from './ChordBuilder';
 import HarmonyGuide from './HarmonyGuide';
 import ScaleBuilder from './ScaleBuilder';
 import SymbolsGuide from './SymbolsGuide';
+import NotesExplorer from './NotesExplorer';
 
 interface TheoryWorkspaceProps {
     initialTab: TheoryTab;
@@ -38,6 +39,7 @@ export default function TheoryWorkspace({ initialTab }: TheoryWorkspaceProps) {
             <div hidden={tab !== 'scales'}><ScaleBuilder /></div>
             <div hidden={tab !== 'chords'}><ChordBuilder /></div>
             <div hidden={tab !== 'harmony'}><HarmonyGuide /></div>
+            <div hidden={tab !== 'notes'}><NotesExplorer /></div>
             <div hidden={tab !== 'symbols'}><SymbolsGuide /></div>
         </>
     );

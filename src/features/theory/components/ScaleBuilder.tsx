@@ -5,13 +5,16 @@ import { containedChords, diatonicChords } from '@/domain/theory/chords';
 import { formatChordSymbol, formatNote, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
 import { buildScale, modesOf, parentOf, SCALE_GROUPS, SCALES, stepLabel } from '@/domain/theory/scales';
 import DiatonicTable from './DiatonicTable';
-import Keyboard from './Keyboard';
 import NameStyleToggle from './NameStyleToggle';
+import InstrumentControls from './InstrumentControls';
+import InstrumentView from './InstrumentView';
+import { useInstrument } from './useInstrument';
 
 export default function ScaleBuilder() {
     const [root, setRoot] = useState<string>('C');
     const [scaleId, setScaleId] = useState<string>('major');
     const [style, setStyle] = useState<NameStyle>('symbol');
+    const instrument = useInstrument();
 
     const scale = useMemo(() => buildScale(root, scaleId), [root, scaleId]);
     const chords = useMemo(() => (scale ? diatonicChords(scale) : null), [scale]);
@@ -28,13 +31,13 @@ export default function ScaleBuilder() {
             <div className="th-controls">
                 <label className="th-field">
                     <span className="lb">Tónica</span>
-                    <select className="tool-select" value={root} onChange={(e) => setRoot(e.target.value)}>
+                    <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
                         {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
                     </select>
                 </label>
                 <label className="th-field">
                     <span className="lb">Escala</span>
-                    <select className="tool-select" value={scaleId} onChange={(e) => setScaleId(e.target.value)}>
+                    <select className="th-select" value={scaleId} onChange={(e) => setScaleId(e.target.value)}>
                         {SCALE_GROUPS.map((g) => (
                             <optgroup key={g.id} label={g.label}>
                                 {SCALES.filter((s) => s.group === g.id).map((s) => (
@@ -45,6 +48,7 @@ export default function ScaleBuilder() {
                     </select>
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
+                <InstrumentControls state={instrument} />
             </div>
 
             <section className="th-card">
@@ -69,7 +73,7 @@ export default function ScaleBuilder() {
                     <div><dt>Notas</dt><dd>{scale.notes.length}</dd></div>
                 </dl>
 
-                <Keyboard notes={scale.notes} style={style} />
+                <InstrumentView notes={scale.notes} style={style} instrument={instrument.instrument} tuning={instrument.tuning} />
             </section>
 
             {parent && (

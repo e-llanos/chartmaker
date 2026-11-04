@@ -43,16 +43,91 @@
     gap: 4px;
 }
 
-.th-field .tool-select {
-    min-width: 160px;
-    height: 34px;
-    margin-left: 0;
+/* ---------- Etiquetas con icono ---------- */
+.th-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.th-controls .seg button {
-    height: 34px;
-    padding: 0 12px;
+.th-label svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ---------- Selectores desplegables ---------- */
+.th-select {
+    appearance: none;
+    height: 38px;
+    min-width: 170px;
+    padding: 0 34px 0 12px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background-color: var(--cm-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a9acb4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.th-select:hover {
+    border-color: var(--cm-dim);
+}
+
+.th-select option,
+.th-select optgroup {
+    background: var(--cm-card);
+    color: var(--cm-text);
+}
+
+/* ---------- Botones de opción con icono ---------- */
+.th-toggle {
+    display: inline-flex;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
     background: var(--cm-bg);
+}
+
+.th-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--cm-icon);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.th-toggle-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.th-toggle-btn:hover:not([aria-pressed='true']) {
+    background: color-mix(in srgb, var(--cm-accent) 12%, transparent);
+    color: #fff;
+}
+
+/* Elegido: relleno sólido de color */
+.th-toggle-btn[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--cm-accent) 82%, #000);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
 }
 
 /* ---------- Tarjetas ---------- */
@@ -354,4 +429,243 @@
     .sym-row p {
         grid-column: 1 / -1;
     }
+}
+
+
+/* ---------- Círculo de quintas ---------- */
+.th-circle-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 460px) 1fr;
+    align-items: center;
+    gap: 24px;
+}
+
+.th-circle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (max-width: 820px) {
+    .th-circle-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cf {
+    display: block;
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.cf-track {
+    fill: none;
+    stroke: var(--cm-border);
+    stroke-width: 1.5;
+}
+
+.cf-node {
+    cursor: pointer;
+    outline: none;
+}
+
+.cf-node circle {
+    fill: var(--cm-bg);
+    stroke: var(--cm-border);
+    stroke-width: 1.5;
+    transition: fill 0.15s, stroke 0.15s;
+}
+
+.cf-node:hover circle {
+    stroke: var(--cm-dim);
+}
+
+.cf-node:focus-visible circle:first-of-type {
+    stroke: var(--cm-focus);
+    stroke-width: 3;
+}
+
+.cf-node text {
+    fill: var(--cm-icon);
+    font: 700 15px var(--cm-font);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.cf-node.inner text {
+    font-size: 12px;
+}
+
+.cf-node.role circle {
+    stroke: transparent;
+}
+
+.cf-node.role text {
+    fill: #16171a;
+}
+
+.cf-node .cf-ring {
+    fill: none;
+    stroke: var(--cm-accent);
+    stroke-width: 3;
+}
+
+.cf-sig {
+    fill: var(--cm-icon-dim);
+    font: 700 14px var(--cm-font);
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.cf-sig.hot {
+    fill: var(--cm-text-strong);
+}
+
+.cf-center-title {
+    fill: #fff;
+    font: 700 20px var(--cm-font);
+    text-anchor: middle;
+}
+
+.cf-center-sub {
+    fill: var(--cm-dim);
+    font: 600 13px var(--cm-font);
+    text-anchor: middle;
+}
+
+.cf-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 18px;
+    margin-top: 10px;
+    color: var(--cm-dim);
+    font-size: 0.82rem;
+}
+
+.cf-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 50%;
+}
+
+.cf-dot.ring {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--cm-accent);
+}
+
+.th-chord.fn-T {
+    border-color: #3fb5a6;
+}
+
+.th-chord.fn-SD {
+    border-color: #d9a93f;
+}
+
+.th-chord.fn-D {
+    border-color: #e0684a;
+}
+
+/* ---------- Mástil de guitarra ---------- */
+.fb-wrap {
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.fb {
+    display: block;
+    width: 100%;
+    min-width: 720px;
+    height: auto;
+}
+
+.fb-string {
+    stroke: var(--cm-icon-dim);
+}
+
+.fb-fret {
+    stroke: var(--cm-border);
+    stroke-width: 2;
+}
+
+.fb-nut {
+    stroke: var(--cm-icon);
+    stroke-width: 4;
+}
+
+.fb-name {
+    fill: var(--cm-dim);
+    font: 700 12px var(--cm-font);
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.fb-num {
+    fill: var(--cm-dim);
+    font: 600 12px var(--cm-font);
+    text-anchor: middle;
+}
+
+.fb-dot {
+    fill: var(--cm-icon-dim);
+}
+
+.fb-note circle {
+    fill: var(--cm-card);
+    stroke: var(--cm-dashed);
+    stroke-width: 1.6;
+}
+
+.fb-note text {
+    fill: var(--cm-text);
+    font: 700 11px var(--cm-font);
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.fb-note.sm text {
+    font-size: 10px;
+}
+
+.fb-note.acc text {
+    fill: var(--cm-dim);
+}
+
+.fb-note.on circle {
+    fill: color-mix(in srgb, var(--cm-accent) 30%, var(--cm-card));
+    stroke: var(--cm-accent);
+}
+
+.fb-note.on text,
+.fb-note.root text {
+    fill: #fff;
+}
+
+.fb-note.root circle {
+    fill: var(--cm-accent);
+    stroke: var(--cm-accent);
+}
+
+.fb-note.off {
+    opacity: 0.28;
+}
+
+/* ---------- Teclado: nombres en todas las teclas ---------- */
+.kb-label.sm {
+    font-size: 8px;
+}
+
+.kb-label.dark {
+    fill: #16171a;
+}
+
+.kb-label.lite {
+    fill: var(--cm-text);
 }
