@@ -1,0 +1,357 @@
+/* ==========================================================================
+   Teoría musical: herramientas, tablas, teclado y glosario de símbolos
+   ========================================================================== */
+
+.theory-header {
+    margin-bottom: 18px;
+}
+
+.theory-header h1 {
+    margin: 0 0 6px;
+    font-size: 1.6rem;
+    color: #fff;
+}
+
+.theory-header p {
+    max-width: 70ch;
+    margin: 0;
+    color: var(--cm-dim);
+    line-height: 1.5;
+}
+
+.th-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ---------- Controles ---------- */
+.th-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px 18px;
+    padding: 12px 14px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-card);
+}
+
+.th-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.th-field .tool-select {
+    min-width: 160px;
+    height: 34px;
+    margin-left: 0;
+}
+
+.th-controls .seg button {
+    height: 34px;
+    padding: 0 12px;
+    background: var(--cm-bg);
+}
+
+/* ---------- Tarjetas ---------- */
+.th-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-card);
+}
+
+.th-card h2,
+.th-card h3 {
+    margin: 0;
+    color: #fff;
+}
+
+.th-card h2 {
+    font-size: 1.25rem;
+}
+
+.th-card h3 {
+    font-size: 1rem;
+}
+
+.th-muted {
+    margin: 0;
+    color: var(--cm-dim);
+    line-height: 1.5;
+}
+
+.th-dim {
+    color: var(--cm-dim);
+}
+
+/* ---------- Notas ---------- */
+.th-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.th-note {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 58px;
+    padding: 8px 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-bg);
+    text-align: center;
+}
+
+.th-note small {
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.th-note strong {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.th-note.root {
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 18%, var(--cm-bg));
+}
+
+/* ---------- Datos ---------- */
+.th-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin: 0;
+}
+
+.th-facts dt {
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.th-facts dd {
+    margin: 2px 0 0;
+    color: #fff;
+}
+
+/* ---------- Tablas ---------- */
+.th-table-wrap {
+    overflow-x: auto;
+}
+
+.th-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.th-table th {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--cm-border);
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.th-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--cm-border) 55%, transparent);
+    vertical-align: middle;
+}
+
+.th-table tr.active td {
+    background: color-mix(in srgb, var(--cm-accent) 12%, transparent);
+}
+
+.th-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.th-link:hover {
+    color: var(--cm-accent);
+}
+
+/* ---------- Etiquetas y acordes ---------- */
+.th-chip {
+    display: inline-flex;
+    margin: 2px 6px 2px 0;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.18);
+    font-size: 0.85rem;
+}
+
+.th-chip.fn-T {
+    background: color-mix(in srgb, #3fb5a6 22%, transparent);
+    color: #7fe0d3;
+}
+
+.th-chip.fn-SD {
+    background: color-mix(in srgb, #d9a93f 22%, transparent);
+    color: #f0cd7a;
+}
+
+.th-chip.fn-D {
+    background: color-mix(in srgb, #e0684a 22%, transparent);
+    color: #f0a08b;
+}
+
+.th-chords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.th-chord {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 52px;
+    padding: 6px 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-bg);
+}
+
+.th-chord strong {
+    color: #fff;
+}
+
+.th-chord small {
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+}
+
+.th-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.th-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+}
+
+.th-mini strong {
+    color: #fff;
+}
+
+/* ---------- Teclado ---------- */
+.kb {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+}
+
+.kb-white {
+    fill: #d8d9de;
+    stroke: var(--cm-border);
+}
+
+.kb-black {
+    fill: var(--cm-bg);
+    stroke: var(--cm-border);
+}
+
+.kb-white.on {
+    fill: color-mix(in srgb, var(--cm-accent) 55%, #d8d9de);
+}
+
+.kb-black.on {
+    fill: color-mix(in srgb, var(--cm-accent) 70%, var(--cm-bg));
+}
+
+.kb-white.root,
+.kb-black.root {
+    fill: var(--cm-accent);
+}
+
+.kb-label {
+    fill: #fff;
+    font: 700 9px system-ui, sans-serif;
+    pointer-events: none;
+}
+
+/* ---------- Glosario de símbolos ---------- */
+.sym-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sym-row {
+    display: grid;
+    grid-template-columns: 110px 190px 1fr;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 12px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-bg);
+}
+
+.sym-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 32px;
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sym-demo>svg {
+    width: 24px;
+    height: 24px;
+}
+
+.sym-row strong {
+    color: var(--cm-text-strong, #e6e7ea);
+}
+
+.volta-demo {
+    padding: 0 8px 0 4px;
+    border-top: 1.5px solid currentColor;
+    border-left: 1.5px solid currentColor;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+    .sym-row {
+        grid-template-columns: 80px 1fr;
+    }
+
+    .sym-row p {
+        grid-column: 1 / -1;
+    }
+}

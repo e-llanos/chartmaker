@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import { APP_NAME } from '@/config/app';
 
-const LINKS = [{ href: '/songs', label: 'Canciones' }] as const;
+const LINKS = [
+    { href: '/songs', label: 'Canciones' },
+    { href: '/theory', label: 'Teoría' },
+] as const;
 
 export default function Navbar() {
     return (
