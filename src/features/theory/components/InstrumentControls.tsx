@@ -9,13 +9,13 @@ interface InstrumentControlsProps {
     state: InstrumentState;
 }
 
-/** Selector Piano / Guitarra y, en guitarra, la afinación. */
+/** Dos botones con icono (teclado y guitarra) y, en guitarra, la afinación. */
 export default function InstrumentControls({ state }: InstrumentControlsProps) {
     return (
         <>
             <ToggleGroup<Instrument>
                 label="Instrumento"
-                icon={<PianoIcon />}
+                iconOnly
                 value={state.instrument}
                 onChange={state.setInstrument}
                 options={[

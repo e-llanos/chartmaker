@@ -12,6 +12,7 @@ import DiatonicTable from './DiatonicTable';
 import NameStyleToggle from './NameStyleToggle';
 import { MoonIcon, SunIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
+import RootPicker from './RootPicker';
 
 const FUNCTION_TEXT: Record<HarmonicFunction, string> = {
     T: 'Reposo y estabilidad: es el «hogar» de la tonalidad.',
@@ -64,12 +65,7 @@ export default function HarmonyGuide() {
     return (
         <div className="th-panel">
             <div className="th-controls">
-                <label className="th-field">
-                    <span className="lb">Tonalidad</span>
-                    <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
-                        {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
-                    </select>
-                </label>
+                <RootPicker label="Tonalidad" value={root} onChange={setRoot} style={style} />
                 <ToggleGroup
                     label="Modo"
                     icon={<SunIcon />}

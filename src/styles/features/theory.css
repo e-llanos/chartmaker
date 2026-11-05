@@ -669,3 +669,94 @@
 .kb-label.lite {
     fill: var(--cm-text);
 }
+
+
+/* ---------- Selector de tónica ---------- */
+.th-roots {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+}
+
+.th-root-group {
+    display: inline-flex;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+}
+
+.th-root-btn {
+    display: inline-grid;
+    place-items: center;
+    min-width: 40px;
+    height: 34px;
+    padding: 0 6px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--cm-icon);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.th-root-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.th-root-btn:hover:not([aria-pressed='true']):not(:disabled) {
+    background: color-mix(in srgb, var(--cm-accent) 12%, transparent);
+    color: #fff;
+}
+
+.th-root-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.th-root-btn:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
+
+/* Elegida: relleno sólido de color */
+.th-root-btn[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--cm-accent) 82%, #000);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- Pie de la tarjeta del visualizador ---------- */
+.th-card-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cm-border);
+}
+
+.th-toggle-btn.icon {
+    justify-content: center;
+    width: 44px;
+    padding: 0;
+}
+
+.th-toggle-btn.icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Elegida: relleno sólido de color */
+.th-root-btn[aria-pressed='true'] {
+    border-color: transparent;
+    background: color-mix(in srgb, var(--cm-accent) 82%, #000);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}

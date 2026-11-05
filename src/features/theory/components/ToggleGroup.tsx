@@ -14,21 +14,30 @@ interface ToggleGroupProps<T extends string> {
     value: T;
     options: ToggleOption<T>[];
     onChange: (value: T) => void;
+    /** Solo iconos: el nombre queda como etiqueta accesible y como ayuda al pasar el cursor. */
+    iconOnly?: boolean;
 }
 
 /** Selector de una opción entre pocas: botones con icono, el elegido se rellena de color. */
 export default function ToggleGroup<T extends string>({
-    label, icon, value, options, onChange,
+    label, icon, value, options, onChange, iconOnly = false,
 }: ToggleGroupProps<T>) {
     return (
         <div className="th-field">
-            <span className="lb th-label">{icon}{label}</span>
+            {!iconOnly && <span className="lb th-label">{icon}{label}</span>}
             <div className="th-toggle" role="group" aria-label={label}>
                 {options.map((o) => (
-                    <button key={o.value} type="button" className="th-toggle-btn"
-                        aria-pressed={value === o.value} onClick={() => onChange(o.value)}>
+                    <button
+                        key={o.value}
+                        type="button"
+                        className={`th-toggle-btn${iconOnly ? ' icon' : ''}`}
+                        aria-pressed={value === o.value}
+                        aria-label={iconOnly ? o.label : undefined}
+                        title={iconOnly ? o.label : undefined}
+                        onClick={() => onChange(o.value)}
+                    >
                         {o.icon}
-                        <span>{o.label}</span>
+                        {!iconOnly && <span>{o.label}</span>}
                     </button>
                 ))}
             </div>

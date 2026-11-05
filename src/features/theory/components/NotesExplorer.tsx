@@ -12,6 +12,7 @@ import { useInstrument } from './useInstrument';
 import { SparklesIcon } from '@/shared/ui/Icons';
 import { BanIcon, ChordIcon, EyeIcon, EyeOffIcon, LayersIcon, ScaleIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
+import RootPicker from './RootPicker';
 
 type Highlight = 'all' | 'scale' | 'chord';
 
@@ -86,12 +87,7 @@ export default function NotesExplorer() {
                     ]}
                 />
                 {highlight !== 'all' && (
-                    <label className="th-field">
-                        <span className="lb">Tónica</span>
-                        <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
-                            {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
-                        </select>
-                    </label>
+                    <RootPicker label="Tónica" value={root} onChange={setRoot} style={style} />
                 )}
                 {highlight === 'scale' && (
                     <label className="th-field">

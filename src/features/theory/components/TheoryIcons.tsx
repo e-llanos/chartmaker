@@ -49,3 +49,9 @@ export const SlidersIcon = () => (
         <circle cx="15" cy="6" r="2" /><circle cx="9" cy="12" r="2" /><circle cx="17" cy="18" r="2" />
     </Icon>
 );
+
+export const SharpIcon = () => <Icon><path d="M9 4v16M15 3v16M5 9l14-3M5 17l14-3" /></Icon>;
+
+export const FlatIcon = () => (
+    <Icon><path d="M8 3v18M8 12.5c5-3.2 9 .2 9 3.2 0 2.4-3.6 4.4-9 5.3" /></Icon>
+);

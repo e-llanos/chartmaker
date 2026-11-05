@@ -9,6 +9,7 @@ import NameStyleToggle from './NameStyleToggle';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
+import RootPicker from './RootPicker';
 
 export default function ScaleBuilder() {
     const [root, setRoot] = useState<string>('C');
@@ -29,12 +30,7 @@ export default function ScaleBuilder() {
     return (
         <div className="th-panel">
             <div className="th-controls">
-                <label className="th-field">
-                    <span className="lb">Tónica</span>
-                    <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
-                        {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
-                    </select>
-                </label>
+                <RootPicker label="Tónica" value={root} onChange={setRoot} style={style} />
                 <label className="th-field">
                     <span className="lb">Escala</span>
                     <select className="th-select" value={scaleId} onChange={(e) => setScaleId(e.target.value)}>
@@ -48,7 +44,6 @@ export default function ScaleBuilder() {
                     </select>
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
-                <InstrumentControls state={instrument} />
             </div>
 
             <section className="th-card">
@@ -74,6 +69,9 @@ export default function ScaleBuilder() {
                 </dl>
 
                 <InstrumentView notes={scale.notes} style={style} instrument={instrument.instrument} tuning={instrument.tuning} />
+                <div className="th-card-foot">
+                    <InstrumentControls state={instrument} />
+                </div>
             </section>
 
             {parent && (

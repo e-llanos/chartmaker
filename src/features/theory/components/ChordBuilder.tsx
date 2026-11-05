@@ -7,6 +7,7 @@ import NameStyleToggle from './NameStyleToggle';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
+import RootPicker from './RootPicker';
 
 export default function ChordBuilder() {
     const [root, setRoot] = useState<string>('C');
@@ -22,12 +23,7 @@ export default function ChordBuilder() {
     return (
         <div className="th-panel">
             <div className="th-controls">
-                <label className="th-field">
-                    <span className="lb">Raíz</span>
-                    <select className="th-select" value={root} onChange={(e) => setRoot(e.target.value)}>
-                        {THEORY_ROOTS.map((r) => <option key={r} value={r}>{fmt(r)}</option>)}
-                    </select>
-                </label>
+                <RootPicker label="Raíz" value={root} onChange={setRoot} style={style} />
                 <label className="th-field">
                     <span className="lb">Tipo de acorde</span>
                     <select className="th-select" value={quality} onChange={(e) => setQuality(e.target.value)}>
@@ -41,7 +37,6 @@ export default function ChordBuilder() {
                     </select>
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
-                <InstrumentControls state={instrument} />
             </div>
 
             <section className="th-card">
@@ -65,6 +60,9 @@ export default function ChordBuilder() {
                 </dl>
 
                 <InstrumentView notes={chord.notes} style={style} instrument={instrument.instrument} tuning={instrument.tuning} />
+                <div className="th-card-foot">
+                    <InstrumentControls state={instrument} />
+                </div>
             </section>
 
             <section className="th-card">
