@@ -22,6 +22,13 @@ const CARDS = [
     color: '#e0684a',
     icon: '+',
   },
+  {
+    href: '/theory',
+    title: 'Teoría',
+    description: 'Escalas, acordes, armonía y la simbología de los charts, con una herramienta para construir cualquier escala.',
+    color: '#3fb5a6',
+    icon: '♯',
+  },
 ] as const;
 
 export default function HomePage() {

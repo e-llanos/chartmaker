@@ -3,7 +3,7 @@ import { padBeats } from '@/domain/music/meter';
 import type { ScoreMeasure } from '@/domain/score/types';
 import { barBetween } from '@/domain/score/utils';
 import ChordText from '@/shared/viewer/ChordText';
-import { Bar, MarkView, SimileIcon } from '@/features/score/components/ScoreSymbols';
+import { Bar, MarkView, SimileIcon } from '@/shared/notation/ScoreSymbols';
 
 interface MeasureViewProps {
     measure: ScoreMeasure;

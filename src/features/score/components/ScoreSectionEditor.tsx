@@ -14,8 +14,8 @@ import {
 import { emptyScoreMeasure } from '@/domain/score/utils';
 import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
 import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, PlusIcon, TrashIcon } from '@/shared/ui/Icons';
-import BarIcon, { type BarIconKind } from './BarIcon';
-import { MarkView, SimileIcon } from './ScoreSymbols';
+import BarIcon, { type BarIconKind } from '@/shared/notation/BarIcon';
+import { MarkView, SimileIcon } from '@/shared/notation/ScoreSymbols';
 
 const ICON_MARKS: MeasureMark[] = ['segno', 'coda', 'fermata'];
 const TEXT_MARKS: MeasureMark[] = ['toCoda', 'dc', 'ds', 'dcCoda', 'dsCoda', 'fine'];

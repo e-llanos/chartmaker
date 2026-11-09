@@ -1,6 +1,6 @@
 # ChartMaker
 
-Aplicación web para crear, visualizar y exportar **cifrados**, **charts** y **charts avanzados** de canciones, pensada para equipos de alabanza y músicos.
+Aplicación web para crear, visualizar y exportar **cifrados**, **charts** y **charts avanzados** de canciones, pensada para equipos de alabanza y músicos. Incluye una sección de **teoría musical** con herramientas para construir escalas y acordes en cualquier tonalidad.
 
 Cada canción reúne tres recursos en un solo lugar:
 
@@ -17,15 +17,16 @@ Cada canción reúne tres recursos en un solo lugar:
 - **Cifrado** en modos *letra + acordes*, *solo acordes* y *solo letra*.
 - **Secciones**: Intro, Verso, Pre coro, Coro, Puente, Interludio, Estribillo, Final, Instrumental y Tag, con repeticiones.
 - **Disposición** en lista o en dos columnas.
+- **Editores de chart** con secciones plegables, reordenación arrastrando (o con flechas) y vista previa en vivo. El chart avanzado edita los compases desde una tira de compases con un inspector de barras, casillas y símbolos.
 - **Exportación** a PDF, PNG y archivos `.chartmaker`.
 - **Importación** de canciones desde archivos `.chartmaker`.
-- **Editores** con vista previa en vivo.
+- **Teoría musical**: escalas, acordes, armonía, círculo de quintas, notas en piano y guitarra, y el glosario de símbolos de los charts (ver [Teoría musical](#teoría-musical)).
 
 ## Stack
 
 - [Next.js](https://nextjs.org) 16.4 (App Router, Turbopack, `cacheComponents`)
 - [React](https://react.dev) 19.3 y [TypeScript](https://www.typescriptlang.org) 5
-- [ChordSheetJS](https://github.com/martijnversluis/ChordSheetJS) 18 para la matemática de acordes
+- [ChordSheetJS](https://github.com/martijnversluis/ChordSheetJS) 18 para la matemática de acordes de los cifrados
 - [html-to-image](https://github.com/bubkoo/html-to-image) 1.11 y [jsPDF](https://github.com/parallax/jsPDF) 4 para exportar
 - [Tailwind CSS](https://tailwindcss.com) 4 mediante `@tailwindcss/turbopack`, usado solo por su base, más hojas de estilo propias en `src/styles`
 - [ESLint](https://eslint.org) 9 con `eslint-config-next`
@@ -61,18 +62,21 @@ Si cambias la estructura de carpetas y algo no se actualiza, ejecuta `npm run cl
 
 ## Rutas
 
-| Ruta                        | Descripción                                          |
-| --------------------------- | ---------------------------------------------------- |
-| `/`                         | Inicio                                               |
-| `/songs`                    | Listado de canciones, con los recursos de cada una   |
-| `/songs/new`                | Crear una canción                                    |
-| `/songs/[id]`               | Canción con pestañas Cifrado, Chart y Chart avanzado |
-| `/songs/[id]?view=chart`    | Abre directamente la pestaña del chart               |
-| `/songs/[id]?view=advanced` | Abre directamente la pestaña del chart avanzado      |
-| `/songs/[id]/edit`          | Editor de datos y cifrado                            |
-| `/songs/[id]/chart/edit`    | Editor del chart                                     |
-| `/songs/[id]/advanced/edit` | Editor del chart avanzado                            |
+| Ruta                        | Descripción                                                               |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `/`                         | Inicio                                                                    |
+| `/songs`                    | Listado de canciones, con los recursos de cada una                        |
+| `/songs/new`                | Crear una canción                                                         |
+| `/songs/[id]`               | Canción con pestañas Cifrado, Chart y Chart avanzado                      |
+| `/songs/[id]?view=chart`    | Abre directamente la pestaña del chart                                    |
+| `/songs/[id]?view=advanced` | Abre directamente la pestaña del chart avanzado                           |
+| `/songs/[id]/edit`          | Editor de datos y cifrado                                                 |
+| `/songs/[id]/chart/edit`    | Editor del chart                                                          |
+| `/songs/[id]/advanced/edit` | Editor del chart avanzado                                                 |
+| `/theory`                   | Teoría musical (pestaña Escalas por defecto)                              |
+| `/theory?tab=chords`        | Acordes (`tab` admite `scales`, `chords`, `harmony`, `notes` y `symbols`) |
 
+La pestaña activa de `/songs/[id]` y de `/theory` se refleja en la URL, pero cambiar de pestaña no navega ni recarga datos.
 
 ## API
 
@@ -85,6 +89,32 @@ Si cambias la estructura de carpetas y algo no se actualiza, ejecuta `npm run cl
 | `DELETE` | `/api/songs/[id]` | Elimina una canción                                                  |
 
 Toda entrada se valida en `src/domain/song/validation.ts` (tipos, longitudes, formato de tonalidad y compás, ids únicos de sección).
+
+## Teoría musical
+
+La ruta `/theory` reúne cinco herramientas, con notación americana (C D E) o latina (Do Re Mi) en todas:
+
+| Pestaña        | Contenido                                                                                                                                                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Escalas**    | Eliges tónica y escala (21: mayor, menores, modos, pentatónicas, blues, simétricas…) y obtienes las notas con su grado, la fórmula, los tonos y semitonos, los modos o la escala madre, y los acordes de cada grado con su número romano y su función. |
+| **Acordes**    | 19 tipos de acorde (tríadas, suspendidos, sextas, séptimas y novenas): notas, intervalos y una tabla con todos los tipos sobre la raíz elegida.                                                                                                        |
+| **Armonía**    | Círculo de quintas interactivo (mayores fuera, relativas menores dentro y armadura en el borde, con los acordes de la tonalidad coloreados por función), acordes diatónicos, funciones armónicas, progresiones comunes y cadencias.                    |
+| **Notas**      | Todas las notas del piano y del mástil de guitarra, con su octava (C4, E2…), cinco afinaciones y de 12 a 24 trastes, con una escala o un acorde resaltado encima.                                                                                      |
+| **Simbología** | Glosario de los símbolos de los charts: compás y tiempos, barras, repeticiones y casillas, saltos (segno, coda, D.C., D.S., Fine) y cifrado de acordes.                                                                                                |
+
+En **Escalas** y **Acordes** las notas se pueden ver en piano o en guitarra con dos botones bajo el visualizador.
+
+El motor vive en `src/domain/theory` y es TypeScript puro:
+
+| Archivo          | Función                                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `notes.ts`       | Notas, intervalos y ortografía. Cada grado usa una letra distinta: F# mayor es F# G# A# B C# D# E#, no con bemoles mezclados. |
+| `scales.ts`      | Catálogo de escalas, modos y escala madre.                                                                                    |
+| `chords.ts`      | Tipos de acorde, acordes diatónicos por terceras, números romanos y funciones armónicas.                                      |
+| `harmony.ts`     | Progresiones, cadencias, círculo de quintas y armaduras.                                                                      |
+| `instruments.ts` | Afinaciones y mástil de guitarra traste por traste.                                                                           |
+
+Los números romanos de las escalas menores se escriben sin alteraciones (`i ii° III iv v VI VII`); los de los modos de la escala mayor sí las llevan (`bIII`, `bVII`).
 
 ## Estructura del proyecto
 
@@ -100,6 +130,7 @@ src/
 │   │       ├── edit/         Editor de cifrado
 │   │       ├── chart/edit/   Editor de chart
 │   │       └── advanced/edit/ Editor de chart avanzado
+│   ├── theory/               Teoría musical (página con pestañas)
 │   ├── layout.tsx
 │   ├── not-found.tsx
 │   └── page.tsx              Inicio
@@ -107,25 +138,32 @@ src/
 │   ├── chart/components/     Visor y editor del chart
 │   ├── chordsheet/components/ Visor y editor del cifrado
 │   ├── score/components/     Visor y editor del chart avanzado
-│   └── songs/                Compone las tres vistas y gestiona la canción
-│       ├── components/       SongWorkspace, ResourceEditorPage y acciones
-│       └── hooks/            useSaveSong
+│   ├── songs/                Compone las tres vistas y gestiona la canción
+│   │   ├── components/       SongWorkspace, ResourceEditorPage y acciones
+│   │   └── hooks/            useSaveSong
+│   └── theory/               Herramientas y guías de teoría
+│       ├── components/       ScaleBuilder, ChordBuilder, HarmonyGuide, NotesExplorer,
+│       │                     SymbolsGuide, CircleOfFifths, Keyboard, Fretboard…
+│       └── tabs.ts
 ├── config/                   Nombre de la app y rutas
 ├── domain/                   Lógica pura de TypeScript (sin React, Next ni Node)
 │   ├── chart/                Tipos y utilidades del chart
 │   ├── chordsheet/           Parser ChordPro, modos de vista, repeticiones
-│   ├── music/                Motor de acordes, formato de superíndices, compás
+│   ├── music/                Motor de acordes (transposición), formato de superíndices, compás
 │   ├── score/                Tipos y utilidades del chart avanzado
 │   ├── sections/             Tipos de sección
 │   ├── shared/               Utilidades comunes (ids)
-│   └── song/                 Tipos, constantes, validación y formato .chartmaker
+│   ├── song/                 Tipos, constantes, validación y formato .chartmaker
+│   └── theory/               Notas, escalas, acordes, armonía e instrumentos
 ├── server/
 │   └── songs/                Repositorio de canciones (solo servidor)
 ├── shared/                   Piezas reutilizables sin lógica de negocio
-│   ├── editor/               EditorLayout, SectionTypeButtons, SectionMetaFields
+│   ├── editor/               EditorLayout, SectionPanel (plegable), SectionsToolbar,
+│   │                         SectionMetaFields, SectionTypeButtons, useAccordion, useReorder
 │   ├── export/               ExportMenu, ExportHead y exportación a PDF/PNG
 │   ├── layout/               Navbar y Footer
-│   ├── ui/                   EmptyState, ViewSkeleton
+│   ├── notation/             BarIcon y símbolos de partitura
+│   ├── ui/                   Icons, EmptyState, ViewSkeleton
 │   └── viewer/               ViewerFrame, toolbar, tarjetas de sección, cabecera, acordes
 └── styles/
     ├── global.css            Punto de entrada único (importa el resto en orden)
@@ -137,11 +175,21 @@ src/
     ├── features/
     │   ├── songs.css         Listado, cabecera y pestañas
     │   ├── chart.css         Chart simple
-    │   └── score.css         Chart avanzado
+    │   ├── score.css         Chart avanzado
+    │   └── theory.css        Teoría musical
     └── shared/
         ├── viewer.css        Visor del cifrado y hoja exportable
         └── editor.css        Paneles de edición
 ```
+
+El código está en inglés y los textos de la interfaz en español:
+
+| En la interfaz | En el código |
+| -------------- | ------------ |
+| Cifrado        | `chordsheet` |
+| Chart          | `chart`      |
+| Chart avanzado | `score`      |
+| Teoría         | `theory`     |
 
 ### Reglas de dependencia
 
@@ -153,8 +201,10 @@ app  →  server      →  domain
 - `domain` no importa React, Next ni Node: es TypeScript puro, fácil de probar y de reutilizar.
 - `server` solo se importa desde `app` (rutas y páginas de servidor). Lleva `import 'server-only'`, así que importarlo desde un componente cliente rompe la compilación.
 - `shared` no importa `features`, `server` ni `app`.
-- `chordsheet`, `chart` y `score` no se importan entre sí: solo `songs` las compone.
+- `chordsheet`, `chart`, `score` y `theory` no se importan entre sí: solo `songs` compone los tres recursos de una canción.
 - Los componentes nunca leen datos directamente: reciben lo que necesitan por props.
+
+Por ahora estas reglas se mantienen por revisión; ver [Pendientes](#pendientes).
 
 ## Modelo de datos
 
@@ -247,8 +297,8 @@ La cabecera exportada muestra título, artista y álbum, y una línea con tono, 
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/) (`feat`, `fix`, `refactor`, `docs`, `style`, `chore`…).
 - **Componentes**: Server Components por defecto; `'use client'` solo donde hay estado o eventos.
 - **Datos dinámicos**: con `cacheComponents`, cualquier lectura de `params`, `searchParams` o del JSON debe ir dentro de un `<Suspense>`.
-- **Estilos**: variables de diseño en `base.css` (`--cm-*`) y una hoja por área, organizadas en `app/`, `shared/` y `features/` como el código y cargadas, en orden, desde `src/styles/global.css`.
-
+- **Estilos**: variables de diseño en `base.css` (`--cm-*`) y una hoja por área, organizadas en `app/`, `shared/` y `features/` como el código y cargadas, en orden, desde `src/styles/global.css`. Las clases son globales, así que cada área usa su propio prefijo (`acc-`, `th-`, `cf-`, `fb-`, `kb-`…) y se evitan nombres genéricos como `.sm`, que ya provocaron choques entre pantallas.
+- **Hidratación**: los cálculos que dependen de `Math.sin` o `Math.cos` (como el círculo de quintas) se redondean, porque difieren en el último decimal entre el servidor y el navegador.
 
 ### Git Flow
  
@@ -272,6 +322,9 @@ Nombres de ramas en minúsculas y con guiones, por ejemplo `feature/chart-avanza
 - En 6/8 se cuentan 2 tiempos por compás.
 - Sin autenticación ni usuarios: cualquiera con acceso a la app puede editar y borrar canciones.
 - Dos pestañas editando el mismo campo a la vez: gana el último guardado.
+- Reordenar secciones arrastrando no funciona en pantallas táctiles; ahí se usan las flechas de cada sección.
+- Teoría: las tónicas `D#`, `G#` y `A#` se ofrecen por compatibilidad con las tonalidades de la app, pero generan dobles sostenidos al construir la escala. La guitarra es de seis cuerdas, con cinco afinaciones, y el piano muestra de 2 a 4 octavas.
+- Teoría: las funciones armónicas (tónica, subdominante, dominante) se indican solo para la escala mayor y las tres menores.
 
 ## Pendientes
 
@@ -279,3 +332,9 @@ Nombres de ramas en minúsculas y con guiones, por ejemplo `feature/chart-avanza
 - Botón para eliminar solo el chart o el chart avanzado de una canción.
 - Hoja de estilos de impresión para generar PDF vectorial.
 - Base de datos para despliegues en la nube.
+- Tests del dominio (Vitest), reglas de ESLint para las dependencias entre capas y CI.
+- Unificar `domain/music` y `domain/theory`, que hoy se solapan en la escritura de notas y las notaciones.
+- Registro de recursos (cifrado, chart, chart avanzado) y ruta de edición única, para que añadir un recurso toque menos archivos.
+- Esquemas de validación como única fuente de tipos y validación, con versión de formato y migraciones para `songs.json` y `.chartmaker`.
+- Aviso cuando un chart derivado del cifrado queda desactualizado.
+- Mover `Keyboard`, `Fretboard` y los iconos genéricos de `features/theory` a `shared/`.
