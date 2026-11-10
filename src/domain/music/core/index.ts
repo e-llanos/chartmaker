@@ -6,3 +6,6 @@ export * from './meter';
 export * from './chord-quality';
 export * from './chord';
 export * from './analysis';
+export * from './diatonic';
+export * from './notation';
+export * from './transpose';

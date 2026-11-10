@@ -33,6 +33,8 @@ export interface ChordAnalysis {
     nashville: string;
     /** Bajo alterno como grado Nashville ("3" en C/E, "b7" en C/Bb). */
     bass?: string;
+    /** Bajo alterno en romanos ("III" en C/E, "bVII" en C/Bb). */
+    bassRoman?: string;
 }
 
 const MAJOR_SEMIS = MAJOR_FORMULA.map(degreeSemitones);
@@ -51,15 +53,36 @@ interface Placement {
     alteration: number;
 }
 
-/** Posición de una nota respecto a una tónica y una escala (en semitonos por grado). */
-function place(tonicName: string, noteName: string, scale: readonly number[]): Placement | null {
+/** Grado y alteración (respecto a la escala mayor) de cada intervalo cuando la nota no es de la escala. */
+const CHROMATIC: ReadonlyArray<readonly [number, number]> = [
+    [1, 0], [2, -1], [2, 0], [3, -1], [3, 0], [4, 0], [4, 1], [5, 0], [6, -1], [6, 0], [7, -1], [7, 0],
+];
+
+/** Escrituras alteradas que se respetan tal como las escribió el usuario: b2 b3 b5 b6 b7 y #1 #2 #4 #5. */
+const SPELLINGS_KEPT = new Set(['2,-1', '3,-1', '5,-1', '6,-1', '7,-1', '1,1', '2,1', '4,1', '5,1']);
+
+const normalize = (n: number): number => mod(n + 6, 12) - 6;
+
+/**
+ * Grado de una nota respecto a una tónica. Se respeta la ortografía (Ab en Do = b6) cuando es un
+ * grado cromático estándar; si no (Db en Re, A# en Do), se usa el grado que corresponde a su altura.
+ */
+function degreeOf(tonicName: string, noteName: string): { degree: number; interval: number } | null {
     const tonic = parseNote(tonicName);
     const note = parseNote(noteName);
     if (!tonic || !note) return null;
-    const degree = mod(note.letter - tonic.letter, 7) + 1;
     const interval = mod(note.pc - tonic.pc, 12);
-    const alteration = mod(interval - (scale[degree - 1] ?? 0) + 6, 12) - 6;
-    return { degree, alteration };
+    const spelled = mod(note.letter - tonic.letter, 7) + 1;
+    const alt = normalize(interval - (MAJOR_SEMIS[spelled - 1] ?? 0));
+    if (alt === 0 || SPELLINGS_KEPT.has(`${spelled},${alt}`)) return { degree: spelled, interval };
+    return { degree: CHROMATIC[interval]?.[0] ?? spelled, interval };
+}
+
+/** Posición de una nota respecto a una tónica y una escala (en semitonos por grado). */
+function place(tonicName: string, noteName: string, scale: readonly number[]): Placement | null {
+    const found = degreeOf(tonicName, noteName);
+    if (!found) return null;
+    return { degree: found.degree, alteration: normalize(found.interval - (scale[found.degree - 1] ?? 0)) };
 }
 
 function romanOf(chord: Chord, at: Placement): string {
@@ -91,6 +114,7 @@ export function analyzeChord(
     if (!forRoman || !forNashville) return null;
 
     const bass = parsed.bass ? place(ref.tonic, parsed.bass, MAJOR_SEMIS) : null;
+    const bassRoman = parsed.bass ? place(ref.tonic, parsed.bass, romanScale) : null;
     // Un sufijo desconocido no impide numerar: se conserva tal cual.
     return {
         degree: forRoman.degree,
@@ -99,5 +123,8 @@ export function analyzeChord(
         roman: romanOf(parsed, forRoman),
         nashville: `${prefixOf(forNashville.alteration)}${forNashville.degree}${parsed.suffix}`,
         ...(bass ? { bass: `${prefixOf(bass.alteration)}${bass.degree}` } : {}),
+        ...(bassRoman
+            ? { bassRoman: prefixOf(bassRoman.alteration) + (ROMAN_NUMERALS[bassRoman.degree - 1] ?? '') }
+            : {}),
     };
 }

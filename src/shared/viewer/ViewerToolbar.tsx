@@ -2,7 +2,8 @@
 
 import type { ReactNode, SVGProps } from 'react';
 import { VIEW_MODE_LABELS, type ViewMode } from '@/domain/chordsheet/view-mode';
-import { ALL_KEYS, NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/engine';
+import { SONG_KEYS } from '@/domain/music/core/key';
+import { NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/engine';
 
 export type SectionsLayout = 'columns' | 'list';
 
@@ -61,7 +62,7 @@ export default function ViewerToolbar({
   title, currentKey, notation, onTranspose, onKeyChange, onNotationChange,
   hideTitle = false, layout, onLayoutChange, mode, onModeChange, actions,
 }: ViewerToolbarProps) {
-  const keys = ALL_KEYS.includes(currentKey) ? ALL_KEYS : [currentKey, ...ALL_KEYS];
+  const keys = SONG_KEYS.includes(currentKey) ? SONG_KEYS : [currentKey, ...SONG_KEYS];
   const notationEntries = Object.entries(NOTATION_LABELS) as [Notation, string][];
   const modeEntries = Object.entries(VIEW_MODE_LABELS) as [ViewMode, string][];
 

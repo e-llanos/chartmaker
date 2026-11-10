@@ -42,3 +42,10 @@ export function accidentalsOf(name: string): number {
 
 /** Altura (0–11) de un nombre de nota, o null si no es una nota válida. */
 export const pitchClassOf = (name: string): number | null => parseNote(name)?.pc ?? null;
+
+const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
+const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'] as const;
+
+/** Nombre de una altura (0–11) escrito con sostenidos o con bemoles. */
+export const pitchName = (pc: number, preferFlats: boolean): string =>
+    (preferFlats ? FLAT_NAMES : SHARP_NAMES)[mod(pc, 12)] ?? '';

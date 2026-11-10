@@ -1,11 +1,11 @@
 import { ROMAN_NUMERALS } from '@/domain/music/core/analysis';
+import { stackThirds, type StackedChord } from '@/domain/music/core/diatonic';
 import {
     CHORD_QUALITIES,
-    qualityFromStack,
     type ChordGroup,
     type ChordQuality,
 } from '@/domain/music/core/chord-quality';
-import { mod, parseNote, spell, type SpelledNote } from './notes';
+import { parseNote, spell, type SpelledNote } from './notes';
 import type { BuiltScale } from './scales';
 
 export { CHORD_QUALITIES, type ChordGroup, type ChordQuality };
@@ -71,27 +71,16 @@ export interface DiatonicChord {
 
 /** Acordes que salen de apilar terceras sobre cada grado. Solo para escalas de 7 notas. */
 export function diatonicChords(scale: BuiltScale): DiatonicChord[] | null {
-    const n = scale.notes;
-    if (n.length !== 7) return null;
+    const stacked = stackThirds(scale.notes);
+    if (!stacked) return null;
     const functions = FUNCTIONS_BY_SCALE[scale.def.id];
-    const rel = (from: number, to: number) => mod((n[to % 7]?.semis ?? 0) - (n[from]?.semis ?? 0), 12);
 
-    return n.map((note, i) => {
-        const third = rel(i, i + 2);
-        const fifth = rel(i, i + 4);
-        const seventh = rel(i, i + 6);
-        const names = (steps: number[]) => steps.map((s) => n[(i + s) % 7]?.name ?? '');
+    return stacked.map((c, i) => {
         const prefix = PLAIN_ROMANS.has(scale.def.id) ? '' : (scale.def.formula[i] ?? '').replace(/\d+/, '');
-        const numeral = third === 3 ? (ROMAN_NUMERALS[i] ?? '').toLowerCase() : (ROMAN_NUMERALS[i] ?? '');
-        const tri = qualityFromStack(third, fifth);
-        const sev = qualityFromStack(third, fifth, seventh);
-        return {
-            degree: i + 1,
-            root: note.name,
-            fn: functions?.[i],
-            triad: tri ? { symbol: note.name + tri.symbol, notes: names([0, 2, 4]), roman: prefix + numeral + tri.roman } : null,
-            seventh: sev ? { symbol: note.name + sev.symbol, notes: names([0, 2, 4, 6]), roman: prefix + numeral + sev.roman } : null,
-        };
+        const numeral = c.third === 3 ? (ROMAN_NUMERALS[i] ?? '').toLowerCase() : (ROMAN_NUMERALS[i] ?? '');
+        const info = (chord: StackedChord['triad']): ChordInfo | null =>
+            chord ? { symbol: c.root + chord.quality.symbol, notes: chord.notes, roman: prefix + numeral + chord.quality.roman } : null;
+        return { degree: c.degree, root: c.root, fn: functions?.[i], triad: info(c.triad), seventh: info(c.seventh) };
     });
 }
 
