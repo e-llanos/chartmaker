@@ -1,6 +1,6 @@
 'use client';
 
-import type { NameStyle } from '@/domain/theory/notes';
+import type { NameStyle } from '@/domain/music/core';
 import { NoteIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
 

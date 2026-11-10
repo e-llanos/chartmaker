@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
-import { formatChordSymbol, formatNote, intervalName, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
+import { formatChordSymbol, formatNote, intervalName, type NameStyle } from '@/domain/music/core';
 import NameStyleToggle from './NameStyleToggle';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';

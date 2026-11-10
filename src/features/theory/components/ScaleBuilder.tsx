@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { containedChords, diatonicChords } from '@/domain/theory/chords';
-import { formatChordSymbol, formatNote, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
+import { formatChordSymbol, formatNote, type NameStyle } from '@/domain/music/core';
 import { buildScale, modesOf, parentOf, SCALE_GROUPS, SCALES, stepLabel } from '@/domain/theory/scales';
 import DiatonicTable from './DiatonicTable';
 import NameStyleToggle from './NameStyleToggle';

@@ -1,5 +1,5 @@
 import { diatonicChords, type HarmonicFunction } from './chords';
-import { parseNote } from './notes';
+import { keyAccidentals, parseNote, pitchClassOf, relativeKey, type Key } from '@/domain/music/core';
 import { buildScale } from './scales';
 
 export interface ProgressionStep {
@@ -111,30 +111,22 @@ export function resolveProgression(root: string, p: Progression): Array<{ symbol
 export function circleOfFifths(): CircleKey[] {
     const keys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'];
     return keys.flatMap((major) => {
-        const scale = buildScale(major, 'major');
-        if (!scale) return [];
-        const sharps = scale.notes.filter((n) => n.name.includes('#')).length;
-        const flats = scale.notes.filter((n) => n.name.includes('b')).length;
-        const minorRoot = scale.notes[5]?.name ?? '';
+        const key: Key = { tonic: major, mode: 'major' };
+        const accidentals = keyAccidentals(key);
+        const minor = relativeKey(key);
+        const majorPc = pitchClassOf(major);
+        const minorPc = minor ? pitchClassOf(minor.tonic) : null;
+        if (accidentals === null || !minor || majorPc === null || minorPc === null) return [];
         return [{
             major,
-            minor: `${minorRoot}m`,
-            minorRoot,
-            signature: sharps ? `${sharps} ♯` : flats ? `${flats} ♭` : 'Sin alteraciones',
-            accidentals: sharps - flats,
-            majorPc: scale.notes[0]?.pc ?? 0,
-            minorPc: scale.notes[5]?.pc ?? 0,
+            minor: `${minor.tonic}m`,
+            minorRoot: minor.tonic,
+            signature: accidentals > 0 ? `${accidentals} ♯` : accidentals < 0 ? `${-accidentals} ♭` : 'Sin alteraciones',
+            accidentals,
+            majorPc,
+            minorPc,
         }];
     });
-}
-
-
-const SHARP_ORDER = ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
-const FLAT_ORDER = ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'];
-
-/** Notas alteradas de una armadura: 2 -> [F#, C#]; -3 -> [Bb, Eb, Ab]. */
-export function keySignature(accidentals: number): string[] {
-    return accidentals >= 0 ? SHARP_ORDER.slice(0, accidentals) : FLAT_ORDER.slice(0, -accidentals);
 }
 
 export interface CircleRole {

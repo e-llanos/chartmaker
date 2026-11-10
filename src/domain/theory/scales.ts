@@ -1,4 +1,4 @@
-import { degreeSemitones, mod, noteName, parseNote, spell, type SpelledNote } from './notes';
+import { degreeSemitones, mod, noteName, parseNote, spell, type SpelledNote } from '@/domain/music/core';
 
 export type ScaleGroup = 'basic' | 'modes' | 'melodic' | 'harmonic' | 'pentatonic' | 'other';
 

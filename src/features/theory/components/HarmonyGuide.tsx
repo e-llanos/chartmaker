@@ -3,9 +3,9 @@
 import { useMemo, useState } from 'react';
 import { diatonicChords, FUNCTION_LABELS, type HarmonicFunction } from '@/domain/theory/chords';
 import {
-    CADENCES, circleOfFifths, circleRoles, keySignature, PROGRESSIONS, resolveProgression, type Progression,
+    CADENCES, circleOfFifths, circleRoles, PROGRESSIONS, resolveProgression, type Progression,
 } from '@/domain/theory/harmony';
-import { formatChordSymbol, formatNote, parseNote, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
+import { formatChordSymbol, formatNote, parseNote, type NameStyle, keySignatureNotes } from '@/domain/music/core';
 import { buildScale } from '@/domain/theory/scales';
 import CircleOfFifths from './CircleOfFifths';
 import DiatonicTable from './DiatonicTable';
@@ -59,7 +59,7 @@ export default function HarmonyGuide() {
     // Armadura y relativa de la tonalidad elegida
     const pc = parseNote(root)?.pc;
     const key = keys.find((k) => (minor ? k.minorPc : k.majorPc) === pc);
-    const altered = key ? keySignature(key.accidentals) : [];
+    const altered = key ? keySignatureNotes(key.accidentals) : [];
     const relative = key ? (minor ? `${key.major} mayor` : `${key.minor}`) : '';
 
     return (

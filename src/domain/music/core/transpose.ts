@@ -18,10 +18,8 @@ import {
     parseKey,
     type Key,
 } from './key';
-import { mod, parseNote, pitchClassOf } from './pitch';
+import { mod, parseNote, pitchClassOf, pitchName } from './pitch';
 
-const SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
-const FLATS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'] as const;
 /** Tonalidad sin alteraciones: Eb, Ab y Bb (préstamos del modo menor) pero F# y C#. */
 const NEUTRAL = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'] as const;
 
@@ -45,9 +43,9 @@ export function spellPitch(pc: number, key: Key | null, preferFlats = false): st
         const diatonic = diatonicNames(key).get(p);
         if (diatonic) return diatonic;
         const accidentals = keyAccidentals(key) ?? 0;
-        return (accidentals > 0 ? SHARPS : accidentals < 0 ? FLATS : NEUTRAL)[p] ?? '';
+        return accidentals === 0 ? (NEUTRAL[p] ?? '') : pitchName(p, accidentals < 0);
     }
-    return (preferFlats ? FLATS : NEUTRAL)[p] ?? '';
+    return preferFlats ? pitchName(p, true) : (NEUTRAL[p] ?? '');
 }
 
 const usesFlats = (...names: Array<string | undefined>): boolean => {

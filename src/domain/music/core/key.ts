@@ -43,6 +43,14 @@ export function keyAccidentals(key: Key): number | null {
     return formula.reduce((sum, token) => sum + accidentalsOf(spell(tonic, token).name), 0);
 }
 
+const SHARP_ORDER = ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
+const FLAT_ORDER = ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'];
+
+/** Notas alteradas de una armadura: 2 -> [F#, C#]; -3 -> [Bb, Eb, Ab]. */
+export function keySignatureNotes(accidentals: number): string[] {
+    return accidentals >= 0 ? SHARP_ORDER.slice(0, accidentals) : FLAT_ORDER.slice(0, -accidentals);
+}
+
 /** ¿Se usa en la práctica? (armadura de 7 alteraciones como máximo). */
 export function isPracticalKey(key: Key): boolean {
     const n = keyAccidentals(key);

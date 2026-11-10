@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
-import { midiOctave, pitchName } from '@/domain/theory/instruments';
-import { formatNote, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
+import { midiOctave } from '@/domain/theory/instruments';
+import { formatNote, type NameStyle, pitchName } from '@/domain/music/core';
 import { buildScale, SCALE_GROUPS, SCALES } from '@/domain/theory/scales';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';

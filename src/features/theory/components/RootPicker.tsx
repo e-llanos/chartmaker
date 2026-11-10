@@ -1,6 +1,6 @@
 'use client';
 
-import { formatNote, type NameStyle } from '@/domain/theory/notes';
+import { formatNote, type NameStyle } from '@/domain/music/core';
 import { FlatIcon, NoteIcon, SharpIcon } from './TheoryIcons';
 
 const NOTES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const;

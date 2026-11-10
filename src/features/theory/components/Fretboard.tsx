@@ -1,7 +1,7 @@
 import {
-    buildFretboard, DOUBLE_MARKERS, FRET_MARKERS, pitchName, preferFlatsFor, type Tuning,
+    buildFretboard, DOUBLE_MARKERS, FRET_MARKERS, preferFlatsFor, type Tuning,
 } from '@/domain/theory/instruments';
-import { formatNote, type NameStyle, type SpelledNote } from '@/domain/theory/notes';
+import { formatNote, type NameStyle, type SpelledNote, pitchName } from '@/domain/music/core';
 
 const LEFT = 30;
 const COL = 56;

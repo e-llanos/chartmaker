@@ -5,7 +5,7 @@ import {
     type ChordGroup,
     type ChordQuality,
 } from '@/domain/music/core/chord-quality';
-import { parseNote, spell, type SpelledNote } from './notes';
+import { parseNote, spell, type SpelledNote } from '@/domain/music/core';
 import type { BuiltScale } from './scales';
 
 export { CHORD_QUALITIES, type ChordGroup, type ChordQuality };
