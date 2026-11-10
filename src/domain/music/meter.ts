@@ -1,11 +1,16 @@
-/** Tiempos por compás: 4/4 -> 4, 3/4 -> 3, 6/8 -> 2, 12/8 -> 4. */
-export function beatsPerMeasure(compas: string): number {
-    const m = compas.match(/^(\d{1,2})\s*\/\s*(\d{1,2})$/);
-    if (!m) return 4;
-    const n = Number(m[1]);
-    const d = Number(m[2]);
-    const beats = d === 8 && n % 3 === 0 ? n / 3 : n;
-    return Math.max(1, Math.min(8, beats));
+import {
+    DEFAULT_TIME_SIGNATURE,
+    parseTimeSignature,
+    slotsPerMeasure,
+    type SlotMode,
+} from '@/domain/music/core/meter';
+
+/**
+ * Casillas por compás de un texto de compás. Por pulsos (4/4 -> 4, 6/8 -> 2, 12/8 -> 4)
+ * o, con `mode: 'subdivisions'`, por corcheas (6/8 -> 6). Un compás inválido cuenta como 4/4.
+ */
+export function beatsPerMeasure(compas: string, mode: SlotMode = 'pulses'): number {
+    return slotsPerMeasure(parseTimeSignature(compas) ?? DEFAULT_TIME_SIGNATURE, mode);
 }
 
 /** Rellena con vacíos hasta `count` tiempos, sin recortar los existentes. */

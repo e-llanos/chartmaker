@@ -1,5 +1,5 @@
 /**
- * src/lib/music/engine.ts
+ * src/domain/music/engine.ts
  * Única capa que importa ChordSheetJS. Se usa para la matemática de
  * acordes: transposición y conversión americana / latina / Nashville / romano.
  *
@@ -7,6 +7,7 @@
  * relativa (en Em, el acorde Em es "6m" y G es "1").
  */
 import { Chord, Key } from 'chordsheetjs';
+import { keyDistance } from '@/domain/music/core/key';
 
 export type Notation = 'symbol' | 'latin' | 'nashville' | 'roman';
 
@@ -132,17 +133,9 @@ export function formatKeyLabel(key: string, notation: Notation): string {
     return minor ? `${latin}m` : latin;
 }
 
-const PC: Record<string, number> = {
-    C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6,
-    G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11,
-};
-
 /** Distancia en semitonos (-5..6) entre dos tonalidades, ignorando el modo. */
 export function semitoneDistance(fromKey: string, toKey: string): number {
-    const from = PC[fromKey.replace(/m$/, '')];
-    const to = PC[toKey.replace(/m$/, '')];
-    if (from === undefined || to === undefined) return 0;
-    return (((to - from) + 17) % 12) - 5;
+    return keyDistance(fromKey, toKey) ?? 0;
 }
 
 /** Acordes diatónicos de la tonalidad, para la paleta rápida del editor. */

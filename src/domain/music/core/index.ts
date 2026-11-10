@@ -1,0 +1,7 @@
+/** Capa `core` de la música: modelo y reglas básicas, sin dependencias. */
+export * from './pitch';
+export * from './interval';
+export * from './key';
+export * from './meter';
+export * from './chord';
+export * from './analysis';
