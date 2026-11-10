@@ -760,3 +760,65 @@
     color: #fff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
 }
+/* ---------- Avisos didácticos ---------- */
+.th-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--cm-accent);
+    border-radius: 10px;
+    background: rgba(138, 116, 232, 0.1);
+    color: var(--cm-text);
+}
+
+.th-notice p {
+    flex: 1 1 280px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.th-notice strong {
+    color: var(--cm-text-strong);
+}
+
+.th-notice-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    color: var(--cm-accent);
+}
+
+.th-notice-action {
+    flex: none;
+    padding: 5px 12px;
+    border: 1px solid var(--cm-accent);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    cursor: pointer;
+}
+
+.th-notice-action:hover {
+    background: rgba(138, 116, 232, 0.2);
+}
+
+.th-notice-action:focus-visible {
+    outline: 2px solid var(--cm-focus);
+    outline-offset: 2px;
+}
+
+/* Etiqueta junto a un dato: "teórica" en una armadura de más de 7 alteraciones. */
+.th-tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(138, 116, 232, 0.2);
+    color: var(--cm-text-strong);
+    font-size: 0.75rem;
+    vertical-align: middle;
+}

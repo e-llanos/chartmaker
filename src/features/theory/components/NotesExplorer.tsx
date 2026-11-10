@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
 import { midiOctave } from '@/domain/theory/instruments';
-import { formatNote, type NameStyle, pitchName } from '@/domain/music/core';
+import { formatChordSymbol, formatNote, type NameStyle, pitchName } from '@/domain/music/core';
 import { buildScale, SCALE_GROUPS, SCALES } from '@/domain/theory/scales';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
@@ -13,6 +13,8 @@ import { SparklesIcon } from '@/shared/ui/Icons';
 import { BanIcon, ChordIcon, EyeIcon, EyeOffIcon, LayersIcon, ScaleIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
 import RootPicker from './RootPicker';
+import SpellingNotice from './SpellingNotice';
+import { overAltered, simplerChord, simplerScale } from '@/domain/theory/spelling';
 
 type Highlight = 'all' | 'scale' | 'chord';
 
@@ -34,6 +36,11 @@ export default function NotesExplorer() {
     const scale = useMemo(() => buildScale(root, scaleId), [root, scaleId]);
     const chord = useMemo(() => buildChord(root, qualityId), [root, qualityId]);
     const notes = highlight === 'scale' ? scale?.notes ?? null : highlight === 'chord' ? chord?.notes ?? null : null;
+
+    const simpler = useMemo(
+        () => (highlight === 'scale' && scale ? simplerScale(scale) : highlight === 'chord' && chord ? simplerChord(chord) : null),
+        [highlight, scale, chord],
+    );
 
     const fmt = (n: string) => formatNote(n, style);
     const guitar = instrument.instrument === 'guitar';
@@ -118,6 +125,18 @@ export default function NotesExplorer() {
                     </label>
                 )}
             </div>
+
+            {simpler && notes && (
+                <SpellingNotice actionLabel={`Ver desde ${fmt(simpler.root)}`} onAction={() => setRoot(simpler.root)}>
+                    Lo resaltado lleva dobles o triples alteraciones ({overAltered(notes.map((n) => n.name)).map(fmt).join(', ')}).
+                    Es correcto en teoría, pero en la práctica se escribe desde su equivalente enarmónico:{' '}
+                    <strong>
+                        {highlight === 'scale' && scale
+                            ? `${fmt(simpler.root)} ${scale.def.name.toLowerCase()}`
+                            : formatChordSymbol(simpler.root + (chord?.quality.symbol ?? ''), style)}
+                    </strong>.
+                </SpellingNotice>
+            )}
 
             <section className="th-card">
                 <h2>{title}</h2>

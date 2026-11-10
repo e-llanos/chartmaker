@@ -2,7 +2,8 @@
 
 import type { ReactNode, SVGProps } from 'react';
 import { VIEW_MODE_LABELS, type ViewMode } from '@/domain/chordsheet/view-mode';
-import { SONG_KEYS } from '@/domain/music/core/key';
+import type { KeyReference } from '@/domain/music/core/analysis';
+import { SONG_KEYS, parseKey, relativeKey } from '@/domain/music/core/key';
 import { NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/engine';
 
 export type SectionsLayout = 'columns' | 'list';
@@ -14,6 +15,9 @@ interface ViewerToolbarProps {
   onTranspose: (delta: number) => void;
   onKeyChange: (key: string) => void;
   onNotationChange: (notation: Notation) => void;
+  /** Desde dónde se numeran los acordes; el selector solo aparece en Nashville y romanos con tonalidad menor. */
+  reference?: KeyReference;
+  onReferenceChange?: (reference: KeyReference) => void;
   /** Oculta el título cuando la cabecera de la canción ya lo muestra. */
   hideTitle?: boolean;
   /** Disposición de las secciones (si se omite, no se muestra el botón). */
@@ -59,12 +63,18 @@ function ColumnsIcon() {
 
 /** Barra superior del visualizador: tonalidad, notación, contenido, disposición y descarga. */
 export default function ViewerToolbar({
-  title, currentKey, notation, onTranspose, onKeyChange, onNotationChange,
+  title, currentKey, notation, onTranspose, onKeyChange, onNotationChange, reference, onReferenceChange,
   hideTitle = false, layout, onLayoutChange, mode, onModeChange, actions,
 }: ViewerToolbarProps) {
   const keys = SONG_KEYS.includes(currentKey) ? SONG_KEYS : [currentKey, ...SONG_KEYS];
   const notationEntries = Object.entries(NOTATION_LABELS) as [Notation, string][];
   const modeEntries = Object.entries(VIEW_MODE_LABELS) as [ViewMode, string][];
+
+  // La numeración solo depende de la referencia en tonalidades menores (Em: i desde la tónica, vi desde G).
+  const parsedKey = parseKey(currentKey);
+  const relative = parsedKey?.mode === 'minor' ? relativeKey(parsedKey) : null;
+  const showReference =
+    (notation === 'nashville' || notation === 'roman') && relative !== null && reference !== undefined && onReferenceChange !== undefined;
 
   const next: SectionsLayout = layout === 'columns' ? 'list' : 'columns';
   const layoutLabel = next === 'list' ? 'Ver secciones en lista' : 'Ver secciones en columnas';
@@ -97,6 +107,17 @@ export default function ViewerToolbar({
               <option key={v} value={v}>{l}</option>
             ))}
           </select>
+          {showReference && relative && (
+            <select
+              value={reference}
+              onChange={(e) => onReferenceChange(e.target.value as KeyReference)}
+              aria-label="Numerar desde"
+              title="Desde qué tonalidad se numeran los acordes"
+            >
+              <option value="tonic">Desde la tónica ({formatKeyLabel(currentKey, 'symbol')})</option>
+              <option value="relativeMajor">Desde la relativa ({formatKeyLabel(relative.tonic, 'symbol')})</option>
+            </select>
+          )}
           {mode !== undefined && onModeChange && (
             <select
               value={mode}

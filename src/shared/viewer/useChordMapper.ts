@@ -12,7 +12,7 @@ export function useResolvedSettings(shared?: ViewerSettings): ViewerSettings {
 }
 
 /** Tonalidad mostrada y función que transpone y convierte cada acorde a la notación elegida. */
-export function useChordMapper(originalKey: string, { semitones, notation }: ViewerSettings) {
+export function useChordMapper(originalKey: string, { semitones, notation, reference }: ViewerSettings) {
     const displayKey = semitones ? (transposeKey(originalKey, semitones) ?? originalKey) : originalKey;
 
     const mapChord = useCallback(
@@ -20,9 +20,10 @@ export function useChordMapper(originalKey: string, { semitones, notation }: Vie
             convertChordString(
                 transposeChordString(chord, semitones, 'symbol', originalKey),
                 notation,
-                displayKey
+                displayKey,
+                reference
             ),
-        [semitones, notation, originalKey, displayKey]
+        [semitones, notation, reference, originalKey, displayKey]
     );
 
     return { displayKey, mapChord };

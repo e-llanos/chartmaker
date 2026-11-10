@@ -8,6 +8,8 @@ import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
 import RootPicker from './RootPicker';
+import SpellingNotice from './SpellingNotice';
+import { overAltered, simplerChord } from '@/domain/theory/spelling';
 
 export default function ChordBuilder() {
     const [root, setRoot] = useState<string>('C');
@@ -16,6 +18,7 @@ export default function ChordBuilder() {
     const instrument = useInstrument();
 
     const chord = useMemo(() => buildChord(root, quality), [root, quality]);
+    const simpler = useMemo(() => (chord ? simplerChord(chord) : null), [chord]);
     if (!chord) return null;
 
     const fmt = (n: string) => formatNote(n, style);
@@ -38,6 +41,14 @@ export default function ChordBuilder() {
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
             </div>
+
+            {simpler && (
+                <SpellingNotice actionLabel={`Ver desde ${fmt(simpler.root)}`} onAction={() => setRoot(simpler.root)}>
+                    Este acorde lleva dobles o triples alteraciones ({overAltered(chord.notes.map((n) => n.name)).map(fmt).join(', ')}).
+                    Es correcto en teoría, pero en la práctica se escribe desde su equivalente enarmónico:{' '}
+                    <strong>{formatChordSymbol(simpler.root + chord.quality.symbol, style)}</strong>.
+                </SpellingNotice>
+            )}
 
             <section className="th-card">
                 <div>

@@ -67,6 +67,12 @@ export const SONG_KEYS: readonly string[] = (['major', 'minor'] as const).flatMa
 
 export const isSongKey = (text: string): boolean => SONG_KEYS.includes(text);
 
+/** Otras raíces de la teoría con el mismo sonido: D# -> [Eb]; C -> [B#]. */
+export function enharmonicRoots(root: string): string[] {
+    const pc = pitchClassOf(root);
+    return pc === null ? [] : THEORY_ROOTS.filter((r) => r !== root && pitchClassOf(r) === pc);
+}
+
 /** Otras escrituras de la misma tonalidad (mismo sonido y modo), de menos a más alteraciones. */
 export function enharmonicKeys(key: Key): Key[] {
     const pc = pitchClassOf(key.tonic);

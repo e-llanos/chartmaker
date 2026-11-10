@@ -44,7 +44,7 @@ export default function ViewerFrame({
     layout, onLayoutChange, mode, onModeChange, isEmpty, emptyMessage, children,
 }: ViewerFrameProps) {
     const sheetRef = useRef<HTMLDivElement>(null);
-    const { setSemitones, notation, setNotation } = settings;
+    const { setSemitones, notation, setNotation, reference, setReference } = settings;
 
     return (
         <div className="viewer">
@@ -61,13 +61,15 @@ export default function ViewerFrame({
                 onTranspose={(d: number) => setSemitones((s) => s + d)}
                 onKeyChange={(k: string) => setSemitones(semitoneDistance(originalKey, k))}
                 onNotationChange={setNotation}
+                reference={reference}
+                onReferenceChange={setReference}
                 actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
             />
             <SectionNav badges={badges} scopeId={navScope} />
 
             {/* La hoja es lo que se captura al exportar a PDF o PNG */}
             <div ref={sheetRef} className="viewer-sheet">
-                {song && <ExportHead song={song} displayKey={displayKey} notation={notation} />}
+                {song && <ExportHead song={song} displayKey={displayKey} notation={notation} reference={reference} />}
                 {isEmpty ? <p className="empty-state">{emptyMessage}</p> : children}
             </div>
         </div>

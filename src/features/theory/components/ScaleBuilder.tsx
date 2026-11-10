@@ -10,6 +10,8 @@ import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
 import RootPicker from './RootPicker';
+import SpellingNotice from './SpellingNotice';
+import { overAltered, simplerScale } from '@/domain/theory/spelling';
 
 export default function ScaleBuilder() {
     const [root, setRoot] = useState<string>('C');
@@ -19,6 +21,7 @@ export default function ScaleBuilder() {
 
     const scale = useMemo(() => buildScale(root, scaleId), [root, scaleId]);
     const chords = useMemo(() => (scale ? diatonicChords(scale) : null), [scale]);
+    const simpler = useMemo(() => (scale ? simplerScale(scale) : null), [scale]);
     const contained = useMemo(() => (scale && !chords ? containedChords(scale) : []), [scale, chords]);
 
     if (!scale) return null;
@@ -45,6 +48,14 @@ export default function ScaleBuilder() {
                 </label>
                 <NameStyleToggle value={style} onChange={setStyle} />
             </div>
+
+            {simpler && (
+                <SpellingNotice actionLabel={`Ver desde ${fmt(simpler.root)}`} onAction={() => setRoot(simpler.root)}>
+                    Esta escala lleva dobles alteraciones ({overAltered(scale.notes.map((n) => n.name)).map(fmt).join(', ')}). Es correcta
+                    en teoría, pero en la práctica se escribe desde su equivalente enarmónico:{' '}
+                    <strong>{fmt(simpler.root)} {scale.def.name.toLowerCase()}</strong>.
+                </SpellingNotice>
+            )}
 
             <section className="th-card">
                 <div>
