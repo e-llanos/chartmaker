@@ -8,6 +8,7 @@
  *  - Nashville: los números se miden contra la escala mayor de la tónica (Em = 1m, C = b6).
  */
 import { parseChord, type Chord } from './chord';
+import { findQuality, romanStyle } from './chord-quality';
 import { degreeSemitones } from './interval';
 import { MAJOR_FORMULA, NATURAL_MINOR_FORMULA, parseKey, relativeKey, type Key } from './key';
 import { mod, parseNote } from './pitch';
@@ -36,30 +37,7 @@ export interface ChordAnalysis {
 
 const MAJOR_SEMIS = MAJOR_FORMULA.map(degreeSemitones);
 const MINOR_SEMIS = NATURAL_MINOR_FORMULA.map(degreeSemitones);
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const;
-
-/** Cómo se escribe cada tipo de acorde en romanos: minúscula o mayúscula, y su sufijo. */
-const ROMAN_STYLE: Readonly<Record<string, { lower: boolean; suffix: string }>> = {
-    maj: { lower: false, suffix: '' },
-    min: { lower: true, suffix: '' },
-    dim: { lower: true, suffix: '°' },
-    aug: { lower: false, suffix: '+' },
-    sus2: { lower: false, suffix: 'sus2' },
-    sus4: { lower: false, suffix: 'sus4' },
-    '7sus4': { lower: false, suffix: '7sus4' },
-    '6': { lower: false, suffix: '6' },
-    m6: { lower: true, suffix: '6' },
-    '7': { lower: false, suffix: '7' },
-    maj7: { lower: false, suffix: 'maj7' },
-    m7: { lower: true, suffix: '7' },
-    mMaj7: { lower: true, suffix: '(maj7)' },
-    m7b5: { lower: true, suffix: 'ø7' },
-    dim7: { lower: true, suffix: '°7' },
-    add9: { lower: false, suffix: 'add9' },
-    '9': { lower: false, suffix: '9' },
-    maj9: { lower: false, suffix: 'maj9' },
-    m9: { lower: true, suffix: '9' },
-};
+export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const;
 
 /** Sufijo desconocido: minúscula si empieza como menor o disminuido. */
 const LOOKS_MINOR = /^(?:m(?!a)|-|dim|°|ø)/;
@@ -85,10 +63,11 @@ function place(tonicName: string, noteName: string, scale: readonly number[]): P
 }
 
 function romanOf(chord: Chord, at: Placement): string {
-    const style = chord.quality ? ROMAN_STYLE[chord.quality] : undefined;
+    const quality = chord.quality ? findQuality(chord.quality) : null;
+    const style = quality ? romanStyle(quality) : null;
     const lower = style ? style.lower : LOOKS_MINOR.test(chord.suffix);
     const suffix = style ? style.suffix : lower ? chord.suffix.replace(MINOR_MARK, '') : chord.suffix;
-    const numeral = ROMAN[at.degree - 1] ?? '';
+    const numeral = ROMAN_NUMERALS[at.degree - 1] ?? '';
     return prefixOf(at.alteration) + (lower ? numeral.toLowerCase() : numeral) + suffix;
 }
 

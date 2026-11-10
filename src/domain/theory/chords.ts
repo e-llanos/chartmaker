@@ -1,7 +1,14 @@
+import { ROMAN_NUMERALS } from '@/domain/music/core/analysis';
+import {
+    CHORD_QUALITIES,
+    qualityFromStack,
+    type ChordGroup,
+    type ChordQuality,
+} from '@/domain/music/core/chord-quality';
 import { mod, parseNote, spell, type SpelledNote } from './notes';
 import type { BuiltScale } from './scales';
 
-export type ChordGroup = 'triad' | 'sus' | 'sixth' | 'seventh' | 'ninth';
+export { CHORD_QUALITIES, type ChordGroup, type ChordQuality };
 
 export const CHORD_GROUPS: Array<{ id: ChordGroup; label: string }> = [
     { id: 'triad', label: 'Tríadas' },
@@ -9,37 +16,6 @@ export const CHORD_GROUPS: Array<{ id: ChordGroup; label: string }> = [
     { id: 'sixth', label: 'Sextas' },
     { id: 'seventh', label: 'Séptimas' },
     { id: 'ninth', label: 'Novenas' },
-];
-
-export interface ChordQuality {
-    id: string;
-    /** Sufijo del cifrado: "", "m", "maj7"… */
-    symbol: string;
-    name: string;
-    group: ChordGroup;
-    formula: string[];
-}
-
-export const CHORD_QUALITIES: ChordQuality[] = [
-    { id: 'maj', symbol: '', name: 'Mayor', group: 'triad', formula: ['1', '3', '5'] },
-    { id: 'min', symbol: 'm', name: 'Menor', group: 'triad', formula: ['1', 'b3', '5'] },
-    { id: 'dim', symbol: 'dim', name: 'Disminuido', group: 'triad', formula: ['1', 'b3', 'b5'] },
-    { id: 'aug', symbol: 'aug', name: 'Aumentado', group: 'triad', formula: ['1', '3', '#5'] },
-    { id: 'sus2', symbol: 'sus2', name: 'Suspendido 2', group: 'sus', formula: ['1', '2', '5'] },
-    { id: 'sus4', symbol: 'sus4', name: 'Suspendido 4', group: 'sus', formula: ['1', '4', '5'] },
-    { id: '7sus4', symbol: '7sus4', name: 'Séptima suspendida', group: 'sus', formula: ['1', '4', '5', 'b7'] },
-    { id: '6', symbol: '6', name: 'Sexta', group: 'sixth', formula: ['1', '3', '5', '6'] },
-    { id: 'm6', symbol: 'm6', name: 'Menor con sexta', group: 'sixth', formula: ['1', 'b3', '5', '6'] },
-    { id: '7', symbol: '7', name: 'Dominante (séptima)', group: 'seventh', formula: ['1', '3', '5', 'b7'] },
-    { id: 'maj7', symbol: 'maj7', name: 'Mayor con séptima mayor', group: 'seventh', formula: ['1', '3', '5', '7'] },
-    { id: 'm7', symbol: 'm7', name: 'Menor con séptima', group: 'seventh', formula: ['1', 'b3', '5', 'b7'] },
-    { id: 'mMaj7', symbol: 'm(maj7)', name: 'Menor con séptima mayor', group: 'seventh', formula: ['1', 'b3', '5', '7'] },
-    { id: 'm7b5', symbol: 'm7b5', name: 'Semidisminuido', group: 'seventh', formula: ['1', 'b3', 'b5', 'b7'] },
-    { id: 'dim7', symbol: 'dim7', name: 'Disminuido con séptima', group: 'seventh', formula: ['1', 'b3', 'b5', 'bb7'] },
-    { id: 'add9', symbol: 'add9', name: 'Mayor con novena añadida', group: 'ninth', formula: ['1', '3', '5', '9'] },
-    { id: '9', symbol: '9', name: 'Dominante con novena', group: 'ninth', formula: ['1', '3', '5', 'b7', '9'] },
-    { id: 'maj9', symbol: 'maj9', name: 'Mayor con séptima y novena', group: 'ninth', formula: ['1', '3', '5', '7', '9'] },
-    { id: 'm9', symbol: 'm9', name: 'Menor con novena', group: 'ninth', formula: ['1', 'b3', '5', 'b7', '9'] },
 ];
 
 export interface BuiltChord {
@@ -76,31 +52,8 @@ const FUNCTIONS_BY_SCALE: Record<string, HarmonicFunction[]> = {
     'melodic-minor': MINOR_FUNCTIONS,
 };
 
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-
 /** En las escalas menores los romanos no llevan alteraciones (i ii° III iv v VI VII); en los modos sí (bIII, bVII…). */
 const PLAIN_ROMANS = new Set(['natural-minor', 'harmonic-minor', 'melodic-minor']);
-
-/** Tríadas por terceras: clave "tercera-quinta" en semitonos. */
-const TRIADS: Record<string, { symbol: string; roman: string }> = {
-    '4-7': { symbol: '', roman: '' },
-    '3-7': { symbol: 'm', roman: '' },
-    '3-6': { symbol: 'dim', roman: '°' },
-    '4-8': { symbol: 'aug', roman: '+' },
-};
-
-/** Cuatríadas: clave "tercera-quinta-séptima". */
-const SEVENTHS: Record<string, { symbol: string; roman: string }> = {
-    '4-7-11': { symbol: 'maj7', roman: 'maj7' },
-    '4-7-10': { symbol: '7', roman: '7' },
-    '3-7-10': { symbol: 'm7', roman: '7' },
-    '3-7-11': { symbol: 'm(maj7)', roman: '(maj7)' },
-    '3-6-10': { symbol: 'm7b5', roman: 'ø7' },
-    '3-6-9': { symbol: 'dim7', roman: '°7' },
-    '4-8-10': { symbol: '7#5', roman: '+7' },
-    '4-8-11': { symbol: 'maj7#5', roman: '+maj7' },
-    '4-6-10': { symbol: '7b5', roman: '7b5' },
-};
 
 export interface ChordInfo {
     symbol: string;
@@ -129,9 +82,9 @@ export function diatonicChords(scale: BuiltScale): DiatonicChord[] | null {
         const seventh = rel(i, i + 6);
         const names = (steps: number[]) => steps.map((s) => n[(i + s) % 7]?.name ?? '');
         const prefix = PLAIN_ROMANS.has(scale.def.id) ? '' : (scale.def.formula[i] ?? '').replace(/\d+/, '');
-        const numeral = third === 3 ? (ROMAN[i] ?? '').toLowerCase() : (ROMAN[i] ?? '');
-        const tri = TRIADS[`${third}-${fifth}`];
-        const sev = SEVENTHS[`${third}-${fifth}-${seventh}`];
+        const numeral = third === 3 ? (ROMAN_NUMERALS[i] ?? '').toLowerCase() : (ROMAN_NUMERALS[i] ?? '');
+        const tri = qualityFromStack(third, fifth);
+        const sev = qualityFromStack(third, fifth, seventh);
         return {
             degree: i + 1,
             root: note.name,

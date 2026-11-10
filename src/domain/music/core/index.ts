@@ -3,5 +3,6 @@ export * from './pitch';
 export * from './interval';
 export * from './key';
 export * from './meter';
+export * from './chord-quality';
 export * from './chord';
 export * from './analysis';
