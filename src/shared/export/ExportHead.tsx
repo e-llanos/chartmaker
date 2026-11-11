@@ -1,7 +1,7 @@
 import type { KeyReference } from '@/domain/music/core/analysis';
 import { parseKey, relativeKey } from '@/domain/music/core/key';
 import type { SongInput } from '@/domain/song/types';
-import { formatKeyLabel, type Notation } from '@/domain/music/engine';
+import { formatKeyLabel, type Notation } from '@/domain/music/notation/engine';
 
 type HeadSong = Pick<SongInput, 'title' | 'artist' | 'album' | 'key' | 'tempo' | 'compas'>;
 

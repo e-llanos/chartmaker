@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { SONG_KEYS } from '@/domain/music/core/key';
-import { diatonicChords } from '@/domain/music/engine';
+import { diatonicChords } from '@/domain/music/notation/engine';
 import { COMPAS_OPTIONS, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
 import type { SectionType } from '@/domain/sections/section-types';
 import { REPEAT_MAX, REPEAT_MIN, type SectionRepeatInfo } from '@/domain/chordsheet/section-text';

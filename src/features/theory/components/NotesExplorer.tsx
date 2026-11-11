@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
-import { midiOctave } from '@/domain/theory/instruments';
+import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/music/theory/chords';
+import { midiOctave } from '@/domain/music/instruments';
 import { formatChordSymbol, formatNote, type NameStyle, pitchName } from '@/domain/music/core';
-import { buildScale, SCALE_GROUPS, SCALES } from '@/domain/theory/scales';
+import { buildScale, SCALE_GROUPS, SCALES } from '@/domain/music/theory/scales';
 import InstrumentControls from './InstrumentControls';
 import InstrumentView from './InstrumentView';
 import NameStyleToggle from './NameStyleToggle';
@@ -14,7 +14,7 @@ import { BanIcon, ChordIcon, EyeIcon, EyeOffIcon, LayersIcon, ScaleIcon } from '
 import ToggleGroup from './ToggleGroup';
 import RootPicker from './RootPicker';
 import SpellingNotice from './SpellingNotice';
-import { overAltered, simplerChord, simplerScale } from '@/domain/theory/spelling';
+import { overAltered, simplerChord, simplerScale } from '@/domain/music/theory/spelling';
 
 type Highlight = 'all' | 'scale' | 'chord';
 

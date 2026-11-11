@@ -1,9 +1,10 @@
 import { parseSections } from '@/domain/chordsheet/parse-sections';
-import { normalizeChord } from '@/domain/music/engine';
+import { normalizeChord } from '@/domain/music/notation/engine';
 import type { SectionType } from '@/domain/sections/section-types';
 import type { Chart, ChartMeasure, ChartSection } from '@/domain/chart/types';
 import { newId } from '@/domain/shared/ids';
-import { beatsPerMeasure, padBeats } from '@/domain/music/meter';
+import { beatsPerMeasure } from '@/domain/music/core/meter';
+import { padBeats } from '@/domain/shared/beats';
 
 export const DEFAULT_MEASURES = 4;
 

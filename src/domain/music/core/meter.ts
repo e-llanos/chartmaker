@@ -82,3 +82,11 @@ export function slotsPerMeasure(ts: TimeSignature, mode: SlotMode = 'pulses'): n
     const n = mode === 'pulses' ? pulsesPerMeasure(ts) : subdivisionsPerMeasure(ts);
     return Math.max(1, Math.min(MAX_SLOTS, n));
 }
+
+/**
+ * Casillas por compás de un texto de compás. Por pulsos (4/4 -> 4, 6/8 -> 2, 12/8 -> 4)
+ * o, con `mode: 'subdivisions'`, por corcheas (6/8 -> 6). Un compás inválido cuenta como 4/4.
+ */
+export function beatsPerMeasure(compas: string, mode: SlotMode = 'pulses'): number {
+    return slotsPerMeasure(parseTimeSignature(compas) ?? DEFAULT_TIME_SIGNATURE, mode);
+}

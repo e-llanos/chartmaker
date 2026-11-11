@@ -1,5 +1,5 @@
 import { newId } from '@/domain/shared/ids';
-import { padBeats } from '@/domain/music/meter';
+import { padBeats } from '@/domain/shared/beats';
 import type { Chart } from '@/domain/chart/types';
 import type { SectionType } from '@/domain/sections/section-types';
 import type { Score, ScoreMeasure, ScoreSection } from '@/domain/score/types';

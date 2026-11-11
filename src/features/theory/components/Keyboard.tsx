@@ -1,4 +1,4 @@
-import { preferFlatsFor } from '@/domain/theory/instruments';
+import { preferFlatsFor } from '@/domain/music/instruments';
 import { formatNote, type NameStyle, type SpelledNote, pitchName } from '@/domain/music/core';
 
 const W = 34;

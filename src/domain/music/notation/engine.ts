@@ -1,5 +1,5 @@
 /**
- * src/domain/music/engine.ts
+ * src/domain/music/notation/engine.ts
  * API de acordes para el visor y los editores: transposición y conversión
  * americana / latina / Nashville / romana. Todo se apoya en `core`; ya no hay librerías externas.
  *

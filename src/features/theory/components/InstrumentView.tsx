@@ -1,4 +1,4 @@
-import type { Instrument, Tuning } from '@/domain/theory/instruments';
+import type { Instrument, Tuning } from '@/domain/music/instruments';
 import type { NameStyle, SpelledNote } from '@/domain/music/core';
 import Fretboard from './Fretboard';
 import Keyboard from './Keyboard';

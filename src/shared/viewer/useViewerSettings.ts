@@ -2,7 +2,7 @@
 
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { KeyReference } from '@/domain/music/core/analysis';
-import type { Notation } from '@/domain/music/engine';
+import type { Notation } from '@/domain/music/notation/engine';
 
 export interface ViewerSettings {
     semitones: number;

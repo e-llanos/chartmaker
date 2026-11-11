@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { transposeKey } from '@/domain/music/core/transpose';
-import { convertChordString, transposeChordString } from '@/domain/music/engine';
+import { convertChordString, transposeChordString } from '@/domain/music/notation/engine';
 import { useViewerSettings, type ViewerSettings } from './useViewerSettings';
 
 /** Usa los ajustes compartidos si se pasan; si no, unos propios del visor. */

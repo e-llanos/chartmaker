@@ -1,4 +1,4 @@
-import { FUNCTION_LABELS, type ChordInfo, type DiatonicChord } from '@/domain/theory/chords';
+import { FUNCTION_LABELS, type ChordInfo, type DiatonicChord } from '@/domain/music/theory/chords';
 import { formatChordSymbol, formatNote, type NameStyle } from '@/domain/music/core';
 
 function ChordCells({ info, style }: { info: ChordInfo | null; style: NameStyle }) {

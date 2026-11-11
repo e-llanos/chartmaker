@@ -104,15 +104,16 @@ La ruta `/theory` reúne cinco herramientas, con notación americana (C D E) o l
 
 En **Escalas** y **Acordes** las notas se pueden ver en piano o en guitarra con dos botones bajo el visualizador.
 
-El motor vive en `src/domain/theory` y es TypeScript puro:
+El motor vive en `src/domain/music` y es TypeScript puro. Cada concepto musical tiene una sola fuente de verdad, repartida en capas que solo dependen hacia abajo (`core` no importa nada; `theory`, `notation` e `instruments` solo importan `core`):
 
-| Archivo          | Función                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `notes.ts`       | Notas, intervalos y ortografía. Cada grado usa una letra distinta: F# mayor es F# G# A# B C# D# E#, no con bemoles mezclados. |
-| `scales.ts`      | Catálogo de escalas, modos y escala madre.                                                                                    |
-| `chords.ts`      | Tipos de acorde, acordes diatónicos por terceras, números romanos y funciones armónicas.                                      |
-| `harmony.ts`     | Progresiones, cadencias, círculo de quintas y armaduras.                                                                      |
-| `instruments.ts` | Afinaciones y mástil de guitarra traste por traste.                                                                           |
+| Carpeta         | Contenido                                                                                                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `core/`         | Modelo y reglas básicas: notas e intervalos (una letra distinta por grado: F# mayor es F# G# A# B# C# D# E#), tonalidades y armaduras, compás (`TimeSignature`), tipos de acorde (`chord-quality.ts` es la tabla única), lectura de acordes, análisis (grado, romano y Nashville), transposición y nombres americano/latino. |
+| `theory/`       | Catálogo y conocimiento construido sobre `core`: escalas y modos (`scales.ts`, una tabla por familia), acordes diatónicos y funciones (`chords.ts`), progresiones, cadencias y círculo de quintas (`harmony.ts`), y avisos de escrituras teóricas (`spelling.ts`). |
+| `notation/`     | API de acordes para el visor y los editores (`engine.ts`: transposición y conversión americana, latina, Nashville y romana) y separación de acordes para mostrar superíndices (`format-chord.ts`). |
+| `instruments/`  | Afinaciones y mástil de guitarra traste por traste.                                                                                                                                    |
+
+Las tonalidades de una canción son las 30 prácticas (armadura de 7 alteraciones como máximo); la sección de teoría admite las 21 raíces (7 letras × natural, sostenido y bemol) y avisa cuando una escritura es teórica.
 
 Los números romanos de las escalas menores se escriben sin alteraciones (`i ii° III iv v VI VII`); los de los modos de la escala mayor sí las llevan (`bIII`, `bVII`).
 
@@ -149,12 +150,12 @@ src/
 ├── domain/                   Lógica pura de TypeScript (sin React, Next ni Node)
 │   ├── chart/                Tipos y utilidades del chart
 │   ├── chordsheet/           Parser ChordPro, modos de vista, repeticiones
-│   ├── music/                Motor de acordes (transposición), formato de superíndices, compás
+│   ├── music/                Motor musical: core/ (modelo y reglas), theory/ (escalas, acordes, armonía),
+│   │                         notation/ (transposición y notaciones) e instruments/
 │   ├── score/                Tipos y utilidades del chart avanzado
 │   ├── sections/             Tipos de sección
-│   ├── shared/               Utilidades comunes (ids)
-│   ├── song/                 Tipos, constantes, validación y formato .chartmaker
-│   └── theory/               Notas, escalas, acordes, armonía e instrumentos
+│   ├── shared/               Utilidades comunes (ids, tiempos)
+│   └── song/                 Tipos, constantes, validación y formato .chartmaker
 ├── server/
 │   └── songs/                Repositorio de canciones (solo servidor)
 ├── shared/                   Piezas reutilizables sin lógica de negocio
@@ -333,7 +334,6 @@ Nombres de ramas en minúsculas y con guiones, por ejemplo `feature/chart-avanza
 - Hoja de estilos de impresión para generar PDF vectorial.
 - Base de datos para despliegues en la nube.
 - Tests del dominio (Vitest), reglas de ESLint para las dependencias entre capas y CI.
-- Unificar `domain/music` y `domain/theory`, que hoy se solapan en la escritura de notas y las notaciones.
 - Registro de recursos (cifrado, chart, chart avanzado) y ruta de edición única, para que añadir un recurso toque menos archivos.
 - Esquemas de validación como única fuente de tipos y validación, con versión de formato y migraciones para `songs.json` y `.chartmaker`.
 - Aviso cuando un chart derivado del cifrado queda desactualizado.

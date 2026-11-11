@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { containedChords, diatonicChords } from '@/domain/theory/chords';
+import { containedChords, diatonicChords } from '@/domain/music/theory/chords';
 import { formatChordSymbol, formatNote, type NameStyle } from '@/domain/music/core';
-import { buildScale, modesOf, parentOf, SCALE_GROUPS, SCALES, stepLabel } from '@/domain/theory/scales';
+import { buildScale, modesOf, parentOf, SCALE_GROUPS, SCALES, stepLabel } from '@/domain/music/theory/scales';
 import DiatonicTable from './DiatonicTable';
 import NameStyleToggle from './NameStyleToggle';
 import InstrumentControls from './InstrumentControls';
@@ -11,7 +11,7 @@ import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
 import RootPicker from './RootPicker';
 import SpellingNotice from './SpellingNotice';
-import { overAltered, simplerScale } from '@/domain/theory/spelling';
+import { overAltered, simplerScale } from '@/domain/music/theory/spelling';
 
 export default function ScaleBuilder() {
     const [root, setRoot] = useState<string>('C');

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/theory/chords';
+import { buildChord, CHORD_GROUPS, CHORD_QUALITIES } from '@/domain/music/theory/chords';
 import { formatChordSymbol, formatNote, intervalName, type NameStyle } from '@/domain/music/core';
 import NameStyleToggle from './NameStyleToggle';
 import InstrumentControls from './InstrumentControls';
@@ -9,7 +9,7 @@ import InstrumentView from './InstrumentView';
 import { useInstrument } from './useInstrument';
 import RootPicker from './RootPicker';
 import SpellingNotice from './SpellingNotice';
-import { overAltered, simplerChord } from '@/domain/theory/spelling';
+import { overAltered, simplerChord } from '@/domain/music/theory/spelling';
 
 export default function ChordBuilder() {
     const [root, setRoot] = useState<string>('C');

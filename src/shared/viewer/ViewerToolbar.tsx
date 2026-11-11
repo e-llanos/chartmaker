@@ -4,7 +4,7 @@ import type { ReactNode, SVGProps } from 'react';
 import { VIEW_MODE_LABELS, type ViewMode } from '@/domain/chordsheet/view-mode';
 import type { KeyReference } from '@/domain/music/core/analysis';
 import { SONG_KEYS, parseKey, relativeKey } from '@/domain/music/core/key';
-import { NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/engine';
+import { NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/notation/engine';
 
 export type SectionsLayout = 'columns' | 'list';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getTuning, type Instrument } from '@/domain/theory/instruments';
+import { getTuning, type Instrument } from '@/domain/music/instruments';
 
 /** Instrumento elegido (piano o guitarra) y su afinación. */
 export function useInstrument(initial: Instrument = 'piano') {

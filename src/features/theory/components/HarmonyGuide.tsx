@@ -1,16 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { diatonicChords, FUNCTION_LABELS, type HarmonicFunction } from '@/domain/theory/chords';
+import { diatonicChords, FUNCTION_LABELS, type HarmonicFunction } from '@/domain/music/theory/chords';
 import {
     CADENCES, circleRoles, PROGRESSIONS, resolveProgression, type Progression,
-} from '@/domain/theory/harmony';
+} from '@/domain/music/theory/harmony';
 import {
     accidentalsOf, enharmonicKeys, formatChordSymbol, formatNote, isPracticalKey, keyAccidentals, keySignatureNotes,
     relativeKey, type Key, type NameStyle,
 } from '@/domain/music/core';
-import { overAltered } from '@/domain/theory/spelling';
-import { buildScale } from '@/domain/theory/scales';
+import { overAltered } from '@/domain/music/theory/spelling';
+import { buildScale } from '@/domain/music/theory/scales';
 import CircleOfFifths from './CircleOfFifths';
 import DiatonicTable from './DiatonicTable';
 import NameStyleToggle from './NameStyleToggle';

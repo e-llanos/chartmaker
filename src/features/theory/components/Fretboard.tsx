@@ -1,6 +1,6 @@
 import {
     buildFretboard, DOUBLE_MARKERS, FRET_MARKERS, preferFlatsFor, type Tuning,
-} from '@/domain/theory/instruments';
+} from '@/domain/music/instruments';
 import { formatNote, type NameStyle, type SpelledNote, pitchName } from '@/domain/music/core';
 
 const LEFT = 30;

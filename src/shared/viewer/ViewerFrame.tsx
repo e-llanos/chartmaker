@@ -2,7 +2,7 @@
 
 import { useRef, type ReactNode } from 'react';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
-import { semitoneDistance } from '@/domain/music/engine';
+import { semitoneDistance } from '@/domain/music/notation/engine';
 import type { Badge } from '@/domain/sections/section-types';
 import type { SongCreate } from '@/domain/song/types';
 import ExportHead from '@/shared/export/ExportHead';
