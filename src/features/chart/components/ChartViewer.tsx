@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { Chart } from '@/domain/chart/types';
-import { beatsPerMeasure } from '@/domain/music/meter';
+import { beatsPerMeasure } from '@/domain/music/core/meter';
 import type { Score } from '@/domain/score/types';
 import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
 import type { SongCreate, SongInput } from '@/domain/song/types';

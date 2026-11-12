@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { Chart, ChartSection } from '@/domain/chart/types';
 import { chartFromChordPro, newSection } from '@/domain/chart/utils';
-import { beatsPerMeasure } from '@/domain/music/meter';
+import { beatsPerMeasure } from '@/domain/music/core/meter';
 import { computeBadges, nextLabel, SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
 import type { SongInput } from '@/domain/song/types';
 import EditorLayout from '@/shared/editor/EditorLayout';

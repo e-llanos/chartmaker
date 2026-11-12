@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import { convertChordString, transposeChordString } from '@/domain/music/engine';
+import { transposeKey } from '@/domain/music/core/transpose';
+import { convertChordString, transposeChordString } from '@/domain/music/notation/engine';
 import { useViewerSettings, type ViewerSettings } from './useViewerSettings';
 
 /** Usa los ajustes compartidos si se pasan; si no, unos propios del visor. */
@@ -11,17 +12,18 @@ export function useResolvedSettings(shared?: ViewerSettings): ViewerSettings {
 }
 
 /** Tonalidad mostrada y función que transpone y convierte cada acorde a la notación elegida. */
-export function useChordMapper(originalKey: string, { semitones, notation }: ViewerSettings) {
-    const displayKey = transposeChordString(originalKey, semitones, 'symbol', originalKey);
+export function useChordMapper(originalKey: string, { semitones, notation, reference }: ViewerSettings) {
+    const displayKey = semitones ? (transposeKey(originalKey, semitones) ?? originalKey) : originalKey;
 
     const mapChord = useCallback(
         (chord: string): string =>
             convertChordString(
                 transposeChordString(chord, semitones, 'symbol', originalKey),
                 notation,
-                displayKey
+                displayKey,
+                reference
             ),
-        [semitones, notation, originalKey, displayKey]
+        [semitones, notation, reference, originalKey, displayKey]
     );
 
     return { displayKey, mapChord };

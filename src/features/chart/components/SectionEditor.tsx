@@ -2,8 +2,8 @@
 
 import type { ChartMeasure, ChartSection } from '@/domain/chart/types';
 import { emptyMeasure } from '@/domain/chart/utils';
-import { normalizeChord } from '@/domain/music/engine';
-import { padBeats } from '@/domain/music/meter';
+import { normalizeChord } from '@/domain/music/notation/engine';
+import { padBeats } from '@/domain/shared/beats';
 import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
 import { CloseIcon, CopyIcon, PlusIcon, RepeatIcon } from '@/shared/ui/Icons';
 

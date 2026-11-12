@@ -1,18 +1,23 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { diatonicChords, FUNCTION_LABELS, type HarmonicFunction } from '@/domain/theory/chords';
+import { diatonicChords, FUNCTION_LABELS, type HarmonicFunction } from '@/domain/music/theory/chords';
 import {
-    CADENCES, circleOfFifths, circleRoles, keySignature, PROGRESSIONS, resolveProgression, type Progression,
-} from '@/domain/theory/harmony';
-import { formatChordSymbol, formatNote, parseNote, THEORY_ROOTS, type NameStyle } from '@/domain/theory/notes';
-import { buildScale } from '@/domain/theory/scales';
+    CADENCES, circleRoles, PROGRESSIONS, resolveProgression, type Progression,
+} from '@/domain/music/theory/harmony';
+import {
+    accidentalsOf, enharmonicKeys, formatChordSymbol, formatNote, isPracticalKey, keyAccidentals, keySignatureNotes,
+    relativeKey, type Key, type NameStyle,
+} from '@/domain/music/core';
+import { overAltered } from '@/domain/music/theory/spelling';
+import { buildScale } from '@/domain/music/theory/scales';
 import CircleOfFifths from './CircleOfFifths';
 import DiatonicTable from './DiatonicTable';
 import NameStyleToggle from './NameStyleToggle';
 import { MoonIcon, SunIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
 import RootPicker from './RootPicker';
+import SpellingNotice from './SpellingNotice';
 
 const FUNCTION_TEXT: Record<HarmonicFunction, string> = {
     T: 'Reposo y estabilidad: es el «hogar» de la tonalidad.',
@@ -48,7 +53,6 @@ export default function HarmonyGuide() {
 
     const scale = useMemo(() => buildScale(root, minor ? 'natural-minor' : 'major'), [root, minor]);
     const chords = useMemo(() => (scale ? diatonicChords(scale) : null), [scale]);
-    const keys = useMemo(() => circleOfFifths(), []);
     const roles = useMemo(() => circleRoles(root, minor), [root, minor]);
 
     if (!scale || !chords) return null;
@@ -56,11 +60,16 @@ export default function HarmonyGuide() {
     const fmt = (n: string) => formatNote(n, style);
     const progressions = PROGRESSIONS.filter((p) => (p.mode === 'minor') === minor);
 
-    // Armadura y relativa de la tonalidad elegida
-    const pc = parseNote(root)?.pc;
-    const key = keys.find((k) => (minor ? k.minorPc : k.majorPc) === pc);
-    const altered = key ? keySignature(key.accidentals) : [];
-    const relative = key ? (minor ? `${key.major} mayor` : `${key.minor}`) : '';
+    // Armadura y relativa de la tonalidad elegida (si lleva más de 7 alteraciones, es teórica)
+    const current: Key = { tonic: root, mode: minor ? 'minor' : 'major' };
+    const accidentals = keyAccidentals(current) ?? 0;
+    const practical = isPracticalKey(current);
+    const signature = accidentals === 0 ? 'Sin alteraciones' : `${Math.abs(accidentals)} ${accidentals > 0 ? '♯' : '♭'}`;
+    const scaleNames = scale.notes.map((n) => n.name);
+    const altered = practical ? keySignatureNotes(accidentals) : scaleNames.filter((n) => accidentalsOf(n) !== 0);
+    const relativeTonic = relativeKey(current)?.tonic ?? '';
+    const equivalent = practical ? null : (enharmonicKeys(current).find(isPracticalKey) ?? null);
+    const modeName = minor ? 'menor' : 'mayor';
 
     return (
         <div className="th-panel">
@@ -79,6 +88,14 @@ export default function HarmonyGuide() {
                 <NameStyleToggle value={style} onChange={setStyle} />
             </div>
 
+            {equivalent && (
+                <SpellingNotice actionLabel={`Ver ${fmt(equivalent.tonic)} ${modeName}`} onAction={() => setRoot(equivalent.tonic)}>
+                    <strong>{fmt(root)} {modeName}</strong> tiene {Math.abs(accidentals)} alteraciones en la armadura y usa dobles
+                    alteraciones ({overAltered(scaleNames).map(fmt).join(', ')}): es una tonalidad teórica. En la práctica se usa su
+                    equivalente enarmónico, <strong>{fmt(equivalent.tonic)} {modeName}</strong>.
+                </SpellingNotice>
+            )}
+
             <section className="th-card">
                 <h3>Círculo de quintas</h3>
                 <div className="th-circle-layout">
@@ -91,14 +108,17 @@ export default function HarmonyGuide() {
                     <div className="th-circle-info">
                         <h2>{fmt(root)} {minor ? 'menor' : 'mayor'}</h2>
                         <dl className="th-facts">
-                            <div><dt>Armadura</dt><dd>{key?.signature ?? '—'}</dd></div>
+                            <div>
+                                <dt>Armadura</dt>
+                                <dd>{signature}{!practical && <span className="th-tag">teórica</span>}</dd>
+                            </div>
                             <div>
                                 <dt>Notas alteradas</dt>
                                 <dd>{altered.length ? altered.map(fmt).join(' ') : 'Ninguna'}</dd>
                             </div>
                             <div>
                                 <dt>{minor ? 'Relativa mayor' : 'Relativa menor'}</dt>
-                                <dd>{minor ? fmt(key?.major ?? '') + ' mayor' : formatChordSymbol(relative, style)}</dd>
+                                <dd>{minor ? `${fmt(relativeTonic)} mayor` : formatChordSymbol(`${relativeTonic}m`, style)}</dd>
                             </div>
                         </dl>
                         <p className="th-muted">

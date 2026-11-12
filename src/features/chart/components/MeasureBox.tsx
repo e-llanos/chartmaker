@@ -1,5 +1,5 @@
 import { segments } from '@/domain/chart/utils';
-import { padBeats } from '@/domain/music/meter';
+import { padBeats } from '@/domain/shared/beats';
 import type { ChartMeasure } from '@/domain/chart/types';
 import ChordText from '@/shared/viewer/ChordText';
 

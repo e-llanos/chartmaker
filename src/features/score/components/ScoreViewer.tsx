@@ -2,7 +2,7 @@
 
 import { useMemo, type CSSProperties } from 'react';
 import type { Chart } from '@/domain/chart/types';
-import { beatsPerMeasure } from '@/domain/music/meter';
+import { beatsPerMeasure } from '@/domain/music/core/meter';
 import type { Score, ScoreMeasure, ScoreSection } from '@/domain/score/types';
 import { chunk, timeSignature } from '@/domain/score/utils';
 import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';

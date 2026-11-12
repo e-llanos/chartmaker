@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { normalizeChord } from '@/domain/music/engine';
-import { padBeats } from '@/domain/music/meter';
+import { normalizeChord } from '@/domain/music/notation/engine';
+import { padBeats } from '@/domain/shared/beats';
 import {
     MEASURE_MARKS,
     type LeftBar,

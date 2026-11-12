@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ALL_KEYS, diatonicChords } from '@/domain/music/engine';
+import { SONG_KEYS } from '@/domain/music/core/key';
+import { diatonicChords } from '@/domain/music/notation/engine';
 import { COMPAS_OPTIONS, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
 import type { SectionType } from '@/domain/sections/section-types';
 import { REPEAT_MAX, REPEAT_MIN, type SectionRepeatInfo } from '@/domain/chordsheet/section-text';
@@ -73,7 +74,7 @@ export default function ChordSheetToolbar({
                             <span className="tool-label">Tonalidad</span>
                             <select className="tool-select" value={data.key}
                                 onChange={(e) => onFieldChange('key', e.target.value)}>
-                                {ALL_KEYS.map((k) => <option key={k} value={k}>{k}</option>)}
+                                {(SONG_KEYS.includes(data.key) ? SONG_KEYS : [data.key, ...SONG_KEYS]).map((k) => <option key={k} value={k}>{k}</option>)}
                             </select>
                         </label>
                         <label className="tool-field">

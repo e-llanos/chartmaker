@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, type KeyboardEvent } from 'react';
-import { FUNCTION_LABELS, type HarmonicFunction } from '@/domain/theory/chords';
-import { circleOfFifths, circleRoles, type CircleRole } from '@/domain/theory/harmony';
-import { formatChordSymbol, formatNote, parseNote, type NameStyle } from '@/domain/theory/notes';
+import { FUNCTION_LABELS, type HarmonicFunction } from '@/domain/music/theory/chords';
+import { circleOfFifths, circleRoles, type CircleRole } from '@/domain/music/theory/harmony';
+import { formatChordSymbol, formatNote, parseNote, type NameStyle } from '@/domain/music/core';
 
 const SIZE = 540;
 const CENTER = SIZE / 2;

@@ -1,6 +1,6 @@
 'use client';
 
-import { TUNINGS, type Instrument } from '@/domain/theory/instruments';
+import { TUNINGS, type Instrument } from '@/domain/music/instruments';
 import { GuitarIcon, PianoIcon, SlidersIcon } from './TheoryIcons';
 import ToggleGroup from './ToggleGroup';
 import type { InstrumentState } from './useInstrument';

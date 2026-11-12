@@ -1,4 +1,4 @@
-import { mod, type SpelledNote } from './notes';
+import { mod, type SpelledNote } from '@/domain/music/core';
 
 export type Instrument = 'piano' | 'guitar';
 
@@ -20,13 +20,6 @@ export const TUNINGS: Tuning[] = [
 ];
 
 export const getTuning = (id: string): Tuning => TUNINGS.find((t) => t.id === id) ?? TUNINGS[0]!;
-
-const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const FLAT_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-
-/** Nombre de una altura con sostenidos o con bemoles. */
-export const pitchName = (pc: number, preferFlats: boolean): string =>
-    (preferFlats ? FLAT_NAMES : SHARP_NAMES)[mod(pc, 12)] ?? '';
 
 /** Octava científica de una nota MIDI: 60 -> 4 (C4 = do central). */
 export const midiOctave = (midi: number): number => Math.floor(midi / 12) - 1;

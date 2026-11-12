@@ -1,6 +1,8 @@
 import type { Chart, ChartMeasure, ChartSection } from '@/domain/chart/types';
 import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
 import { DEFAULT_SONG_INPUT, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
+import { normalizeSongKey } from '@/domain/music/core/key';
+import { parseTimeSignature } from '@/domain/music/core/meter';
 import type { SongCreate, SongUpdate } from '@/domain/song/types';
 import {
     MEASURE_MARK_KEYS,
@@ -29,8 +31,6 @@ const CHART_LIMITS = { sections: 80, measures: 256, beats: 12, beatLen: 24, text
 
 const TEXT_FIELDS = ['title', 'artist', 'album', 'key', 'compas', 'body'] as const;
 
-const KEY_FORMAT = /^[A-G][#b]?m?$/;
-const COMPAS_FORMAT = /^\d{1,2}\/\d{1,2}$/;
 
 /* ---------- Chart ---------- */
 
@@ -194,10 +194,13 @@ export function parseSongUpdate(data: unknown): Result<SongUpdate> {
     if (out.title !== undefined && !out.title.trim()) {
         return { ok: false, error: 'El título no puede estar vacío' };
     }
-    if (out.key !== undefined && !KEY_FORMAT.test(out.key)) {
-        return { ok: false, error: '"key" no es una tonalidad válida (ej. G, F#, Am)' };
+    if (out.key !== undefined) {
+        // Una tonalidad teórica (D#, G#…) se guarda como su equivalente práctica (Eb, Ab…).
+        const key = normalizeSongKey(out.key);
+        if (!key) return { ok: false, error: '"key" no es una tonalidad válida (ej. G, F#, Am)' };
+        out.key = key.key;
     }
-    if (out.compas !== undefined && !COMPAS_FORMAT.test(out.compas)) {
+    if (out.compas !== undefined && !parseTimeSignature(out.compas)) {
         return { ok: false, error: '"compas" debe tener formato 4/4, 6/8…' };
     }
 

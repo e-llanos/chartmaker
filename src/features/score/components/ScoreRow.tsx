@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { padBeats } from '@/domain/music/meter';
+import { padBeats } from '@/domain/shared/beats';
 import type { ScoreMeasure } from '@/domain/score/types';
 import { barBetween } from '@/domain/score/utils';
 import ChordText from '@/shared/viewer/ChordText';

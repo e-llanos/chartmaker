@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { nextLabel, type SectionType } from '@/domain/sections/section-types';
 import { getSectionRepeat, setSectionRepeat } from '@/domain/chordsheet/section-text';
-import { normalizeChord } from '@/domain/music/engine';
+import { normalizeChord } from '@/domain/music/notation/engine';
 import { DEFAULT_SONG_INPUT } from '@/domain/song/constants';
 import type { SongInput } from '@/domain/song/types';
 import EditorLayout from '@/shared/editor/EditorLayout';

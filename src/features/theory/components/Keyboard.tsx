@@ -1,5 +1,5 @@
-import { pitchName, preferFlatsFor } from '@/domain/theory/instruments';
-import { formatNote, type NameStyle, type SpelledNote } from '@/domain/theory/notes';
+import { preferFlatsFor } from '@/domain/music/instruments';
+import { formatNote, type NameStyle, type SpelledNote, pitchName } from '@/domain/music/core';
 
 const W = 34;
 const H = 118;
