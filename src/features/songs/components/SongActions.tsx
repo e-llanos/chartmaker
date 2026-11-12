@@ -2,13 +2,8 @@
 
 import Link from 'next/link';
 import { songEditPath, type SongView } from '@/config/routes';
+import { SONG_FORMATS } from '@/features/songs/formats';
 import DeleteSongButton from '@/features/songs/components/DeleteSongButton';
-
-const LABELS: Record<SongView, string> = {
-    cifrado: 'Editar cifrado',
-    chart: 'Editar chart',
-    advanced: 'Editar chart avanzado',
-};
 
 interface SongActionsProps {
     id: string;
@@ -17,7 +12,7 @@ interface SongActionsProps {
 }
 
 export default function SongActions({ id, title, view }: SongActionsProps) {
-    const label = LABELS[view];
+    const label = SONG_FORMATS[view].editLabel;
     return (
         <>
             <Link href={songEditPath(id, view)} className="icon-btn" aria-label={label} title={label}>

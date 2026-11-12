@@ -1,24 +1,10 @@
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
-import { getSongById } from '@/server/songs';
-import { toSongInput } from '@/domain/song/constants';
-import EditSongClient from '@/features/songs/components/EditSongClient';
+import EditorLoader, { type EditorParams } from '../editor-loader';
 
-interface EditSongPageProps {
-    params: Promise<{ id: string }>;
-}
-
-export default function EditSongPage({ params }: EditSongPageProps) {
+export default function EditSongPage({ params }: Pick<EditorParams, 'params'>) {
     return (
         <Suspense fallback={<p>Cargando editor…</p>}>
-            <EditSongLoader params={params} />
+            <EditorLoader params={params} format="cifrado" />
         </Suspense>
     );
-}
-
-async function EditSongLoader({ params }: EditSongPageProps) {
-    const { id } = await params;
-    const song = await getSongById(id);
-    if (!song) notFound();
-    return <EditSongClient id={id} initial={toSongInput(song)} />;
 }

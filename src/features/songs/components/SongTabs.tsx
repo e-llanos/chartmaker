@@ -1,32 +1,27 @@
 'use client';
 
 import type { SongView } from '@/config/routes';
+import { SONG_FORMAT_LIST } from '@/features/songs/formats';
 
 interface SongTabsProps {
     view: SongView;
     onChange: (view: SongView) => void;
-    /** Qué recursos tienen contenido (el cifrado siempre se considera disponible). */
+    /** Qué formatos tienen contenido (las pestañas sin contenido se atenúan). */
     available: Record<SongView, boolean>;
 }
-
-const TABS: ReadonlyArray<{ view: SongView; label: string }> = [
-    { view: 'cifrado', label: 'Cifrado' },
-    { view: 'chart', label: 'Chart' },
-    { view: 'advanced', label: 'Chart avanzado' },
-];
 
 export default function SongTabs({ view, onChange, available }: SongTabsProps) {
     return (
         <nav className="song-tabs" aria-label="Vista de la canción">
-            {TABS.map((t) => (
+            {SONG_FORMAT_LIST.map((format) => (
                 <button
-                    key={t.view}
+                    key={format.id}
                     type="button"
-                    className={`song-tab${available[t.view] ? '' : ' muted'}`}
-                    aria-current={view === t.view ? 'true' : undefined}
-                    onClick={() => onChange(t.view)}
+                    className={`song-tab${available[format.id] ? '' : ' muted'}`}
+                    aria-current={view === format.id ? 'true' : undefined}
+                    onClick={() => onChange(format.id)}
                 >
-                    {t.label}
+                    {format.label}
                 </button>
             ))}
         </nav>
