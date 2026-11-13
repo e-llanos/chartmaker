@@ -71,8 +71,7 @@ Si cambias la estructura de carpetas y algo no se actualiza, ejecuta `npm run cl
 | `/songs/[id]?view=chart`    | Abre directamente la pestaña del chart                                    |
 | `/songs/[id]?view=advanced` | Abre directamente la pestaña del chart avanzado                           |
 | `/songs/[id]/edit`          | Editor de datos y cifrado                                                 |
-| `/songs/[id]/chart/edit`    | Editor del chart                                                          |
-| `/songs/[id]/advanced/edit` | Editor del chart avanzado                                                 |
+| `/songs/[id]/[format]/edit` | Editor de un formato (`chart`, `advanced`…)                               |
 | `/theory`                   | Teoría musical (pestaña Escalas por defecto)                              |
 | `/theory?tab=chords`        | Acordes (`tab` admite `scales`, `chords`, `harmony`, `notes` y `symbols`) |
 
@@ -129,8 +128,8 @@ src/
 │   │   └── [id]/
 │   │       ├── page.tsx      Canción con pestañas
 │   │       ├── edit/         Editor de cifrado
-│   │       ├── chart/edit/   Editor de chart
-│   │       └── advanced/edit/ Editor de chart avanzado
+│   │       ├── [format]/edit/ Editor de chart y de chart avanzado
+│   │       └── editor-loader.tsx  Carga la canción y abre el editor del formato
 │   ├── theory/               Teoría musical (página con pestañas)
 │   ├── layout.tsx
 │   ├── not-found.tsx
