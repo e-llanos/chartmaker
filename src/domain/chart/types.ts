@@ -57,3 +57,8 @@ export interface Chart {
     style: ChartStyle;
     sections: ChartSection[];
 }
+
+export const CHART_STYLE_LABELS: Record<ChartStyle, string> = {
+    simple: 'Simple',
+    advanced: 'Avanzado',
+};

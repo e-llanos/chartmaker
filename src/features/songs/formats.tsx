@@ -3,16 +3,14 @@
 import type { ComponentType } from 'react';
 import { SONG_VIEWS, type SongView } from '@/config/routes';
 import type { Chart } from '@/domain/chart/types';
+import { emptyChart } from '@/domain/chart/utils';
 import { toSongInput } from '@/domain/song/constants';
 import type { Song, SongInput } from '@/domain/song/types';
 import ChartEditor from '@/features/chart/components/ChartEditor';
 import ChartViewer from '@/features/chart/components/ChartViewer';
 import ChordSheetEditor, { type ChordSheetData } from '@/features/chordsheet/components/ChordSheetEditor';
 import ChordSheetViewer from '@/features/chordsheet/components/ChordSheetViewer';
-import ScoreEditor from '@/features/score/components/ScoreEditor';
-import ScoreViewer from '@/features/score/components/ScoreViewer';
 import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
-import { emptyChart } from '@/domain/chart/utils';
 
 /** Lo que recibe el visor de cualquier formato. */
 export interface FormatViewerProps {
@@ -80,7 +78,7 @@ function ChordSheetFormatEditor({ initial, onChange }: FormatEditorProps<ChordSh
     return <ChordSheetEditor initial={initial} onChange={onChange} />;
 }
 
-/* ---------- Chart ---------- */
+/* ---------- Chart (simple o avanzado) ---------- */
 
 function ChartFormatViewer({ song, input, settings }: FormatViewerProps) {
     return song.chart ? (
@@ -90,18 +88,6 @@ function ChartFormatViewer({ song, input, settings }: FormatViewerProps) {
 
 function ChartFormatEditor({ input, initial, onChange }: FormatEditorProps<Chart>) {
     return <ChartEditor song={input} initial={initial} onChange={onChange} />;
-}
-
-/* ---------- Chart avanzado: el mismo chart, con el estilo avanzado ---------- */
-
-function ScoreFormatViewer({ song, input, settings }: FormatViewerProps) {
-    return song.chart ? (
-        <ScoreViewer song={input} score={song.chart} settings={settings} hideHeader />
-    ) : null;
-}
-
-function ScoreFormatEditor({ input, initial, onChange }: FormatEditorProps<Chart>) {
-    return <ScoreEditor song={input} initial={initial} onChange={onChange} />;
 }
 
 const untitled = (input: SongInput): string => input.title || 'Sin título';
@@ -128,7 +114,8 @@ export const SONG_FORMATS: Record<SongView, SongFormat> = {
         hasContent: (song) => Boolean(song.chart?.sections.length),
         empty: {
             title: 'Aún no hay chart',
-            description: 'Un chart muestra la canción por compases. Puedes generarlo a partir del cifrado y ajustarlo.',
+            description:
+                'Un chart muestra la canción por compases, en estilo simple o avanzado. Puedes generarlo a partir del cifrado y ajustarlo.',
             cta: 'Crear chart',
         },
         Viewer: ChartFormatViewer,
@@ -137,24 +124,6 @@ export const SONG_FORMATS: Record<SongView, SongFormat> = {
             initial: (song) => song.chart ?? emptyChart('simple'),
             toPayload: (chart) => ({ chart }),
             Editor: ChartFormatEditor,
-        },
-    }),
-    advanced: define<Chart>({
-        id: 'advanced',
-        label: 'Chart avanzado',
-        editLabel: 'Editar chart avanzado',
-        hasContent: (song) => Boolean(song.chart?.sections.length),
-        empty: {
-            title: 'Aún no hay chart avanzado',
-            description: 'Incluye tiempos, barras de repetición, casillas y símbolos de partitura.',
-            cta: 'Crear chart avanzado',
-        },
-        Viewer: ScoreFormatViewer,
-        editor: {
-            title: (input) => `Chart avanzado · ${untitled(input)}`,
-            initial: (song) => song.chart ?? emptyChart('advanced'),
-            toPayload: (chart) => ({ chart }),
-            Editor: ScoreFormatEditor,
         },
     }),
 };

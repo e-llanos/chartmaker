@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Chart, ChartSection } from '@/domain/chart/types';
+import type { Chart, ChartSection, ChartStyle } from '@/domain/chart/types';
 import { chartFromChordPro, newSection } from '@/domain/chart/utils';
 import { beatsPerMeasure } from '@/domain/music/core/meter';
 import { computeBadges, nextLabel, SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
@@ -12,6 +12,7 @@ import SectionsToolbar from '@/shared/editor/SectionsToolbar';
 import SectionTypeButtons from '@/shared/editor/SectionTypeButtons';
 import { useAccordion } from '@/shared/editor/useAccordion';
 import { useReorder } from '@/shared/editor/useReorder';
+import AdvancedSectionEditor from './AdvancedSectionEditor';
 import ChartViewer from './ChartViewer';
 import SectionEditor from './SectionEditor';
 
@@ -27,7 +28,8 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
     const accordion = useAccordion(initial.sections[0] ? [initial.sections[0].id] : []);
     const reorder = useReorder(chart.sections, (sections) => commitSections(sections));
 
-    const bpm = beatsPerMeasure(song.compas);
+    const advanced = chart.style === 'advanced';
+    const count = beatsPerMeasure(song.compas);
     const badges = computeBadges(chart.sections);
     const totalMeasures = chart.sections.reduce((sum, s) => sum + s.measures.length, 0);
 
@@ -41,9 +43,14 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
         commit({ ...chart, sections });
     }
 
+    /** Cambiar de estilo no borra nada: los campos avanzados se conservan aunque estén ocultos. */
+    function setStyle(style: ChartStyle) {
+        commit({ ...chart, style });
+    }
+
     function addSection(type: SectionType) {
-        const count = chart.sections.filter((s) => s.type === type).length;
-        const section = newSection(type, nextLabel(type, count), bpm);
+        const n = chart.sections.filter((s) => s.type === type).length;
+        const section = newSection(type, nextLabel(type, n), count);
         commitSections([...chart.sections, section]);
         accordion.show(section.id);
     }
@@ -80,6 +87,18 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
                 onGenerate={generate}
             />
 
+            <label className="editor-style">
+                <input
+                    type="checkbox"
+                    checked={advanced}
+                    onChange={(e) => setStyle(e.target.checked ? 'advanced' : 'simple')}
+                />
+                <span>Herramientas avanzadas</span>
+                <small className="editor-style-note">
+                    Barras de repetición, casillas, símbolos y compases por fila. Al desactivarlas no se pierde nada.
+                </small>
+            </label>
+
             <div className="add-row">
                 <span className="lb">Agregar</span>
                 <SectionTypeButtons compact onAdd={addSection} />
@@ -96,20 +115,37 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
                                 key={s.id}
                                 badge={badges[i]}
                                 title={s.label || SECTION_TYPES[s.type].label}
-                                summary={sectionSummary(s.measures.length, s.repeat, s.note, { showRepeat: open })}
+                                summary={sectionSummary(
+                                    s.measures.length,
+                                    s.repeat,
+                                    s.note,
+                                    { showRepeat: open, ...(advanced && open ? { perRow: s.perRow } : {}) },
+                                )}
                                 open={open}
                                 onToggle={() => accordion.toggle(s.id)}
                                 drag={reorder.props(i)}
                             >
-                                <SectionEditor
-                                    section={s}
-                                    bpm={bpm}
-                                    index={i}
-                                    total={chart.sections.length}
-                                    onChange={(next) => updateSection(i, next)}
-                                    onMove={(dir) => moveSection(i, dir)}
-                                    onRemove={() => commitSections(chart.sections.filter((_, k) => k !== i))}
-                                />
+                                {advanced ? (
+                                    <AdvancedSectionEditor
+                                        section={s}
+                                        count={count}
+                                        index={i}
+                                        total={chart.sections.length}
+                                        onChange={(next) => updateSection(i, next)}
+                                        onMove={(dir) => moveSection(i, dir)}
+                                        onRemove={() => commitSections(chart.sections.filter((_, k) => k !== i))}
+                                    />
+                                ) : (
+                                    <SectionEditor
+                                        section={s}
+                                        bpm={count}
+                                        index={i}
+                                        total={chart.sections.length}
+                                        onChange={(next) => updateSection(i, next)}
+                                        onMove={(dir) => moveSection(i, dir)}
+                                        onRemove={() => commitSections(chart.sections.filter((_, k) => k !== i))}
+                                    />
+                                )}
                             </SectionPanel>
                         );
                     })}
@@ -118,5 +154,5 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
         </>
     );
 
-    return <EditorLayout tools={tools} preview={<ChartViewer song={song} chart={chart} />} />;
+    return <EditorLayout tools={tools} preview={<ChartViewer song={song} chart={chart} style={chart.style} />} />;
 }

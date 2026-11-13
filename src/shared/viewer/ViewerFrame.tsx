@@ -29,6 +29,8 @@ interface ViewerFrameProps {
     onLayoutChange?: (layout: SectionsLayout) => void;
     mode?: ViewMode;
     onModeChange?: (mode: ViewMode) => void;
+    /** Controles propios del visor (por ejemplo, el estilo del chart). */
+    controls?: ReactNode;
     isEmpty: boolean;
     emptyMessage: string;
     /** Contenido de la hoja (las secciones). */
@@ -41,7 +43,7 @@ interface ViewerFrameProps {
  */
 export default function ViewerFrame({
     header, title, hideTitle = false, song, settings, originalKey, displayKey, badges, navScope,
-    layout, onLayoutChange, mode, onModeChange, isEmpty, emptyMessage, children,
+    layout, onLayoutChange, mode, onModeChange, isEmpty, emptyMessage, children, controls
 }: ViewerFrameProps) {
     const sheetRef = useRef<HTMLDivElement>(null);
     const { setSemitones, notation, setNotation, reference, setReference } = settings;
@@ -63,6 +65,7 @@ export default function ViewerFrame({
                 onNotationChange={setNotation}
                 reference={reference}
                 onReferenceChange={setReference}
+                controls={controls}
                 actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
             />
             <SectionNav badges={badges} scopeId={navScope} />

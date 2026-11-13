@@ -1,12 +1,12 @@
 import { Fragment } from 'react';
 import { padBeats } from '@/domain/shared/beats';
-import type { ScoreMeasure } from '@/domain/score/types';
-import { barBetween } from '@/domain/score/utils';
+import type { ChartMeasure } from '@/domain/chart/types';
+import { barBetween } from '@/domain/chart/utils';
 import ChordText from '@/shared/viewer/ChordText';
 import { Bar, MarkView, SimileIcon } from '@/shared/notation/ScoreSymbols';
 
 interface MeasureViewProps {
-    measure: ScoreMeasure;
+    measure: ChartMeasure;
     /** Tiempos por compás. */
     count: number;
     mapChord: (chord: string) => string;
@@ -60,8 +60,8 @@ function MeasureView({ measure, count, mapChord, endingStart }: MeasureViewProps
     );
 }
 
-interface ScoreRowProps {
-    measures: ScoreMeasure[];
+interface AdvancedRowProps {
+    measures: ChartMeasure[];
     perRow: number;
     count: number;
     mapChord: (chord: string) => string;
@@ -69,7 +69,7 @@ interface ScoreRowProps {
     time: { num: string; den: string } | null;
 }
 
-export default function ScoreRow({ measures, perRow, count, mapChord, time }: ScoreRowProps) {
+export default function AdvancedRow({ measures, perRow, count, mapChord, time }: AdvancedRowProps) {
     const ghosts = Math.max(0, perRow - measures.length);
     return (
         <div className="score-row" data-export-block="row" style={{ minWidth: `${perRow * 120 + 40}px` }}>

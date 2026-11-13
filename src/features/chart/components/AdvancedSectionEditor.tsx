@@ -5,13 +5,13 @@ import { normalizeChord } from '@/domain/music/notation/engine';
 import { padBeats } from '@/domain/shared/beats';
 import {
     MEASURE_MARKS,
+    type ChartMeasure,
+    type ChartSection,
     type LeftBar,
     type MeasureMark,
     type RightBar,
-    type ScoreMeasure,
-    type ScoreSection,
-} from '@/domain/score/types';
-import { emptyScoreMeasure } from '@/domain/score/utils';
+} from '@/domain/chart/types';
+import { emptyMeasure } from '@/domain/chart/utils';
 import SectionMetaFields, { SectionActions } from '@/shared/editor/SectionMetaFields';
 import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, PlusIcon, TrashIcon } from '@/shared/ui/Icons';
 import BarIcon, { type BarIconKind } from '@/shared/notation/BarIcon';
@@ -34,12 +34,12 @@ const RIGHT_OPTIONS: Array<{ value: RightBar | undefined; icon: BarIconKind; lab
     { value: 'final', icon: 'final', label: 'Barra final' },
 ];
 
-const leftGlyph = (m: ScoreMeasure) => (m.left === 'repeat' ? '|:' : m.left === 'double' ? '‖' : '|');
-const rightGlyph = (m: ScoreMeasure) =>
+const leftGlyph = (m: ChartMeasure) => (m.left === 'repeat' ? '|:' : m.left === 'double' ? '‖' : '|');
+const rightGlyph = (m: ChartMeasure) =>
     m.right === 'repeat' ? ':|' : m.right === 'double' ? '‖' : m.right === 'final' ? '|]' : '|';
 
 interface MeasureTileProps {
-    measure: ScoreMeasure;
+    measure: ChartMeasure;
     count: number;
     index: number;
     selected: boolean;
@@ -72,17 +72,17 @@ function MeasureTile({ measure, count, index, selected, onSelect }: MeasureTileP
 }
 
 interface ScoreSectionEditorProps {
-    section: ScoreSection;
+    section: ChartSection;
     /** Tiempos por compás. */
     count: number;
     index: number;
     total: number;
-    onChange: (section: ScoreSection) => void;
+    onChange: (section: ChartSection) => void;
     onMove: (dir: -1 | 1) => void;
     onRemove: () => void;
 }
 
-export default function ScoreSectionEditor({
+export default function AdvancedSectionEditor({
     section, count, index, total, onChange, onMove, onRemove,
 }: ScoreSectionEditorProps) {
     const [selected, setSelected] = useState<number>(0);
@@ -94,9 +94,9 @@ export default function ScoreSectionEditor({
         ? PER_ROW_CHOICES
         : [...PER_ROW_CHOICES, section.perRow].sort((a, b) => a - b);
 
-    const patch = (changes: Partial<ScoreSection>) => onChange({ ...section, ...changes });
-    const setMeasures = (measures: ScoreMeasure[]) => patch({ measures });
-    const patchMeasure = (j: number, changes: Partial<ScoreMeasure>) =>
+    const patch = (changes: Partial<ChartSection>) => onChange({ ...section, ...changes });
+    const setMeasures = (measures: ChartMeasure[]) => patch({ measures });
+    const patchMeasure = (j: number, changes: Partial<ChartMeasure>) =>
         setMeasures(section.measures.map((x, i) => (i === j ? { ...x, ...changes } : x)));
 
     function setBeat(j: number, b: number, value: string) {
@@ -113,14 +113,14 @@ export default function ScoreSectionEditor({
     }
 
     function addMeasure() {
-        setMeasures([...section.measures, emptyScoreMeasure(count)]);
+        setMeasures([...section.measures, emptyMeasure(count)]);
         setSelected(section.measures.length);
     }
 
     function duplicate(j: number) {
         const measure = section.measures[j];
         if (!measure) return;
-        const copy: ScoreMeasure = {
+        const copy: ChartMeasure = {
             ...measure,
             beats: [...measure.beats],
             ...(measure.marks ? { marks: [...measure.marks] } : {}),
