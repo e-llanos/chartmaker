@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, type CSSProperties } from 'react';
-import type { Chart } from '@/domain/chart/types';
 import { beatsPerMeasure } from '@/domain/music/core/meter';
 import type { Score, ScoreMeasure, ScoreSection } from '@/domain/score/types';
 import { chunk, timeSignature } from '@/domain/score/utils';
@@ -16,8 +15,6 @@ import ScoreRow from './ScoreRow';
 interface ScoreViewerProps {
     song: SongInput;
     score: Score;
-    /** Se incluye al exportar .chartmaker para no perderlo. */
-    chart?: Chart;
     /** Ajustes compartidos entre pestañas; si se omite, el visor usa los suyos. */
     settings?: ViewerSettings;
     /** La cabecera la dibuja el contenedor de la canción. */
@@ -82,7 +79,7 @@ function ScoreSectionView({ section: s, first, count, time, mapChord }: ScoreSec
 }
 
 export default function ScoreViewer({
-    song, score, chart, settings: sharedSettings, hideHeader = false,
+    song, score, settings: sharedSettings, hideHeader = false,
 }: ScoreViewerProps) {
     const settings = useResolvedSettings(sharedSettings);
     const { displayKey, mapChord } = useChordMapper(song.key, settings);
@@ -91,10 +88,7 @@ export default function ScoreViewer({
     const count = beatsPerMeasure(song.compas);
     const time = useMemo(() => timeSignature(song.compas), [song.compas]);
 
-    const exportSong = useMemo<SongCreate>(
-        () => ({ ...song, ...(chart ? { chart } : {}), score }),
-        [song, chart, score]
-    );
+    const exportSong = useMemo<SongCreate>(() => ({ ...song, chart: score }), [song, score]);
 
     return (
         <ViewerFrame

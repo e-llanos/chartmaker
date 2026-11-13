@@ -51,7 +51,7 @@ async function SongList() {
                             <span className="song-resources">
                                 <span className="song-tag">Cifrado</span>
                                 <span className={`song-tag${song.hasChart ? '' : ' muted'}`}>Chart</span>
-                                <span className={`song-tag${song.hasScore ? '' : ' muted'}`}>Avanzado</span>
+                                <span className={`song-tag${song.chartStyle === 'advanced' ? '' : ' muted'}`}>Avanzado</span>
                             </span>
                         </span>
                         <span className="song-meta">

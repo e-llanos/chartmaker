@@ -25,7 +25,7 @@ interface ChartEditorProps {
 export default function ChartEditor({ song, initial, onChange }: ChartEditorProps) {
     const [chart, setChart] = useState<Chart>(initial);
     const accordion = useAccordion(initial.sections[0] ? [initial.sections[0].id] : []);
-    const reorder = useReorder(chart.sections, (sections) => commit({ sections }));
+    const reorder = useReorder(chart.sections, (sections) => commitSections(sections));
 
     const bpm = beatsPerMeasure(song.compas);
     const badges = computeBadges(chart.sections);
@@ -36,15 +36,20 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
         onChange?.(next);
     }
 
+    /** Cambia las secciones conservando el resto del chart (el estilo). */
+    function commitSections(sections: ChartSection[]) {
+        commit({ ...chart, sections });
+    }
+
     function addSection(type: SectionType) {
         const count = chart.sections.filter((s) => s.type === type).length;
         const section = newSection(type, nextLabel(type, count), bpm);
-        commit({ sections: [...chart.sections, section] });
+        commitSections([...chart.sections, section]);
         accordion.show(section.id);
     }
 
     function updateSection(index: number, next: ChartSection) {
-        commit({ sections: chart.sections.map((s, i) => (i === index ? next : s)) });
+        commitSections(chart.sections.map((s, i) => (i === index ? next : s)));
     }
 
     function moveSection(index: number, dir: -1 | 1) {
@@ -55,12 +60,12 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
         const sections = [...chart.sections];
         sections[index] = b;
         sections[target] = a;
-        commit({ sections });
+        commitSections(sections);
     }
 
     function generate() {
         if (chart.sections.length > 0 && !window.confirm('Esto reemplazará el chart actual. ¿Continuar?')) return;
-        const next = chartFromChordPro(song.body, song.compas);
+        const next = chartFromChordPro(song.body, song.compas, chart.style);
         commit(next);
         accordion.set(next.sections[0] ? [next.sections[0].id] : []);
     }
@@ -103,7 +108,7 @@ export default function ChartEditor({ song, initial, onChange }: ChartEditorProp
                                     total={chart.sections.length}
                                     onChange={(next) => updateSection(i, next)}
                                     onMove={(dir) => moveSection(i, dir)}
-                                    onRemove={() => commit({ sections: chart.sections.filter((_, k) => k !== i) })}
+                                    onRemove={() => commitSections(chart.sections.filter((_, k) => k !== i))}
                                 />
                             </SectionPanel>
                         );

@@ -3,7 +3,6 @@
 import type { ComponentType } from 'react';
 import { SONG_VIEWS, type SongView } from '@/config/routes';
 import type { Chart } from '@/domain/chart/types';
-import type { Score } from '@/domain/score/types';
 import { toSongInput } from '@/domain/song/constants';
 import type { Song, SongInput } from '@/domain/song/types';
 import ChartEditor from '@/features/chart/components/ChartEditor';
@@ -13,6 +12,7 @@ import ChordSheetViewer from '@/features/chordsheet/components/ChordSheetViewer'
 import ScoreEditor from '@/features/score/components/ScoreEditor';
 import ScoreViewer from '@/features/score/components/ScoreViewer';
 import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
+import { emptyChart } from '@/domain/chart/utils';
 
 /** Lo que recibe el visor de cualquier formato. */
 export interface FormatViewerProps {
@@ -70,7 +70,6 @@ function ChordSheetFormatViewer({ song, input, settings }: FormatViewerProps) {
             title={input.title}
             meta={input}
             chart={song.chart}
-            score={song.score}
             settings={settings}
             hideHeader
         />
@@ -85,7 +84,7 @@ function ChordSheetFormatEditor({ initial, onChange }: FormatEditorProps<ChordSh
 
 function ChartFormatViewer({ song, input, settings }: FormatViewerProps) {
     return song.chart ? (
-        <ChartViewer song={input} chart={song.chart} score={song.score} settings={settings} hideHeader />
+        <ChartViewer song={input} chart={song.chart} settings={settings} hideHeader />
     ) : null;
 }
 
@@ -93,16 +92,16 @@ function ChartFormatEditor({ input, initial, onChange }: FormatEditorProps<Chart
     return <ChartEditor song={input} initial={initial} onChange={onChange} />;
 }
 
-/* ---------- Chart avanzado ---------- */
+/* ---------- Chart avanzado: el mismo chart, con el estilo avanzado ---------- */
 
 function ScoreFormatViewer({ song, input, settings }: FormatViewerProps) {
-    return song.score ? (
-        <ScoreViewer song={input} score={song.score} chart={song.chart} settings={settings} hideHeader />
+    return song.chart ? (
+        <ScoreViewer song={input} score={song.chart} settings={settings} hideHeader />
     ) : null;
 }
 
-function ScoreFormatEditor({ song, input, initial, onChange }: FormatEditorProps<Score>) {
-    return <ScoreEditor song={input} initial={initial} baseChart={song.chart} onChange={onChange} />;
+function ScoreFormatEditor({ input, initial, onChange }: FormatEditorProps<Chart>) {
+    return <ScoreEditor song={input} initial={initial} onChange={onChange} />;
 }
 
 const untitled = (input: SongInput): string => input.title || 'Sin título';
@@ -135,16 +134,16 @@ export const SONG_FORMATS: Record<SongView, SongFormat> = {
         Viewer: ChartFormatViewer,
         editor: {
             title: (input) => `Editor de chart · ${untitled(input)}`,
-            initial: (song) => song.chart ?? { sections: [] },
+            initial: (song) => song.chart ?? emptyChart('simple'),
             toPayload: (chart) => ({ chart }),
             Editor: ChartFormatEditor,
         },
     }),
-    advanced: define<Score>({
+    advanced: define<Chart>({
         id: 'advanced',
         label: 'Chart avanzado',
         editLabel: 'Editar chart avanzado',
-        hasContent: (song) => Boolean(song.score?.sections.length),
+        hasContent: (song) => Boolean(song.chart?.sections.length),
         empty: {
             title: 'Aún no hay chart avanzado',
             description: 'Incluye tiempos, barras de repetición, casillas y símbolos de partitura.',
@@ -153,8 +152,8 @@ export const SONG_FORMATS: Record<SongView, SongFormat> = {
         Viewer: ScoreFormatViewer,
         editor: {
             title: (input) => `Chart avanzado · ${untitled(input)}`,
-            initial: (song) => song.score ?? { sections: [] },
-            toPayload: (score) => ({ score }),
+            initial: (song) => song.chart ?? emptyChart('advanced'),
+            toPayload: (chart) => ({ chart }),
             Editor: ScoreFormatEditor,
         },
     }),

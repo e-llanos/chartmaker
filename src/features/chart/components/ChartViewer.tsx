@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 import type { Chart } from '@/domain/chart/types';
 import { beatsPerMeasure } from '@/domain/music/core/meter';
-import type { Score } from '@/domain/score/types';
 import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
 import type { SongCreate, SongInput } from '@/domain/song/types';
 import SectionCard from '@/shared/viewer/SectionCard';
@@ -17,8 +16,6 @@ import MeasureBox from './MeasureBox';
 interface ChartViewerProps {
     song: SongInput;
     chart: Chart;
-    /** Se incluye al exportar .chartmaker para no perderlo. */
-    score?: Score;
     /** Ajustes compartidos entre pestañas; si se omite, el visor usa los suyos. */
     settings?: ViewerSettings;
     /** La cabecera la dibuja el contenedor de la canción. */
@@ -26,7 +23,7 @@ interface ChartViewerProps {
 }
 
 export default function ChartViewer({
-    song, chart, score, settings: sharedSettings, hideHeader = false,
+    song, chart, settings: sharedSettings, hideHeader = false,
 }: ChartViewerProps) {
     const settings = useResolvedSettings(sharedSettings);
     const { displayKey, mapChord } = useChordMapper(song.key, settings);
@@ -37,10 +34,7 @@ export default function ChartViewer({
     const badges = useMemo(() => computeBadges(chart.sections), [chart.sections]);
     const count = beatsPerMeasure(song.compas);
 
-    const exportSong = useMemo<SongCreate>(
-        () => ({ ...song, chart, ...(score ? { score } : {}) }),
-        [song, chart, score]
-    );
+    const exportSong = useMemo<SongCreate>(() => ({ ...song, chart }), [song, chart]);
 
     return (
         <ViewerFrame
