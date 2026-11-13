@@ -1,12 +1,13 @@
-import type { SongInput } from '@/domain/song/types';
-import { parseSongInput, type Result } from '@/domain/song/validation';
+import { mergeLegacyChart } from '@/domain/song/migrate';
 import type { SongCreate } from '@/domain/song/types';
+import { parseSongInput, type Result } from '@/domain/song/validation';
 
 export const CHARTMAKER_EXT = '.chartmaker';
 export const CHARTMAKER_MAX_BYTES = 2 * 1024 * 1024;
 
 const FORMAT = 'chartmaker';
-const VERSION = 1;
+/** 2: un solo chart con estilo. La 1 guardaba chart y chart avanzado por separado. */
+const VERSION = 2;
 
 export interface ChartmakerFile {
     format: typeof FORMAT;
@@ -15,8 +16,16 @@ export interface ChartmakerFile {
     song: SongCreate;
 }
 
+/** Lleva el contenido de un archivo de una versión anterior a la actual. */
+function upgrade(song: unknown, version: number): unknown {
+    if (version >= 2 || typeof song !== 'object' || song === null) return song;
+    const { chart, score, ...rest } = song as Record<string, unknown>;
+    const merged = mergeLegacyChart(chart, score);
+    return merged.chart ? { ...rest, chart: merged.chart } : rest;
+}
+
 /** Lee y valida el contenido de un archivo .chartmaker. */
-export function parseChartmaker(text: string): Result<SongInput> {
+export function parseChartmaker(text: string): Result<SongCreate> {
     let data: unknown;
     try {
         data = JSON.parse(text.replace(/^\uFEFF/, ''));
@@ -31,10 +40,13 @@ export function parseChartmaker(text: string): Result<SongInput> {
     if (file.format !== FORMAT) {
         return { ok: false, error: 'El archivo no es un .chartmaker válido' };
     }
-    if (typeof file.version !== 'number' || file.version > VERSION) {
+    if (typeof file.version !== 'number' || !Number.isInteger(file.version) || file.version < 1) {
+        return { ok: false, error: 'El archivo no es un .chartmaker válido' };
+    }
+    if (file.version > VERSION) {
         return { ok: false, error: 'El archivo fue creado con una versión más nueva de la app' };
     }
-    return parseSongInput(file.song);
+    return parseSongInput(upgrade(file.song, file.version));
 }
 
 export function serializeChartmaker(song: SongCreate): string {

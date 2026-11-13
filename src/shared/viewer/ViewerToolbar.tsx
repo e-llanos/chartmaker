@@ -28,6 +28,7 @@ interface ViewerToolbarProps {
   onModeChange?: (mode: ViewMode) => void;
   /** Controles extra al final de la barra (menú de descarga). */
   actions?: ReactNode;
+  controls?: ReactNode;
 }
 
 const iconProps: SVGProps<SVGSVGElement> = {
@@ -64,7 +65,7 @@ function ColumnsIcon() {
 /** Barra superior del visualizador: tonalidad, notación, contenido, disposición y descarga. */
 export default function ViewerToolbar({
   title, currentKey, notation, onTranspose, onKeyChange, onNotationChange, reference, onReferenceChange,
-  hideTitle = false, layout, onLayoutChange, mode, onModeChange, actions,
+  hideTitle = false, layout, onLayoutChange, mode, onModeChange, actions, controls,
 }: ViewerToolbarProps) {
   const keys = SONG_KEYS.includes(currentKey) ? SONG_KEYS : [currentKey, ...SONG_KEYS];
   const notationEntries = Object.entries(NOTATION_LABELS) as [Notation, string][];
@@ -118,6 +119,7 @@ export default function ViewerToolbar({
               <option value="relativeMajor">Desde la relativa ({formatKeyLabel(relative.tonic, 'symbol')})</option>
             </select>
           )}
+          {controls}
           {mode !== undefined && onModeChange && (
             <select
               value={mode}

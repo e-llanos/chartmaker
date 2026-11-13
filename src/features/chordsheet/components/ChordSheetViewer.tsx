@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import type { Chart } from '@/domain/chart/types';
 import { parseSections } from '@/domain/chordsheet/parse-sections';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
-import type { Score } from '@/domain/score/types';
 import { computeBadges, SECTION_TYPES } from '@/domain/sections/section-types';
 import type { SongCreate } from '@/domain/song/types';
 import SectionCard from '@/shared/viewer/SectionCard';
@@ -21,7 +20,6 @@ interface ChordSheetViewerProps {
     title: string;
     meta?: SongMeta;
     chart?: Chart;
-    score?: Score;
     /** Ajustes compartidos entre pestañas; si se omite, el visor usa los suyos. */
     settings?: ViewerSettings;
     /** La cabecera la dibuja el contenedor de la canción. */
@@ -29,7 +27,7 @@ interface ChordSheetViewerProps {
 }
 
 export default function ChordSheetViewer({
-    chordProText, originalKey, title, meta, chart, score, settings: sharedSettings, hideHeader = false,
+    chordProText, originalKey, title, meta, chart, settings: sharedSettings, hideHeader = false,
 }: ChordSheetViewerProps) {
     const settings = useResolvedSettings(sharedSettings);
     const { displayKey, mapChord } = useChordMapper(originalKey, settings);
@@ -45,9 +43,8 @@ export default function ChordSheetViewer({
         () => (meta ? {
             title, key: originalKey, body: chordProText, ...meta,
             ...(chart ? { chart } : {}),
-            ...(score ? { score } : {}),
         } : null),
-        [meta, title, originalKey, chordProText, chart, score]
+        [meta, title, originalKey, chordProText, chart]
     );
 
     return (

@@ -1,18 +1,19 @@
-import type { Chart, ChartMeasure, ChartSection } from '@/domain/chart/types';
-import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
-import { DEFAULT_SONG_INPUT, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
-import { normalizeSongKey } from '@/domain/music/core/key';
-import { parseTimeSignature } from '@/domain/music/core/meter';
-import type { SongCreate, SongUpdate } from '@/domain/song/types';
 import {
+    DEFAULT_PER_ROW,
     MEASURE_MARK_KEYS,
+    type Chart,
+    type ChartMeasure,
+    type ChartSection,
+    type ChartStyle,
     type LeftBar,
     type MeasureMark,
     type RightBar,
-    type Score,
-    type ScoreMeasure,
-    type ScoreSection,
-} from '@/domain/score/types';
+} from '@/domain/chart/types';
+import { normalizeSongKey } from '@/domain/music/core/key';
+import { parseTimeSignature } from '@/domain/music/core/meter';
+import { SECTION_TYPES, type SectionType } from '@/domain/sections/section-types';
+import { DEFAULT_SONG_INPUT, TEMPO_MAX, TEMPO_MIN } from '@/domain/song/constants';
+import type { SongCreate, SongUpdate } from '@/domain/song/types';
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -31,7 +32,6 @@ const CHART_LIMITS = { sections: 80, measures: 256, beats: 12, beatLen: 24, text
 
 const TEXT_FIELDS = ['title', 'artist', 'album', 'key', 'compas', 'body'] as const;
 
-
 /* ---------- Chart ---------- */
 
 function isSectionType(v: unknown): v is SectionType {
@@ -42,69 +42,25 @@ function intInRange(v: unknown, min: number, max: number): v is number {
     return typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max;
 }
 
-function parseMeasure(data: unknown): ChartMeasure | null {
-    if (!data || typeof data !== 'object') return null;
-    const { beats, repeat } = data as Record<string, unknown>;
-    if (!Array.isArray(beats) || beats.length < 1 || beats.length > CHART_LIMITS.beats) return null;
-    if (!beats.every((b) => typeof b === 'string' && b.length <= CHART_LIMITS.beatLen)) return null;
-    const r: unknown = repeat === undefined ? 1 : repeat;
-    if (!intInRange(r, 1, 99)) return null;
-    return { beats: beats as string[], ...(r > 1 ? { repeat: r } : {}) };
-}
-
-function parseSection(data: unknown): ChartSection | null {
-    if (!data || typeof data !== 'object') return null;
-    const s = data as Record<string, unknown>;
-    if (typeof s.id !== 'string' || !s.id || s.id.length > 64) return null;
-    if (!isSectionType(s.type)) return null;
-    if (typeof s.label !== 'string' || s.label.length > CHART_LIMITS.text) return null;
-    if (typeof s.note !== 'string' || s.note.length > CHART_LIMITS.text) return null;
-    if (!intInRange(s.repeat, 1, 99)) return null;
-    if (!Array.isArray(s.measures) || s.measures.length > CHART_LIMITS.measures) return null;
-
-    const measures: ChartMeasure[] = [];
-    for (const m of s.measures) {
-        const parsed = parseMeasure(m);
-        if (!parsed) return null;
-        measures.push(parsed);
-    }
-    return { id: s.id, type: s.type, label: s.label, note: s.note, repeat: s.repeat, measures };
-}
-
-export function parseChart(data: unknown): Result<Chart> {
-    const invalid: Result<Chart> = { ok: false, error: 'Chart inválido' };
-    if (!data || typeof data !== 'object') return invalid;
-    const { sections } = data as Record<string, unknown>;
-    if (!Array.isArray(sections) || sections.length > CHART_LIMITS.sections) return invalid;
-
-    const out: ChartSection[] = [];
-    const ids = new Set<string>();
-    for (const s of sections) {
-        const parsed = parseSection(s);
-        if (!parsed || ids.has(parsed.id)) return invalid; // los ids deben ser únicos
-        ids.add(parsed.id);
-        out.push(parsed);
-    }
-    return { ok: true, value: { sections: out } };
-}
-
-/* ---------- Chart avanzado ---------- */
-
 const isLeft = (v: unknown): v is LeftBar => v === 'double' || v === 'repeat';
 const isRight = (v: unknown): v is RightBar => v === 'double' || v === 'final' || v === 'repeat';
 const isEnding = (v: unknown): v is 1 | 2 | 3 => v === 1 || v === 2 || v === 3;
 const isMark = (v: unknown): v is MeasureMark =>
     typeof v === 'string' && (MEASURE_MARK_KEYS as string[]).includes(v);
 
-function parseScoreMeasure(data: unknown): ScoreMeasure | null {
+function parseMeasure(data: unknown): ChartMeasure | null {
     if (!data || typeof data !== 'object') return null;
     const m = data as Record<string, unknown>;
     const { beats } = m;
     if (!Array.isArray(beats) || beats.length < 1 || beats.length > CHART_LIMITS.beats) return null;
     if (!beats.every((b) => typeof b === 'string' && b.length <= CHART_LIMITS.beatLen)) return null;
 
-    const out: ScoreMeasure = { beats: beats as string[] };
+    const out: ChartMeasure = { beats: beats as string[] };
 
+    if (m.repeat !== undefined) {
+        if (!intInRange(m.repeat, 1, 99)) return null;
+        if (m.repeat > 1) out.repeat = m.repeat;
+    }
     if (m.left !== undefined) {
         if (!isLeft(m.left)) return null;
         out.left = m.left;
@@ -133,7 +89,7 @@ function parseScoreMeasure(data: unknown): ScoreMeasure | null {
     return out;
 }
 
-function parseScoreSection(data: unknown): ScoreSection | null {
+function parseSection(data: unknown): ChartSection | null {
     if (!data || typeof data !== 'object') return null;
     const s = data as Record<string, unknown>;
     if (typeof s.id !== 'string' || !s.id || s.id.length > 64) return null;
@@ -141,36 +97,39 @@ function parseScoreSection(data: unknown): ScoreSection | null {
     if (typeof s.label !== 'string' || s.label.length > CHART_LIMITS.text) return null;
     if (typeof s.note !== 'string' || s.note.length > CHART_LIMITS.text) return null;
     if (!intInRange(s.repeat, 1, 99)) return null;
-    if (!intInRange(s.perRow, 2, 8)) return null;
     if (!Array.isArray(s.measures) || s.measures.length > CHART_LIMITS.measures) return null;
 
-    const measures: ScoreMeasure[] = [];
+    let perRow = DEFAULT_PER_ROW;
+    if (s.perRow !== undefined) {
+        if (!intInRange(s.perRow, 2, 8)) return null;
+        perRow = s.perRow;
+    }
+
+    const measures: ChartMeasure[] = [];
     for (const m of s.measures) {
-        const parsed = parseScoreMeasure(m);
+        const parsed = parseMeasure(m);
         if (!parsed) return null;
         measures.push(parsed);
     }
-    return {
-        id: s.id, type: s.type, label: s.label, note: s.note,
-        repeat: s.repeat, perRow: s.perRow, measures,
-    };
+    return { id: s.id, type: s.type, label: s.label, note: s.note, repeat: s.repeat, perRow, measures };
 }
 
-export function parseScore(data: unknown): Result<Score> {
-    const invalid: Result<Score> = { ok: false, error: 'Chart avanzado inválido' };
+export function parseChart(data: unknown): Result<Chart> {
+    const invalid: Result<Chart> = { ok: false, error: 'Chart inválido' };
     if (!data || typeof data !== 'object') return invalid;
-    const { sections } = data as Record<string, unknown>;
+    const { sections, style } = data as Record<string, unknown>;
+    if (style !== undefined && style !== 'simple' && style !== 'advanced') return invalid;
     if (!Array.isArray(sections) || sections.length > CHART_LIMITS.sections) return invalid;
 
-    const out: ScoreSection[] = [];
+    const out: ChartSection[] = [];
     const ids = new Set<string>();
     for (const s of sections) {
-        const parsed = parseScoreSection(s);
-        if (!parsed || ids.has(parsed.id)) return invalid;
+        const parsed = parseSection(s);
+        if (!parsed || ids.has(parsed.id)) return invalid; // los ids deben ser únicos
         ids.add(parsed.id);
         out.push(parsed);
     }
-    return { ok: true, value: { sections: out } };
+    return { ok: true, value: { style: (style as ChartStyle | undefined) ?? 'simple', sections: out } };
 }
 
 /* ---------- Canción ---------- */
@@ -232,16 +191,6 @@ export function parseSongUpdate(data: unknown): Result<SongUpdate> {
         }
     }
 
-    if (src.score !== undefined) {
-        if (src.score === null) {
-            out.score = null;
-        } else {
-            const score = parseScore(src.score);
-            if (!score.ok) return score;
-            out.score = score.value;
-        }
-    }
-
     return { ok: true, value: out };
 }
 
@@ -249,12 +198,11 @@ export function parseSongUpdate(data: unknown): Result<SongUpdate> {
 export function parseSongInput(data: unknown): Result<SongCreate> {
     const parsed = parseSongUpdate(data);
     if (!parsed.ok) return parsed;
-    const { chart, score, ...rest } = parsed.value;
+    const { chart, ...rest } = parsed.value;
     const value: SongCreate = {
         ...DEFAULT_SONG_INPUT,
         ...rest,
         ...(chart ? { chart } : {}),
-        ...(score ? { score } : {}),
     };
     if (!value.title.trim()) return { ok: false, error: 'El título es obligatorio' };
     return { ok: true, value };

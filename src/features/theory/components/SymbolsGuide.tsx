@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { MeasureMark } from '@/domain/score/types';
+import type { MeasureMark } from '@/domain/chart/types';
 import BarIcon, { type BarIconKind } from '@/shared/notation/BarIcon';
 import { MarkView, SimileIcon } from '@/shared/notation/ScoreSymbols';
 

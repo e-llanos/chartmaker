@@ -1,5 +1,5 @@
-import type { BarKind } from '@/domain/score/utils';
-import { MEASURE_MARKS, type MeasureMark } from '@/domain/score/types';
+import type { BarKind } from '@/domain/chart/utils';
+import { MEASURE_MARKS, type MeasureMark } from '@/domain/chart/types';
 
 /* ---------- Barras de compás ---------- */
 

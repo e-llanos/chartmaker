@@ -38,8 +38,9 @@ export default function SectionEditor({
         if (!measure) return;
         const current = measure.repeat ?? 1;
         const next = current >= 4 ? 1 : current + 1;
-        const updated: ChartMeasure = { beats: measure.beats };
+        const updated: ChartMeasure = { ...measure };
         if (next > 1) updated.repeat = next;
+        else delete updated.repeat;
         setMeasures(section.measures.map((x, i) => (i === m ? updated : x)));
     }
 
