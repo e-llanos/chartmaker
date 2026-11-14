@@ -1,16 +1,12 @@
 import 'server-only';
 
-import path from 'node:path';
 import { cache } from 'react';
 import type { SongCreate, SongUpdate } from '@/domain/song/types';
-import { createFileSongRepository } from './file-repository';
+import { createPostgresSongRepository } from './postgres-repository';
 
 export type { SongRepository } from './repository';
 
-/** Archivo de datos. Se puede cambiar con la variable CHARTMAKER_DATA_FILE. */
-const DATA_FILE = process.env.CHARTMAKER_DATA_FILE ?? path.join(process.cwd(), 'data', 'songs.json');
-
-const repository = createFileSongRepository(DATA_FILE);
+const repository = createPostgresSongRepository();
 
 export const listSongs = () => repository.list();
 
