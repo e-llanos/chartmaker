@@ -65,7 +65,12 @@ const music = (...names) => ({
   group: within(...names.map((n) => `@/domain/music/${n}`)),
 });
 
-const DOMAIN = [NO_REACT_NEXT, NO_LIBS, NO_VALIDATION, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER, NO_PARENT_RELATIVE];
+const NO_DB_LIB = {
+  group: ["drizzle-orm", "drizzle-orm/*", "postgres"],
+  message: "El acceso a la base de datos solo vive en src/server.",
+};
+
+const DOMAIN = [NO_REACT_NEXT, NO_LIBS, NO_DB_LIB, NO_VALIDATION, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER, NO_PARENT_RELATIVE];
 
 const FEATURES = ["chart", "chordsheet", "score", "songs", "theory"];
 
@@ -109,15 +114,15 @@ const eslintConfig = defineConfig([
   },
 
   // --- shared: no conoce las features ---
-  { files: ["src/shared/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_FEATURES, NO_SERVER) },
+  { files: ["src/shared/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_FEATURES, NO_SERVER, NO_DB_LIB) },
   // --- validation: esquemas de entrada y salida; solo depende de domain ---
-  { files: ["src/validation/**/*.ts"], rules: forbid(NO_REACT_NEXT, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER) },
+  { files: ["src/validation/**/*.ts"], rules: forbid(NO_REACT_NEXT, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER, NO_DB_LIB) },
 
   // --- features: no importan app ni servidor; solo songs compone otras features ---
-  { files: ["src/features/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_SERVER) },
+  { files: ["src/features/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_SERVER, NO_DB_LIB) },
   ...FEATURES.filter((f) => f !== "songs").map((feature) => ({
     files: [`src/features/${feature}/**/*.{ts,tsx}`],
-    rules: forbid(NO_APP, NO_SERVER, {
+    rules: forbid(NO_APP, NO_SERVER, NO_DB_LIB, {
       group: within(...FEATURES.filter((f) => f !== feature).map((f) => `@/features/${f}`)),
       message: "Una feature no importa otra: solo features/songs las compone.",
     }),
