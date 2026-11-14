@@ -42,6 +42,14 @@ const NO_SERVER = {
   group: ["server-only", ...within("@/server")],
   message: "El código de servidor solo lo importa app/ (páginas y route handlers).",
 };
+const NO_LIBS = {
+  group: ["zod", "zod/*"],
+  message: "El dominio no depende de librerías de validación: los esquemas viven en src/validation.",
+};
+const NO_VALIDATION = {
+  group: within("@/validation"),
+  message: "El dominio no conoce src/validation: esa capa es la que depende del dominio.",
+};
 const NO_PARENT_RELATIVE = {
   group: ["../**"],
   message: "Importa de otra carpeta con el alias @/ (por ejemplo '@/domain/…').",
@@ -57,7 +65,7 @@ const music = (...names) => ({
   group: within(...names.map((n) => `@/domain/music/${n}`)),
 });
 
-const DOMAIN = [NO_REACT_NEXT, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER, NO_PARENT_RELATIVE];
+const DOMAIN = [NO_REACT_NEXT, NO_LIBS, NO_VALIDATION, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER, NO_PARENT_RELATIVE];
 
 const FEATURES = ["chart", "chordsheet", "score", "songs", "theory"];
 
@@ -102,6 +110,8 @@ const eslintConfig = defineConfig([
 
   // --- shared: no conoce las features ---
   { files: ["src/shared/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_FEATURES, NO_SERVER) },
+  // --- validation: esquemas de entrada y salida; solo depende de domain ---
+  { files: ["src/validation/**/*.ts"], rules: forbid(NO_REACT_NEXT, NO_APP, NO_FEATURES, NO_SHARED_UI, NO_SERVER) },
 
   // --- features: no importan app ni servidor; solo songs compone otras features ---
   { files: ["src/features/**/*.{ts,tsx}"], rules: forbid(NO_APP, NO_SERVER) },

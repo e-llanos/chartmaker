@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { deleteSong, getSongById, updateSong } from '@/server/songs';
-import { parseSongUpdate } from '@/domain/song/validation';
+import { parseSongUpdate } from '@/validation/song';
 
 type Ctx = { params: Promise<{ id: string }> };
 

@@ -2,7 +2,8 @@
 
 import { useRef, useState, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { CHARTMAKER_EXT, CHARTMAKER_MAX_BYTES, parseChartmaker } from '@/domain/song/chartmaker';
+import { CHARTMAKER_EXT, CHARTMAKER_MAX_BYTES } from '@/domain/song/chartmaker';
+import { parseChartmaker } from '@/validation/chartmaker';
 
 export default function ImportSongButton() {
     const router = useRouter();

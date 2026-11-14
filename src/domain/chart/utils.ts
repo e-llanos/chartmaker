@@ -96,3 +96,21 @@ export function timeSignature(compas: string): { num: string; den: string } {
     const [num = '4', den = '4'] = compas.split('/');
     return { num, den };
 }
+
+
+/** Quita los valores vacíos (×1, simile falso, marcas o nota vacías) para guardar solo lo que cuenta. */
+export function tidyChart(chart: Chart): Chart {
+    return {
+        ...chart,
+        sections: chart.sections.map((s) => ({
+            ...s,
+            measures: s.measures.map(({ repeat, simile, marks, note, ...rest }) => ({
+                ...rest,
+                ...(repeat && repeat > 1 ? { repeat } : {}),
+                ...(simile ? { simile } : {}),
+                ...(marks && marks.length ? { marks: Array.from(new Set(marks)) } : {}),
+                ...(note ? { note } : {}),
+            })),
+        })),
+    };
+}
