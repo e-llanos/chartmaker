@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { APP_NAME } from '@/config/app';
 
 export const metadata: Metadata = {
-  title: 'Home',
+  title: 'Inicio',
   description: 'Elige nuestros recursos.',
 }
 

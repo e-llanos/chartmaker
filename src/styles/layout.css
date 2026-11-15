@@ -98,3 +98,270 @@ body.app-body {
 .footer-brand {
     font-weight: 600;
 }
+
+
+/* ---------- Estructura con barra lateral ---------- */
+:root {
+    --rail-w: 64px;
+    --topbar-h: 56px;
+}
+
+.app-shell {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+/* Con la barra lateral, el contenido se desplaza y el editor recupera el alto de la navbar. */
+.app-shell:has(.rail) {
+    padding-left: var(--rail-w);
+}
+
+.app-shell:has(.rail) .editor-layout {
+    height: calc(100dvh - 86px);
+}
+
+.brand-mark {
+    display: block;
+    border-radius: 8px;
+}
+
+.rail {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 60;
+    width: var(--rail-w);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    background: var(--cm-bg);
+    border-right: 1px solid var(--cm-border);
+}
+
+.rail-brand {
+    display: grid;
+    place-items: center;
+}
+
+.rail-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.rail-bottom {
+    margin-top: auto;
+}
+
+.rail-link {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    color: var(--cm-icon);
+    transition: background 0.15s, color 0.15s;
+}
+
+.rail-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--cm-text-strong);
+}
+
+.rail-link[aria-current='page'] {
+    background: color-mix(in srgb, var(--cm-accent) 24%, transparent);
+    color: var(--cm-accent);
+}
+
+/* Avatar con su menú */
+.rail-profile {
+    position: relative;
+    margin-top: 6px;
+}
+
+.rail-avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--cm-accent) 45%, var(--cm-card));
+    color: #fff;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rail-avatar[aria-expanded='true'] {
+    outline: 2px solid var(--cm-accent);
+    outline-offset: 2px;
+}
+
+.profile-menu {
+    position: absolute;
+    left: calc(100% + 12px);
+    bottom: 0;
+    z-index: 80;
+    width: min(260px, calc(100vw - var(--rail-w) - 24px));
+    display: grid;
+    gap: 2px;
+    padding: 8px;
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    background: var(--cm-card);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+.profile-menu-head {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 4px;
+    padding: 8px 10px 10px;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.profile-menu-name {
+    color: var(--cm-text-strong);
+    font-weight: 600;
+}
+
+.profile-menu-sub {
+    color: var(--cm-dim);
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+}
+
+.profile-menu-head .role-chip {
+    justify-self: start;
+    margin-top: 4px;
+}
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.profile-menu-item:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.profile-menu-item.is-danger {
+    color: var(--cm-danger-text);
+}
+
+/* Etiqueta al pasar el ratón o enfocar con el teclado */
+.rail-link::after,
+.rail-avatar::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 12px);
+    padding: 4px 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-card);
+    color: var(--cm-text-strong);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    pointer-events: none;
+    transition: opacity 0.12s, transform 0.12s;
+}
+
+.rail-link:hover::after,
+.rail-link:focus-visible::after,
+.rail-avatar:hover::after,
+.rail-avatar:focus-visible::after {
+    opacity: 1;
+    transform: none;
+}
+
+.rail-avatar[aria-expanded='true']::after {
+    display: none;
+}
+
+/* El botón de menú y el fondo oscuro solo existen en móvil. */
+.rail-toggle,
+.rail-backdrop {
+    display: none;
+}
+
+/* En pantallas estrechas la barra es un panel que se abre desde la esquina superior izquierda. */
+@media (max-width: 720px) {
+    .app-shell:has(.rail) {
+        padding-left: 0;
+        padding-top: var(--topbar-h);
+    }
+
+    .app-shell:has(.rail) .editor-layout {
+        height: calc(100dvh - 86px - var(--topbar-h));
+    }
+
+    .rail-toggle {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 90;
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--cm-border);
+        border-radius: 12px;
+        background: var(--cm-card);
+        color: var(--cm-text-strong);
+        cursor: pointer;
+    }
+
+    .rail-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 55;
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    .rail {
+        z-index: 70;
+        padding-top: calc(var(--topbar-h) + 8px);
+        transform: translateX(-100%);
+        visibility: hidden;
+        /* cerrado: fuera del orden de tabulación y de los lectores de pantalla */
+        transition: transform 0.2s ease, visibility 0s linear 0.2s;
+    }
+
+    .rail[data-open='true'] {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.2s ease;
+    }
+
+    .rail-brand {
+        display: none;
+    }
+
+    .rail-link::after,
+    .rail-avatar::after {
+        display: none;
+    }
+}

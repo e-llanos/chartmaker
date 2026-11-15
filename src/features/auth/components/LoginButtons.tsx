@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { OAUTH_PROVIDERS, type OAuthProvider } from '@/config/auth';
 import { authClient } from '@/shared/auth/auth-client';
+import ProviderIcon from './ProviderIcons';
 
 interface LoginButtonsProps {
     providers: OAuthProvider[];
@@ -35,6 +36,7 @@ export default function LoginButtons({ providers, next }: LoginButtonsProps) {
                     disabled={pending !== null}
                     onClick={() => signIn(provider)}
                 >
+                    <ProviderIcon provider={provider} />
                     {pending === provider ? 'Redirigiendo…' : `Continuar con ${OAUTH_PROVIDERS[provider]}`}
                 </button>
             ))}

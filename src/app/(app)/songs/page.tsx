@@ -8,8 +8,8 @@ import ImportSongButton from '@/features/songs/components/ImportSongButton';
 
 
 export const metadata: Metadata = {
-    title: 'Cifrados',
-    description: 'Revisa nuestros cifrados.',
+    title: 'Canciones',
+    description: 'Revisa las canciones disponibles.',
 }
 
 export default function SongsPage() {

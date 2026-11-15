@@ -16,5 +16,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/songs/new', '/songs/:id/edit', '/songs/:id/:format/edit', '/admin/:path*'],
+    matcher: ['/songs/new', '/songs/:id/edit', '/songs/:id/:format/edit', '/admin/:path*', '/profile', '/settings'],
 };

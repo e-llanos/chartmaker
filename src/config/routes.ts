@@ -35,7 +35,7 @@ export const loginPath = (next?: string): string =>
     next ? `${LOGIN_PATH}?next=${encodeURIComponent(next)}` : LOGIN_PATH;
 
 /** Solo rutas internas: evita que el login redirija a otro sitio. */
-export function safeNext(value: unknown, fallback = '/songs'): string {
+export function safeNext(value: unknown, fallback = '/'): string {
     return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
         ? value
         : fallback;

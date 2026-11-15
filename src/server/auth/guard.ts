@@ -29,3 +29,10 @@ export async function authorizeApi(permission: Permission): Promise<ApiAuth> {
     }
     return { ok: true, user };
 }
+
+/** Para páginas que exigen sesión pero no un rol concreto (perfil, ajustes). */
+export async function requireUser(next: string): Promise<CurrentUser> {
+    const user = await getCurrentUser();
+    if (!user) redirect(loginPath(next));
+    return user;
+}
