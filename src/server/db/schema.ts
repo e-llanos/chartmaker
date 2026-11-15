@@ -1,6 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { index, jsonb, pgTable, smallint, text, timestamp } from 'drizzle-orm/pg-core';
 import type { Chart } from '@/domain/chart/types';
+import { user } from './auth-schema';
+
+export * from './auth-schema';
 
 export const songs = pgTable(
     'songs',
@@ -21,8 +24,7 @@ export const songs = pgTable(
         body: text('body').notNull().default(''),
         /** El chart completo. Se lee y se escribe entero, por eso va en un solo JSONB. */
         chart: jsonb('chart').$type<Chart>(),
-        /** Reservado para cuando existan usuarios: entonces se añade la clave foránea en su migración. */
-        ownerId: text('owner_id'),
+        ownerId: text('owner_id').references(() => user.id, { onDelete: 'set null' }),
         createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
         updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     },

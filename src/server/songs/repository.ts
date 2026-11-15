@@ -7,7 +7,7 @@ import type { Song, SongCreate, SongSummary, SongUpdate } from '@/domain/song/ty
 export interface SongRepository {
     list(): Promise<SongSummary[]>;
     get(id: string): Promise<Song | null>;
-    create(input: SongCreate): Promise<Song>;
+    create(input: SongCreate, ownerId?: string): Promise<Song>;
     update(id: string, changes: SongUpdate): Promise<Song | null>;
     remove(id: string): Promise<boolean>;
 }

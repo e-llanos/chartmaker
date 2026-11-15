@@ -376,3 +376,92 @@ button.badge:hover {
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
+
+/* ---------- Autenticación ---------- */
+.login-card {
+    max-width: 420px;
+    margin: 48px auto;
+    padding: 24px;
+    border: 1px solid var(--cm-border, rgba(255, 255, 255, 0.14));
+    border-radius: 14px;
+    display: grid;
+    gap: 14px;
+}
+
+.oauth-list {
+    display: grid;
+    gap: 10px;
+}
+
+.oauth-btn {
+    padding: 10px 14px;
+    border: 1px solid var(--cm-border, rgba(255, 255, 255, 0.2));
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.oauth-btn:hover:not(:disabled) {
+    background: rgba(138, 116, 232, 0.14);
+}
+
+.oauth-btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.login-error {
+    color: #ff8a8a;
+    margin: 0;
+}
+
+.login-note {
+    opacity: 0.8;
+    margin: 0;
+}
+
+.navbar-user {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-chip {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+button.navbar-link {
+    background: none;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--cm-border, rgba(255, 255, 255, 0.12));
+}
+
+.role-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}

@@ -43,8 +43,8 @@ const NO_SERVER = {
   message: "El código de servidor solo lo importa app/ (páginas y route handlers).",
 };
 const NO_LIBS = {
-  group: ["zod", "zod/*"],
-  message: "El dominio no depende de librerías de validación: los esquemas viven en src/validation.",
+  group: ["zod", "zod/*", "better-auth", "better-auth/*", "@better-auth/*"],
+  message: "El dominio no depende de librerías externas: validación en src/validation, autenticación en src/server.",
 };
 const NO_VALIDATION = {
   group: within("@/validation"),

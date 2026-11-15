@@ -4,6 +4,8 @@ import SongWorkspace from '@/features/songs/components/SongWorkspace';
 import ViewSkeleton from '@/shared/ui/ViewSkeleton';
 import { getSongById } from '@/server/songs';
 import { parseView } from '@/config/routes';
+import { can } from '@/domain/auth/roles';
+import { getCurrentUser } from '@/server/auth/session';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -23,7 +25,14 @@ export default function SongPage({ params, searchParams }: PageProps) {
 async function SongLoader({ params, searchParams }: PageProps) {
     const { id } = await params;
     const { view } = await searchParams;
-    const song = await getSongById(id);
+    const [song, user] = await Promise.all([getSongById(id), getCurrentUser()]);
     if (!song) notFound();
-    return <SongWorkspace song={song} initialView={parseView(view)} />;
+    return (
+        <SongWorkspace
+            song={song}
+            initialView={parseView(view)}
+            canEdit={can(user?.role, 'song:update')}
+            canDelete={can(user?.role, 'song:delete')}
+        />
+    );
 }
