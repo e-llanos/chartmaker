@@ -20,6 +20,8 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.25",
+    "better-auth": "^1.7.25",
     "chordsheetjs": "^18.0.0",
     "drizzle-orm": "^0.45.4",
     "html-to-image": "^1.11.13",

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { APP_NAME } from '@/config/app';
 
 const LINKS = [
@@ -6,7 +7,12 @@ const LINKS = [
     { href: '/theory', label: 'Teoría' },
 ] as const;
 
-export default function Navbar() {
+interface NavbarProps {
+    /** Menú del usuario (entrar / salir), que lo dibuja la aplicación. */
+    userMenu?: ReactNode;
+}
+
+export default function Navbar({ userMenu }: NavbarProps) {
     return (
         <header className="navbar">
             <nav className="navbar-inner" aria-label="Principal">
@@ -18,6 +24,7 @@ export default function Navbar() {
                         </li>
                     ))}
                 </ul>
+                {userMenu && <div className="navbar-user">{userMenu}</div>}
             </nav>
         </header>
     );

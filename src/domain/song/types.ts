@@ -13,6 +13,8 @@ export interface Song {
     compas: string;
     body: string;
     chart?: Chart;
+    /** Quién la creó (id del usuario); las anteriores al login no tienen propietario. */
+    ownerId?: string;
     createdAt: string;
     updatedAt: string;
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
+import { authorizeApi } from '@/server/auth/guard';
 import { deleteSong, getSongById, updateSong } from '@/server/songs';
 import { parseSongUpdate } from '@/validation/song';
 
@@ -12,6 +13,9 @@ export async function GET(_req: Request, { params }: Ctx) {
 }
 
 export async function PATCH(req: Request, { params }: Ctx) {
+    const auth = await authorizeApi('song:update');
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     const body: unknown = await req.json().catch(() => null);
     const parsed = parseSongUpdate(body);
@@ -26,6 +30,9 @@ export async function PATCH(req: Request, { params }: Ctx) {
 }
 
 export async function DELETE(_req: Request, { params }: Ctx) {
+    const auth = await authorizeApi('song:delete');
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     const ok = await deleteSong(id);
     if (!ok) return NextResponse.json({ error: 'No encontrada' }, { status: 404 });

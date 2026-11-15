@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { can } from '@/domain/auth/roles';
+import { getCurrentUser } from '@/server/auth/session';
 import { listSongs } from '@/server/songs';
 import ImportSongButton from '@/features/songs/components/ImportSongButton';
 
@@ -15,10 +17,9 @@ export default function SongsPage() {
         <main className="page-container">
             <div className="editor-header">
                 <h1>Canciones</h1>
-                <div className="header-actions">
-                    <ImportSongButton />
-                    <Link href="/songs/new" className="primary-btn">Nueva canción</Link>
-                </div>
+                <Suspense fallback={null}>
+                    <ListActions />
+                </Suspense>
             </div>
             <Suspense fallback={<p>Cargando canciones…</p>}>
                 <SongList />
@@ -63,5 +64,17 @@ async function SongList() {
                 </li>
             ))}
         </ul>
+    );
+}
+
+
+async function ListActions() {
+    const user = await getCurrentUser();
+    if (!can(user?.role, 'song:create')) return null;
+    return (
+        <div className="header-actions">
+            <ImportSongButton />
+            <Link href="/songs/new" className="primary-btn">Nueva canción</Link>
+        </div>
     );
 }

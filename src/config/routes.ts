@@ -27,3 +27,16 @@ export const songPath = (id: string, view: SongView): string =>
 
 export const songEditPath = (id: string, view: SongView): string =>
     view === DEFAULT_VIEW ? `/songs/${id}/edit` : `/songs/${id}/${view}/edit`;
+
+
+export const LOGIN_PATH = '/login';
+
+export const loginPath = (next?: string): string =>
+    next ? `${LOGIN_PATH}?next=${encodeURIComponent(next)}` : LOGIN_PATH;
+
+/** Solo rutas internas: evita que el login redirija a otro sitio. */
+export function safeNext(value: unknown, fallback = '/songs'): string {
+    return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
+        ? value
+        : fallback;
+}

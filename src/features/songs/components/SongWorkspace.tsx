@@ -14,9 +14,11 @@ import { useViewerSettings } from '@/shared/viewer/useViewerSettings';
 interface SongWorkspaceProps {
     song: Song;
     initialView: SongView;
+    canEdit: boolean;
+    canDelete: boolean;
 }
 
-export default function SongWorkspace({ song, initialView }: SongWorkspaceProps) {
+export default function SongWorkspace({ song, initialView, canEdit, canDelete }: SongWorkspaceProps) {
     const [view, setView] = useState<SongView>(initialView);
     const settings = useViewerSettings(); // compartido por todas las vistas
     const input = useMemo(() => toSongInput(song), [song]);
@@ -39,7 +41,11 @@ export default function SongWorkspace({ song, initialView }: SongWorkspaceProps)
             <SongHeader
                 title={input.title}
                 meta={input}
-                actions={<SongActions id={song.id} title={input.title} view={view} />}
+                actions={
+                    canEdit || canDelete ? (
+                        <SongActions id={song.id} title={input.title} view={view} canEdit={canEdit} canDelete={canDelete} />
+                    ) : null
+                }
             />
             <SongTabs view={view} onChange={selectView} available={available} />
 
@@ -54,8 +60,8 @@ export default function SongWorkspace({ song, initialView }: SongWorkspaceProps)
                             <EmptyState
                                 title={format.empty.title}
                                 description={format.empty.description}
-                                href={songEditPath(song.id, format.id)}
-                                cta={format.empty.cta}
+                                href={canEdit ? songEditPath(song.id, format.id) : undefined}
+                                cta={canEdit ? format.empty.cta : undefined}
                             />
                         )
                     )}

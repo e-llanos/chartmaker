@@ -21,6 +21,7 @@ function toSong(row: SongRow): Song {
         compas: row.compas,
         body: row.body,
         ...(row.chart ? { chart: row.chart } : {}),
+        ...(row.ownerId ? { ownerId: row.ownerId } : {}),
         createdAt: row.createdAt.toISOString(),
         updatedAt: row.updatedAt.toISOString(),
     };
@@ -66,10 +67,11 @@ export function createPostgresSongRepository(): SongRepository {
             return row ? toSong(row) : null;
         },
 
-        async create(input) {
+        async create(input, ownerId) {
             const [row] = await getDb()
                 .insert(songs)
                 .values({
+                    ownerId: ownerId ?? null,
                     schemaVersion: SCHEMA_VERSION,
                     title: input.title,
                     artist: input.artist,
