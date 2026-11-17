@@ -6,6 +6,7 @@ import { SCHEMA_VERSION } from '@/domain/song/migrate';
 import type { Song, SongSummary } from '@/domain/song/types';
 import { getDb } from '@/server/db/client';
 import { songs, type NewSongRow, type SongRow } from '@/server/db/schema';
+import { resolveAlbum, resolveArtist } from '@/server/db/entities';
 import type { SongRepository } from './repository';
 
 function toSong(row: SongRow): Song {
@@ -68,7 +69,10 @@ export function createPostgresSongRepository(): SongRepository {
         },
 
         async create(input, ownerId) {
-            const [row] = await getDb()
+            const db = getDb();
+            const artistId = await resolveArtist(db, input.artist);
+            const albumId = await resolveAlbum(db, input.album, artistId);
+            const [row] = await db
                 .insert(songs)
                 .values({
                     ownerId: ownerId ?? null,
@@ -76,6 +80,8 @@ export function createPostgresSongRepository(): SongRepository {
                     title: input.title,
                     artist: input.artist,
                     album: input.album,
+                    artistId,
+                    albumId,
                     imageUrl: input.imageUrl || null,
                     key: input.key,
                     tempo: input.tempo,
@@ -89,12 +95,26 @@ export function createPostgresSongRepository(): SongRepository {
         },
 
         async update(id, changes) {
+            const db = getDb();
             const { chart, imageUrl, ...fields } = changes;
             const values: Partial<NewSongRow> = { ...fields, updatedAt: new Date() };
             if (imageUrl !== undefined) values.imageUrl = imageUrl || null; // '' = quitar la imagen
             if (chart !== undefined) values.chart = chart; // null elimina el chart
 
-            const [row] = await getDb().update(songs).set(values).where(eq(songs.id, id)).returning();
+            // Si cambia el artista o el álbum, se vuelven a vincular (con el valor actual del que no cambie).
+            if (changes.artist !== undefined || changes.album !== undefined) {
+                const [current] = await db
+                    .select({ artist: songs.artist, album: songs.album })
+                    .from(songs)
+                    .where(eq(songs.id, id))
+                    .limit(1);
+                if (!current) return null;
+                const artistId = await resolveArtist(db, changes.artist ?? current.artist);
+                values.artistId = artistId;
+                values.albumId = await resolveAlbum(db, changes.album ?? current.album, artistId);
+            }
+
+            const [row] = await db.update(songs).set(values).where(eq(songs.id, id)).returning();
             return row ? toSong(row) : null;
         },
 

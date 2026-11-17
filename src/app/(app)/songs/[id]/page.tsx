@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import SongWorkspace from '@/features/songs/components/SongWorkspace';
+import SongsBreadcrumbs from '@/features/songs/components/SongsBreadcrumbs';
 import ViewSkeleton from '@/shared/ui/ViewSkeleton';
 import { getSongById } from '@/server/songs';
 import { parseView } from '@/config/routes';
@@ -28,11 +29,14 @@ async function SongLoader({ params, searchParams }: PageProps) {
     const [song, user] = await Promise.all([getSongById(id), getCurrentUser()]);
     if (!song) notFound();
     return (
-        <SongWorkspace
-            song={song}
-            initialView={parseView(view)}
-            canEdit={can(user?.role, 'song:update')}
-            canDelete={can(user?.role, 'song:delete')}
-        />
+        <>
+            <SongsBreadcrumbs items={[{ label: 'Canciones', href: '/songs' }, { label: song.title || 'Sin título' }]} />
+            <SongWorkspace
+                song={song}
+                initialView={parseView(view)}
+                canEdit={can(user?.role, 'song:update')}
+                canDelete={can(user?.role, 'song:delete')}
+            />
+        </>
     );
 }
