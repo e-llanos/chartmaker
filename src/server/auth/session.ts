@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { headers } from 'next/headers';
+import { connection } from 'next/server';
 import { cache } from 'react';
 import { toRole, type Role } from '@/domain/auth/roles';
 import { getAuth } from './auth';
@@ -15,11 +16,11 @@ export interface CurrentUser {
 
 /** El usuario de la petición, o null si no ha entrado. Se consulta una sola vez por petición. */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
-    // Primero el dato de la petición: la preparación en servidor se detiene aquí, antes de crear la
-    // instancia de autenticación (que usa la fecha actual).
+    await connection();
     const requestHeaders = await headers();
     const session = await getAuth().api.getSession({ headers: requestHeaders });
     if (!session) return null;
+
     const { user } = session;
     return {
         id: user.id,
