@@ -52,8 +52,10 @@ export default async function LibraryView({ query, user }: { query: SongQuery; u
             <div className="lib-panel">
                 <div className="lib-toolbar">
                     <SearchBar variant="compact" placeholder="Buscar por título, artista o letra" defaultValue={query.q} keep={keep} />
-                    <FilterMenu query={query} defaults={LIBRARY_DEFAULTS} />
-                    <SortMenu query={query} defaults={LIBRARY_DEFAULTS} sorts={sorts} />
+                    <div className="lib-tools">
+                        <FilterMenu query={query} defaults={LIBRARY_DEFAULTS} />
+                        <SortMenu query={query} defaults={LIBRARY_DEFAULTS} sorts={sorts} />
+                    </div>
                 </div>
 
                 {(artistName || albumInfo) && (

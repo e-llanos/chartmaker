@@ -214,7 +214,9 @@ async function SongResults({ query }: { query: SongQuery }) {
                         </>
                     )}
                 </p>
-                <SortMenu query={query} defaults={CATALOG_DEFAULTS} sorts={sorts} />
+                <div className="lib-tools">
+                    <SortMenu query={query} defaults={CATALOG_DEFAULTS} sorts={sorts} />
+                </div>
             </div>
 
             {page.items.length === 0 ? (

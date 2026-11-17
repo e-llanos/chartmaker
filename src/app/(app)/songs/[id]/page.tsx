@@ -15,11 +15,15 @@ interface PageProps {
 
 export default function SongPage({ params, searchParams }: PageProps) {
     return (
-        <main className="page-container">
-            <Suspense fallback={<ViewSkeleton />}>
-                <SongLoader params={params} searchParams={searchParams} />
-            </Suspense>
-        </main>
+        <Suspense
+            fallback={
+                <main className="page-container">
+                    <ViewSkeleton />
+                </main>
+            }
+        >
+            <SongLoader params={params} searchParams={searchParams} />
+        </Suspense>
     );
 }
 
@@ -30,13 +34,16 @@ async function SongLoader({ params, searchParams }: PageProps) {
     if (!song) notFound();
     return (
         <>
+            {/* Fuera de la columna centrada: arriba a la izquierda del área principal */}
             <SongsBreadcrumbs items={[{ label: 'Canciones', href: '/songs' }, { label: song.title || 'Sin título' }]} />
-            <SongWorkspace
-                song={song}
-                initialView={parseView(view)}
-                canEdit={can(user?.role, 'song:update')}
-                canDelete={can(user?.role, 'song:delete')}
-            />
+            <main className="page-container">
+                <SongWorkspace
+                    song={song}
+                    initialView={parseView(view)}
+                    canEdit={can(user?.role, 'song:update')}
+                    canDelete={can(user?.role, 'song:delete')}
+                />
+            </main>
         </>
     );
 }

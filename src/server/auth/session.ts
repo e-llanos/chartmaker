@@ -15,7 +15,10 @@ export interface CurrentUser {
 
 /** El usuario de la petición, o null si no ha entrado. Se consulta una sola vez por petición. */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
-    const session = await getAuth().api.getSession({ headers: await headers() });
+    // Primero el dato de la petición: la preparación en servidor se detiene aquí, antes de crear la
+    // instancia de autenticación (que usa la fecha actual).
+    const requestHeaders = await headers();
+    const session = await getAuth().api.getSession({ headers: requestHeaders });
     if (!session) return null;
     const { user } = session;
     return {
