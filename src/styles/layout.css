@@ -25,6 +25,22 @@ body.app-body {
     padding: 1rem 1.25rem;
 }
 
+/* Detalle de la canción: ocupa todo el ancho disponible. */
+.page-song {
+    /* Dentro de .lib-main (un grid) los márgenes automáticos no estiran el elemento:
+       sin width:100% se encoge al ancho de su contenido. */
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 0 1.5rem;
+    /* el margen lateral lo pone .lib-main */
+}
+
+/* Sin sesión no hay .lib-main, así que la página pone su propio margen lateral. */
+.app-content>.page-song {
+    padding: 1.5rem 1.25rem 4rem;
+}
+
 /* ---------- Navbar ---------- */
 .navbar {
     position: sticky;

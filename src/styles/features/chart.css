@@ -24,7 +24,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 0.95em;
 }
 
 .measure-box .beat+.beat {

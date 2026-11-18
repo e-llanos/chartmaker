@@ -81,70 +81,84 @@
 
 /* ---------- Cabecera del detalle ---------- */
 .song-header {
-    position: relative;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'title tools'
+        'meta  meta';
     align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
-    padding-right: 96px;
+    gap: 6px 16px;
+    margin-bottom: 12px;
 }
 
-.song-header-cover {
-    flex: none;
-    width: 96px;
-    height: 96px;
-    border-radius: 12px;
-    object-fit: cover;
-}
-
-.song-header-cover.song-cover-empty {
-    font-size: 2.4rem;
-}
-
-.song-header-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.song-header-info h1 {
+.song-header-title {
+    grid-area: title;
     margin: 0;
     font-size: 1.6rem;
     line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
-.song-header-info p {
-    margin: 2px 0 0;
+/* Barra de controles del visor + editar / eliminar */
+.song-header-tools {
+    grid-area: tools;
+    justify-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-height: 34px;
+    /* reserva el alto mientras la barra se monta */
 }
 
-.song-header-artist {
-    opacity: 0.85;
+/* El nodo no genera caja: la barra queda como hija directa de .song-header-tools */
+.song-toolbar-slot {
+    display: contents;
+}
+
+.song-header-tools .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+}
+
+.song-header-meta {
+    grid-area: meta;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--cm-dim);
+}
+
+.song-header-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .song-header-album {
-    font-size: 0.875rem;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
-.song-header-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-}
+/* En móvil: título, barra de controles (a la derecha) y datos, en ese orden */
+@media (max-width: 720px) {
+    .song-header {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'title'
+            'tools'
+            'meta';
+    }
 
-.song-header-edit {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.song-header-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    gap: 8px;
+    .song-header-title {
+        font-size: 1.35rem;
+    }
 }
 
 .header-actions {

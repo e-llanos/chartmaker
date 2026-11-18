@@ -13,6 +13,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+}
+
+/* Sin cabecera de canción (editor y vistas previas) la barra va suelta, sobre la hoja. */
+.viewer>.viewer-toolbar {
     padding: 0.25rem 0 0.75rem;
 }
 
@@ -28,7 +32,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem 1rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
 
 .control-group {
@@ -68,47 +73,87 @@
     border-color: var(--cm-dim);
 }
 
-/* Transposición: − tono + como un solo bloque */
-.control-transpose {
+.viewer-controls button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* Bloque unido: − tono + / A− 100 % A+ */
+.control-joined {
     gap: 0;
 }
 
-.control-transpose>* {
+.control-joined>* {
     border-radius: 0;
 }
 
-.control-transpose>*+* {
+.control-joined>*+* {
     margin-left: -1px;
 }
 
-.control-transpose> :first-child {
+.control-joined> :first-child {
     border-radius: 6px 0 0 6px;
 }
 
-.control-transpose> :last-child {
+.control-joined> :last-child {
     border-radius: 0 6px 6px 0;
 }
 
-.control-transpose select {
+.control-joined select {
     width: auto;
     min-width: 64px;
     text-align: center;
 }
 
-.control-transpose> :hover,
-.control-transpose> :focus-visible {
+.control-joined> :hover,
+.control-joined> :focus-visible {
     position: relative;
     z-index: 1;
 }
 
-.layout-toggle {
-    display: inline-grid;
-    place-items: center;
+/* Tamaño del texto */
+.control-joined .font-value {
+    width: auto;
+    min-width: 52px;
+    padding: 0 0.4rem;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.font-glyph {
+    font-weight: 700;
+    line-height: 1;
+}
+
+.font-glyph-sm {
+    font-size: 0.75rem;
+}
+
+.font-glyph-lg {
+    font-size: 1.1rem;
 }
 
 .layout-toggle {
     display: inline-grid;
     place-items: center;
+}
+
+/* Menú de ajustes de vista (notación, contenido, estilo) */
+.menu-panel {
+    gap: 10px;
+    padding: 10px;
+    min-width: 230px;
+}
+
+.menu-field {
+    display: grid;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--cm-dim);
+}
+
+.menu-panel select {
+    width: 100%;
 }
 
 /* ---------- Navegación por insignias ---------- */
@@ -140,6 +185,13 @@
     .sections-layout-columns {
         column-count: 1;
     }
+}
+
+/* En el detalle de la canción las secciones se reparten en tantas columnas como quepan.
+   El ancho mínimo de cada columna crece con el tamaño del texto (A− / A+). */
+.page-song .sections-layout-columns {
+    column-count: auto;
+    column-width: calc(440px * var(--viewer-scale, 1));
 }
 
 /* Lista: una debajo de otra, a todo el ancho */
@@ -206,6 +258,11 @@
     text-align: right;
 }
 
+/* Tamaño del texto: lo controla el botón A− / A+ (la variable la pone ViewerFrame). */
+.viewer-sheet {
+    font-size: calc(1rem * var(--viewer-scale, 1));
+}
+
 /* ---------- Cifrado: acorde encima del texto que le sigue ---------- */
 .chord-line {
     display: flex;
@@ -223,12 +280,12 @@
     min-height: 1.1em;
     padding-right: 0.35em;
     white-space: pre;
-    font-size: 0.82rem;
+    font-size: 0.82em;
 }
 
 .ly {
     white-space: pre;
-    font-size: 0.82rem;
+    font-size: 0.82em;
     color: var(--cm-text);
 }
 
@@ -251,7 +308,7 @@
 
 .line-comment {
     margin: 0 0 0.55rem;
-    font-size: 0.75rem;
+    font-size: 0.75em;
     font-style: italic;
     color: var(--cm-dim);
 }
@@ -259,7 +316,7 @@
 
 .lyrics-only .ly {
     white-space: pre-wrap;
-    font-size: 0.9rem;
+    font-size: 0.9em;
 }
 
 /* ---------- Hoja exportable (PDF / PNG) ---------- */
@@ -279,6 +336,7 @@
     padding: 32px;
     background: #ffffff;
     color: var(--cm-text);
+    font-size: 1rem;
 }
 
 .export-light .export-only {

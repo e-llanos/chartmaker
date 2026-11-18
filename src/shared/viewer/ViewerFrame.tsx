@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
+import { useContext, useRef, type CSSProperties, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
 import { semitoneDistance } from '@/domain/music/notation/engine';
 import type { Badge } from '@/domain/sections/section-types';
@@ -8,6 +9,7 @@ import type { SongCreate } from '@/domain/song/types';
 import ExportHead from '@/shared/export/ExportHead';
 import ExportMenu from '@/shared/export/ExportMenu';
 import SectionNav from './SectionNav';
+import { ToolbarSlotContext } from './ToolbarSlot';
 import type { ViewerSettings } from './useViewerSettings';
 import ViewerToolbar, { type SectionsLayout } from './ViewerToolbar';
 
@@ -46,32 +48,45 @@ export default function ViewerFrame({
     layout, onLayoutChange, mode, onModeChange, isEmpty, emptyMessage, children, controls
 }: ViewerFrameProps) {
     const sheetRef = useRef<HTMLDivElement>(null);
-    const { setSemitones, notation, setNotation, reference, setReference } = settings;
+    const toolbarSlot = useContext(ToolbarSlotContext);
+    const { setSemitones, notation, setNotation, reference, setReference, fontPercent, setFontPercent } = settings;
+
+    const toolbar = (
+        <ViewerToolbar
+            title={title}
+            hideTitle={hideTitle}
+            currentKey={displayKey}
+            notation={notation}
+            layout={layout}
+            onLayoutChange={onLayoutChange}
+            mode={mode}
+            onModeChange={onModeChange}
+            onTranspose={(d: number) => setSemitones((s) => s + d)}
+            onKeyChange={(k: string) => setSemitones(semitoneDistance(originalKey, k))}
+            onNotationChange={setNotation}
+            reference={reference}
+            onReferenceChange={setReference}
+            fontPercent={fontPercent}
+            onFontChange={setFontPercent}
+            controls={controls}
+            actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
+        />
+    );
 
     return (
         <div className="viewer">
             {header}
-            <ViewerToolbar
-                title={title}
-                hideTitle={hideTitle}
-                currentKey={displayKey}
-                notation={notation}
-                layout={layout}
-                onLayoutChange={onLayoutChange}
-                mode={mode}
-                onModeChange={onModeChange}
-                onTranspose={(d: number) => setSemitones((s) => s + d)}
-                onKeyChange={(k: string) => setSemitones(semitoneDistance(originalKey, k))}
-                onNotationChange={setNotation}
-                reference={reference}
-                onReferenceChange={setReference}
-                controls={controls}
-                actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
-            />
+            {/* Dentro de la cabecera de la canción (portal) o, sin ella, en línea sobre la hoja.
+                `null` = pestaña inactiva o cabecera todavía sin montar: no se dibuja. */}
+            {toolbarSlot === undefined ? toolbar : toolbarSlot && createPortal(toolbar, toolbarSlot)}
             <SectionNav badges={badges} scopeId={navScope} />
 
             {/* La hoja es lo que se captura al exportar a PDF o PNG */}
-            <div ref={sheetRef} className="viewer-sheet">
+            <div
+                ref={sheetRef}
+                className="viewer-sheet"
+                style={{ '--viewer-scale': fontPercent / 100 } as CSSProperties}
+            >
                 {song && <ExportHead song={song} displayKey={displayKey} notation={notation} reference={reference} />}
                 {isEmpty ? <p className="empty-state">{emptyMessage}</p> : children}
             </div>
