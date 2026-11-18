@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import SongWorkspace from '@/features/songs/components/SongWorkspace';
+import SongsBreadcrumbs from '@/features/songs/components/SongsBreadcrumbs';
 import ViewSkeleton from '@/shared/ui/ViewSkeleton';
 import { getSongById } from '@/server/songs';
 import { parseView } from '@/config/routes';
@@ -14,11 +15,15 @@ interface PageProps {
 
 export default function SongPage({ params, searchParams }: PageProps) {
     return (
-        <main className="page-container">
-            <Suspense fallback={<ViewSkeleton />}>
-                <SongLoader params={params} searchParams={searchParams} />
-            </Suspense>
-        </main>
+        <Suspense
+            fallback={
+                <main className="page-container">
+                    <ViewSkeleton />
+                </main>
+            }
+        >
+            <SongLoader params={params} searchParams={searchParams} />
+        </Suspense>
     );
 }
 
@@ -28,11 +33,17 @@ async function SongLoader({ params, searchParams }: PageProps) {
     const [song, user] = await Promise.all([getSongById(id), getCurrentUser()]);
     if (!song) notFound();
     return (
-        <SongWorkspace
-            song={song}
-            initialView={parseView(view)}
-            canEdit={can(user?.role, 'song:update')}
-            canDelete={can(user?.role, 'song:delete')}
-        />
+        <>
+            {/* Fuera de la columna centrada: arriba a la izquierda del área principal */}
+            <SongsBreadcrumbs items={[{ label: 'Canciones', href: '/songs' }, { label: song.title || 'Sin título' }]} />
+            <main className="page-container">
+                <SongWorkspace
+                    song={song}
+                    initialView={parseView(view)}
+                    canEdit={can(user?.role, 'song:update')}
+                    canDelete={can(user?.role, 'song:delete')}
+                />
+            </main>
+        </>
     );
 }

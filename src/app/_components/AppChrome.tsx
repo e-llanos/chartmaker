@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LuLogIn } from 'react-icons/lu';
 import { ROLE_LABELS } from '@/domain/auth/roles';
 import { getCurrentUser } from '@/server/auth/session';
 import Navbar from '@/shared/layout/Navbar';
@@ -7,7 +8,18 @@ import { initialsOf } from '@/shared/ui/initials';
 
 export default async function AppChrome() {
     const user = await getCurrentUser();
-    if (!user) return <Navbar userMenu={<Link href="/login" className="navbar-link">Iniciar sesión</Link>} />;
+    if (!user) {
+        return (
+            <Navbar
+                userMenu={
+                    <Link href="/login" className="navbar-link">
+                        <LuLogIn className="nav-link-icon" size={20} aria-hidden="true" />
+                        Iniciar sesión
+                    </Link>
+                }
+            />
+        );
+    }
 
     return (
         <Sidebar

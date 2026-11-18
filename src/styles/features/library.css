@@ -1,0 +1,1028 @@
+/* ==========================================================================
+   Canciones: catálogo público y biblioteca de quien ha entrado
+   ========================================================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.songs-skeleton {
+    min-height: 60vh;
+}
+
+/* ---------- Piezas comunes ---------- */
+.song-cover {
+    display: block;
+    flex: none;
+    width: var(--size, 44px);
+    height: var(--size, 44px);
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.song-cover.is-empty {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--cm-accent) 40%, var(--cm-card)), var(--cm-card));
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.key-chip {
+    display: inline-grid;
+    place-items: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--cm-text-strong);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.count-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--cm-text-strong);
+    font-size: 0.75rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.mini-tag {
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--cm-accent) 22%, transparent);
+    color: var(--cm-text-strong);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+/* Buscador */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-bar input[type='search'] {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+}
+
+.search-bar input::placeholder {
+    color: var(--cm-dim);
+}
+
+.search-bar button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: var(--cm-dim);
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    color: var(--cm-text-strong);
+}
+
+.search-bar.is-pill {
+    height: 68px;
+    padding: 0 26px;
+    border-radius: 999px;
+    background: var(--cm-card);
+    border: 1px solid var(--cm-border);
+}
+
+.search-bar.is-pill input {
+    font-size: 1.4rem;
+}
+
+.search-bar.is-pill:focus-within {
+    border-color: var(--cm-accent);
+}
+
+.search-bar.is-compact {
+    flex: 0 1 320px;
+    min-width: 200px;
+    flex-direction: row-reverse;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--cm-border);
+}
+
+.search-bar.is-compact:focus-within {
+    border-color: var(--cm-accent);
+}
+
+/* Menús desplegables sin JavaScript */
+
+.heart-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-icon);
+    cursor: pointer;
+}
+
+.heart-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--cm-text-strong);
+}
+
+.heart-btn.is-on {
+    color: #ff5c7a;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 24px 0 8px;
+}
+
+.page-link {
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    color: var(--cm-text);
+    text-decoration: none;
+}
+
+a.page-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.page-link[aria-current='page'] {
+    background: var(--cm-accent);
+    border-color: var(--cm-accent);
+    color: #fff;
+}
+
+.page-link.is-disabled {
+    opacity: 0.35;
+}
+
+.page-gap {
+    color: var(--cm-dim);
+    padding: 0 4px;
+}
+
+/* ---------- Catálogo público ---------- */
+.cat-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+    display: grid;
+    gap: 24px;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip {
+    padding: 7px 20px;
+    border: 1px solid var(--cm-border);
+    border-radius: 999px;
+    color: var(--cm-text);
+    text-decoration: none;
+}
+
+.chip:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.chip[aria-current='page'] {
+    background: var(--cm-text-strong);
+    border-color: var(--cm-text-strong);
+    color: var(--cm-bg);
+    font-weight: 600;
+}
+
+.cat-section {
+    display: grid;
+    gap: 14px;
+}
+
+.cat-section>header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.cat-section h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--cm-text-strong);
+}
+
+.cat-section>header a {
+    color: var(--cm-dim);
+    font-size: 0.85rem;
+}
+
+.cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 28px;
+}
+
+.cat-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.cat-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.cat-row-main {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+}
+
+.cat-row-main strong {
+    color: var(--cm-text-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cat-row-main span {
+    color: var(--cm-dim);
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cat-row-title {
+    color: var(--cm-text-strong);
+    font-weight: 700;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Toda la fila abre la canción; el artista y el álbum, al quedar por encima, llevan a lo suyo. */
+.cat-row-title::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.cat-row-sub {
+    color: var(--cm-dim);
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cat-row-album {
+    flex: 1;
+    min-width: 0;
+    color: var(--cm-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.meta-link {
+    position: relative;
+    z-index: 1;
+    color: inherit;
+    text-decoration: none;
+}
+
+.meta-link:hover {
+    color: var(--cm-accent);
+    text-decoration: underline;
+}
+
+.cat-row-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cm-icon);
+}
+
+.cat-row-meta .is-off {
+    opacity: 0.3;
+}
+
+.cat-row-tempo {
+    color: var(--cm-dim);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.cat-list {
+    display: grid;
+}
+
+.cat-results-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cat-count {
+    margin: 0;
+    color: var(--cm-dim);
+}
+
+.cat-empty {
+    color: var(--cm-dim);
+    text-align: center;
+    padding: 40px 0;
+}
+
+.cat-more {
+    display: flex;
+    justify-content: center;
+}
+
+.cat-artists {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 22px 16px;
+}
+
+.cat-artists.is-strip {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    margin-bottom: 8px;
+}
+
+.artist-card {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    text-align: center;
+    color: inherit;
+    text-decoration: none;
+}
+
+.artist-card strong {
+    color: var(--cm-text-strong);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.artist-card>span:last-child {
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+}
+
+.artist-avatar {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    background: hsl(var(--hue) 40% 30%);
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.artist-card:hover .artist-avatar {
+    outline: 2px solid var(--cm-accent);
+    outline-offset: 3px;
+}
+
+.is-strip .artist-avatar {
+    width: 84px;
+    height: 84px;
+    font-size: 1.2rem;
+}
+
+/* ---------- Biblioteca (con sesión) ---------- */
+.lib-page {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100dvh - 60px);
+}
+
+.lib-side {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 20px 12px;
+    border-right: 1px solid var(--cm-border);
+}
+
+.lib-side h2 {
+    margin: 0 0 18px 8px;
+    font-size: 1.1rem;
+    color: var(--cm-text-strong);
+}
+
+.lib-side-label {
+    margin: 16px 8px 6px;
+    color: var(--cm-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.lib-side-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    color: var(--cm-text);
+    font-size: 0.92rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.lib-side-link span:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lib-side-link .count {
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+}
+
+a.lib-side-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.lib-side-link[aria-current='page'] {
+    background: color-mix(in srgb, var(--cm-accent) 22%, transparent);
+    color: var(--cm-text-strong);
+}
+
+.lib-side-link.is-soon {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.lib-main {
+    padding: 18px 24px 40px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    min-width: 0;
+}
+
+.lib-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lib-head h1 {
+    margin: 0;
+    font-size: 1.7rem;
+    color: var(--cm-text-strong);
+}
+
+.lib-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lib-panel {
+    border: 1px solid var(--cm-border);
+    border-radius: 16px;
+    background: var(--cm-card);
+    overflow: visible;
+}
+
+
+.lib-toolbar .search-bar.is-compact {
+    background: var(--cm-bg);
+}
+
+.lib-table-wrap {
+    overflow-x: auto;
+}
+
+.lib-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lib-table th {
+    padding: 12px 14px;
+    text-align: left;
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.lib-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cm-border);
+    color: var(--cm-text);
+}
+
+.lib-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.lib-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.lib-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cm-text-strong);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.col-actions>* {
+    display: inline-grid;
+    vertical-align: middle;
+}
+
+.col-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.col-actions form {
+    display: inline-grid;
+}
+
+.lib-empty {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 64px 20px;
+    text-align: center;
+}
+
+.lib-empty h2 {
+    margin: 0;
+    color: var(--cm-text-strong);
+}
+
+.lib-empty p {
+    margin: 0 0 8px;
+    color: var(--cm-dim);
+}
+
+/* ---------- Pantallas estrechas ---------- */
+@media (max-width: 900px) {
+    .cat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cat-row-album {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .cat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-bar.is-pill {
+        height: 56px;
+        padding: 0 18px;
+    }
+
+    .search-bar.is-pill input {
+        font-size: 1.1rem;
+    }
+
+    .cat-row-tempo {
+        display: none;
+    }
+
+    .lib-main {
+        padding: 14px 12px 32px;
+    }
+
+    .col-artist,
+    .col-tempo,
+    .col-date {
+        display: none;
+    }
+
+    .col-album {
+        display: none;
+    }
+
+    .lib-page .editor-layout {
+        height: calc(100dvh - 160px - var(--topbar-h));
+    }
+}
+
+/* ---------- Correcciones de la biblioteca ---------- */
+
+.lib-page[data-sidebar='closed'] {
+    grid-template-columns: 1fr;
+}
+
+.lib-page[data-sidebar='closed'] .lib-side {
+    display: none;
+}
+
+.lib-actions .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* ---------- Álbumes y artistas con foto ---------- */
+.cat-albums {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 22px 16px;
+}
+
+.album-card {
+    display: grid;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.album-card .song-cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
+.album-card strong {
+    color: var(--cm-text-strong);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.album-card>span {
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+}
+
+.album-card:hover .song-cover {
+    outline: 2px solid var(--cm-accent);
+    outline-offset: 3px;
+}
+
+img.artist-avatar {
+    display: block;
+    object-fit: cover;
+    background: var(--cm-card);
+}
+
+
+/* ---------- Migas de pan (reutilizables) ---------- */
+.crumbs-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    padding: 14px 20px 0;
+}
+
+.lib-main .crumbs-bar {
+    padding: 0;
+}
+
+.crumbs-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--cm-border);
+}
+
+.crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.crumbs li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cm-dim);
+    font-size: 0.85rem;
+}
+
+.crumbs a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.crumbs a:hover {
+    color: var(--cm-text-strong);
+    text-decoration: underline;
+}
+
+.crumbs [aria-current='page'] {
+    max-width: 40ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--cm-text-strong);
+    font-weight: 600;
+}
+
+/* ---------- Filtros activos de la biblioteca ---------- */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--cm-accent) 22%, transparent);
+    color: var(--cm-text-strong);
+    font-size: 0.82rem;
+    text-decoration: none;
+}
+
+.filter-chip:hover {
+    background: color-mix(in srgb, var(--cm-accent) 34%, transparent);
+}
+
+/* Los editores dentro de la biblioteca ceden el alto a las migas de pan. */
+.lib-page .editor-layout {
+    height: calc(100dvh - 160px);
+}
+
+
+/* ---------- Controles de la barra de herramientas ---------- */
+.lib-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.lib-tool-btn:hover,
+.lib-pop[open]>.lib-tool-btn {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Filtros, orden y sentido: siempre en una sola fila */
+.lib-tools {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.lib-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.lib-toolbar .search-bar.is-compact {
+    flex: 1 1 280px;
+    max-width: 420px;
+    min-width: 0;
+}
+
+.lib-toolbar .lib-tools {
+    margin-left: auto;
+}
+
+.lib-pop {
+    position: relative;
+}
+
+.lib-pop>summary {
+    list-style: none;
+}
+
+.lib-pop>summary::-webkit-details-marker {
+    display: none;
+}
+
+.lib-pop-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 30;
+    display: grid;
+    gap: 12px;
+    min-width: 240px;
+    padding: 14px;
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    background: var(--cm-card);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.lib-pop-panel.is-end {
+    left: auto;
+    right: 0;
+}
+
+.lib-pop-panel.is-menu {
+    gap: 2px;
+    padding: 6px;
+    min-width: 180px;
+}
+
+.lib-pop-form {
+    display: grid;
+    gap: 12px;
+}
+
+.lib-pop-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--cm-text);
+    text-decoration: none;
+}
+
+.lib-pop-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.lib-pop-item[aria-current='true'] {
+    color: var(--cm-accent);
+    font-weight: 600;
+}
+
+.lib-pop-field {
+    display: grid;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--cm-dim);
+}
+
+.lib-pop-field select {
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+    color: var(--cm-text-strong);
+    font: inherit;
+}
+
+.lib-pop-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cm-text);
+}
+
+.lib-pop-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.lib-pop-clear {
+    color: var(--cm-dim);
+}
+
+/* Fondo oscuro del cajón de la biblioteca: solo en móvil */
+.lib-backdrop {
+    display: none;
+}
+
+@media (max-width: 720px) {
+
+    /* La biblioteca es un cajón que entra por la izquierda */
+    .lib-page,
+    .lib-page[data-sidebar='closed'] {
+        grid-template-columns: 1fr;
+    }
+
+    .lib-page[data-sidebar='closed'] .lib-side {
+        display: flex;
+    }
+
+    .lib-side {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 65;
+        width: min(300px, 82vw);
+        padding-top: calc(var(--topbar-h) + 8px);
+        background: var(--cm-bg);
+        border-right: 1px solid var(--cm-border);
+        transform: translateX(-100%);
+        visibility: hidden;
+        /* cerrado: fuera del orden de tabulación y de los lectores de pantalla */
+        transition: transform 0.2s ease, visibility 0s linear 0.2s;
+    }
+
+    .lib-page[data-drawer='open'] .lib-side {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.2s ease;
+    }
+
+    .lib-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 64;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Buscador en su propia fila; filtros, orden y sentido juntos debajo */
+    .lib-toolbar .search-bar.is-compact {
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .lib-toolbar .lib-tools {
+        margin-left: 0;
+        flex: 1 1 100%;
+    }
+
+    .lib-tools .lib-tool-btn {
+        padding: 0 10px;
+        min-width: 0;
+    }
+}

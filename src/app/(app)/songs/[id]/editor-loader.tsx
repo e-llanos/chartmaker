@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { isSongView, songEditPath, type SongView } from '@/config/routes';
+import { isSongView, songEditPath, songPath, VIEW_LABELS, type SongView } from '@/config/routes';
+import SongsBreadcrumbs from '@/features/songs/components/SongsBreadcrumbs';
 import FormatEditorPage from '@/features/songs/components/FormatEditorPage';
 import { authorizePage } from '@/server/auth/guard';
 import { getSongById } from '@/server/songs';
@@ -23,5 +24,16 @@ export default async function EditorLoader({ params, format }: EditorParams) {
 
     const song = await getSongById(id);
     if (!song) notFound();
-    return <FormatEditorPage song={song} format={view} />;
+    return (
+        <>
+            <SongsBreadcrumbs
+                items={[
+                    { label: 'Canciones', href: '/songs' },
+                    { label: song.title || 'Sin título', href: songPath(song.id, view) },
+                    { label: `Editar ${VIEW_LABELS[view].toLowerCase()}` },
+                ]}
+            />
+            <FormatEditorPage song={song} format={view} />
+        </>
+    );
 }

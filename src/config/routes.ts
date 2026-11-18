@@ -40,3 +40,8 @@ export function safeNext(value: unknown, fallback = '/'): string {
         ? value
         : fallback;
 }
+
+export const VIEW_LABELS: Record<SongView, string> = {
+    cifrado: 'Cifrado',
+    chart: 'Chart',
+};

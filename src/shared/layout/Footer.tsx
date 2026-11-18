@@ -11,6 +11,7 @@ export default async function Footer() {
         <footer className="footer">
             <div className="footer-inner">
                 <span>© {year} {APP_NAME}</span>
+                <span className="footer-sep" aria-hidden="true">·</span>
                 <span>{APP_DESCRIPTION}</span>
             </div>
         </footer>
