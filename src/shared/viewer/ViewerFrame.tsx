@@ -7,7 +7,7 @@ import { semitoneDistance } from '@/domain/music/notation/engine';
 import type { Badge } from '@/domain/sections/section-types';
 import type { SongCreate } from '@/domain/song/types';
 import ExportHead from '@/shared/export/ExportHead';
-import ExportMenu from '@/shared/export/ExportMenu';
+import ExportList from '@/shared/export/ExportList';
 import SectionNav from './SectionNav';
 import { ToolbarSlotContext } from './ToolbarSlot';
 import type { ViewerSettings } from './useViewerSettings';
@@ -56,12 +56,12 @@ export default function ViewerFrame({
             title={title}
             hideTitle={hideTitle}
             currentKey={displayKey}
+            originalKey={originalKey}
             notation={notation}
             layout={layout}
             onLayoutChange={onLayoutChange}
             mode={mode}
             onModeChange={onModeChange}
-            onTranspose={(d: number) => setSemitones((s) => s + d)}
             onKeyChange={(k: string) => setSemitones(semitoneDistance(originalKey, k))}
             onNotationChange={setNotation}
             reference={reference}
@@ -69,7 +69,7 @@ export default function ViewerFrame({
             fontPercent={fontPercent}
             onFontChange={setFontPercent}
             controls={controls}
-            actions={song ? <ExportMenu sheetRef={sheetRef} song={song} /> : null}
+            actions={song ? <ExportList sheetRef={sheetRef} song={song} /> : null}
         />
     );
 

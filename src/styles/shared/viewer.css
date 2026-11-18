@@ -1,13 +1,21 @@
 /* ==========================================================================
    Visualizador del cifrado (detalle y vista previa del editor)
+
+   1. Contenedor y barra superior
+   2. Selector de tonalidad
+   3. Ventana de preferencias (controles, selector propio)
+   4. Navegación por insignias y disposición de secciones
+   5. Tarjeta de sección
+   6. Cifrado (acordes y letra)
+   7. Hoja exportable (PDF / PNG)
    ========================================================================== */
 
+/* ---------- 1. Contenedor y barra superior ---------- */
 .viewer {
     font-family: var(--cm-font);
     color: var(--cm-text);
 }
 
-/* ---------- Barra superior ---------- */
 .viewer-toolbar {
     display: flex;
     justify-content: space-between;
@@ -24,52 +32,34 @@
     margin: 0;
     font-size: 1.05rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--cm-text-strong);
 }
 
-/* ---------- Controles de la barra ---------- */
 .viewer-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
     gap: 0.5rem;
+    min-width: 0;
 }
 
-.control-group {
-    display: flex;
-    flex-flow: row nowrap;
-    /* siempre en una fila: los iconos van uno al lado del otro */
-    align-items: center;
-    flex: none;
-    gap: 0.5rem;
-}
-
-.viewer-controls select,
-.viewer-controls button,
-.viewer-controls .menu>summary {
+.viewer-controls button {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
     height: 34px;
+    padding: 0;
     background: var(--cm-card);
     color: var(--cm-text);
     border: 1px solid var(--cm-border);
     border-radius: 6px;
-    padding: 0 0.7rem;
     font: inherit;
     font-size: 0.85rem;
     cursor: pointer;
 }
 
-.viewer-controls button,
-.viewer-controls .menu>summary {
-    display: inline-grid;
-    place-items: center;
-    width: 34px;
-    padding: 0;
-}
-
-.viewer-controls select:hover,
-.viewer-controls button:hover,
-.viewer-controls .menu>summary:hover {
+.viewer-controls button:hover {
     border-color: var(--cm-dim);
 }
 
@@ -78,85 +68,526 @@
     cursor: default;
 }
 
-/* Bloque unido: − tono + / A− 100 % A+ */
-.control-joined {
-    gap: 0;
-}
+/* ---------- 2. Selector de tonalidad ---------- */
 
-.control-joined>* {
-    border-radius: 0;
-}
-
-.control-joined>*+* {
-    margin-left: -1px;
-}
-
-.control-joined> :first-child {
-    border-radius: 6px 0 0 6px;
-}
-
-.control-joined> :last-child {
-    border-radius: 0 6px 6px 0;
-}
-
-.control-joined select {
+/* Botón de la barra */
+.viewer-controls .key-trigger {
     width: auto;
-    min-width: 64px;
-    text-align: center;
-}
-
-.control-joined> :hover,
-.control-joined> :focus-visible {
-    position: relative;
-    z-index: 1;
-}
-
-/* Tamaño del texto */
-.control-joined .font-value {
-    width: auto;
-    min-width: 52px;
-    padding: 0 0.4rem;
-    font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
-}
-
-.font-glyph {
+    min-width: 34px;
+    padding: 0 0.7rem;
     font-weight: 700;
-    line-height: 1;
 }
 
-.font-glyph-sm {
-    font-size: 0.75rem;
+/* Transpuesta: el botón se pinta de acento */
+.viewer-controls .key-trigger.is-transposed {
+    color: var(--cm-accent);
+    border-color: var(--cm-accent);
+    background: color-mix(in srgb, var(--cm-accent) 18%, var(--cm-card));
 }
 
-.font-glyph-lg {
-    font-size: 1.1rem;
+/* Escritorio: panel junto al botón (top/right los pone el componente) */
+.key-dialog {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    padding: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
-.layout-toggle {
-    display: inline-grid;
-    place-items: center;
+.key-dialog::backdrop {
+    background: transparent;
 }
 
-/* Menú de ajustes de vista (notación, contenido, estilo) */
-.menu-panel {
-    gap: 10px;
-    padding: 10px;
-    min-width: 230px;
-}
-
-.menu-field {
+.key-panel {
     display: grid;
-    gap: 4px;
+    gap: 10px;
+    padding: 12px;
+}
+
+.key-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* Los botones del panel necesitan más especificidad que ".viewer-controls button"
+   (34px de ancho fijo y display grid). */
+.key-panel .key-original {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: auto;
+    height: 26px;
+    padding: 0 0.7rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.25);
+    color: var(--cm-dim);
     font-size: 0.75rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.key-panel .key-original strong {
+    color: var(--cm-text-strong);
+}
+
+.key-panel .key-original:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+/* "Listo" solo se ve en móvil, donde el panel es una hoja inferior */
+.key-panel .key-done {
+    display: none;
+    width: auto;
+    height: 30px;
+    padding: 0 0.9rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--cm-accent);
+    color: #fff;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.key-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--cm-bg);
+}
+
+.key-panel .key-btn {
+    width: auto;
+    height: 38px;
+    padding: 0 0.3rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--cm-dim);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.key-panel .key-btn:hover:not(:disabled) {
+    color: var(--cm-text-strong);
+}
+
+.key-panel .key-btn[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--cm-accent) 22%, var(--cm-card));
+    color: var(--cm-accent);
+}
+
+.key-panel .key-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Móvil: hoja inferior a todo el ancho */
+@media (max-width: 720px) {
+    .key-dialog {
+        inset: auto 0 0 0;
+        width: 100%;
+        max-width: none;
+        border-width: 1px 0 0;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .key-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    .key-panel {
+        gap: 14px;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+    }
+
+    .key-panel .key-done {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .key-panel .key-btn {
+        height: 44px;
+    }
+}
+
+/* ---------- 3. Ventana de preferencias ---------- */
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
+.settings-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(420px, calc(100vw - 24px));
+    height: fit-content;
+    max-height: min(540px, calc(100dvh - 32px));
+    padding: 0;
+    border: 1px solid var(--cm-border);
+    border-radius: 18px;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.settings-dialog[open] {
+    display: flex;
+}
+
+.settings-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.settings-panel {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 6px;
+}
+
+.settings-head h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--cm-text-strong);
+}
+
+.settings-close {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-dim);
+    cursor: pointer;
+}
+
+.settings-close:hover {
+    color: var(--cm-text-strong);
+}
+
+.settings-body {
+    display: grid;
+    gap: 14px;
+    padding: 6px 18px 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--cm-dim) 45%, transparent) transparent;
+}
+
+.settings-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-body::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 6px 0;
+}
+
+.settings-body::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--cm-dim) 45%, transparent);
+    border-radius: 999px;
+    border: 2px solid var(--cm-card);
+}
+
+.settings-body::-webkit-scrollbar-thumb:hover {
+    background: var(--cm-dim);
+}
+
+/* Grupos y filas */
+.pref-title {
+    margin: 0 0 8px 2px;
+    font-size: 0.85rem;
+    font-weight: 500;
     color: var(--cm-dim);
 }
 
-.menu-panel select {
-    width: 100%;
+.pref-card {
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    overflow: hidden;
 }
 
-/* ---------- Navegación por insignias ---------- */
+.pref-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    text-align: left;
+}
+
+.pref-row+.pref-row {
+    border-top: 1px solid var(--cm-border);
+}
+
+.pref-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.pref-label svg {
+    flex: none;
+    color: var(--cm-dim);
+}
+
+.pref-hint {
+    display: block;
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+}
+
+/* Filas que son botones (exportar) */
+.pref-action {
+    cursor: pointer;
+}
+
+.pref-action:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--cm-accent) 12%, transparent);
+}
+
+.pref-action:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.pref-action small {
+    color: var(--cm-dim);
+}
+
+.pref-error {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+}
+
+/* Control segmentado (Ambos / Solo acordes / Solo letra) */
+.segmented {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--cm-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.segmented button {
+    height: 36px;
+    padding: 0 0.4rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--cm-dim);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.segmented button[aria-checked='true'] {
+    background: var(--cm-bg);
+    color: var(--cm-text-strong);
+}
+
+/* Interruptor */
+.switch {
+    position: relative;
+    flex: none;
+    width: 46px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.4);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.15s;
+}
+
+.switch[aria-checked='true'] {
+    background: var(--cm-accent);
+}
+
+.switch[aria-checked='true']::after {
+    transform: translateX(18px);
+}
+
+/* Tamaño del texto: − 100 % + */
+.pref-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pref-stepper button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-bg);
+    color: var(--cm-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.pref-stepper button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.pref-stepper .pref-stepper-value {
+    min-width: 58px;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Selector propio (botón + lista) */
+.pref-row .select-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    height: 34px;
+    max-width: 100%;
+    padding: 0 0.7rem 0 0.8rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 10px;
+    background: var(--cm-bg);
+    color: var(--cm-text-strong);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.pref-row .select-trigger svg {
+    flex: none;
+    color: var(--cm-dim);
+    transition: transform 0.15s;
+}
+
+.pref-row .select-trigger:hover {
+    border-color: color-mix(in srgb, var(--cm-accent) 55%, var(--cm-border));
+}
+
+.pref-row .select-trigger:focus-visible {
+    outline: 2px solid var(--cm-accent);
+    outline-offset: 2px;
+}
+
+.pref-row .select-trigger[aria-expanded='true'] {
+    border-color: var(--cm-accent);
+}
+
+.pref-row .select-trigger[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+}
+
+/* Lista: capa superior (popover); top/right/maxHeight los pone el componente */
+.select-list {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    padding: 4px;
+    max-width: calc(100vw - 24px);
+    overflow-y: auto;
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    background: var(--cm-card);
+    color: var(--cm-text);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--cm-dim) 45%, transparent) transparent;
+}
+
+.select-list:popover-open {
+    display: grid;
+    gap: 2px;
+}
+
+.select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-text);
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.select-option:hover,
+.select-option:focus-visible {
+    background: color-mix(in srgb, var(--cm-accent) 14%, transparent);
+    color: var(--cm-text-strong);
+    outline: none;
+}
+
+.select-option[aria-selected='true'] {
+    color: var(--cm-accent);
+    font-weight: 600;
+}
+
+/* ---------- 4. Navegación por insignias y disposición de secciones ---------- */
 .section-nav {
     display: flex;
     flex-wrap: wrap;
@@ -164,11 +595,11 @@
     padding-bottom: 1rem;
 }
 
-/* ---------- Disposición de las secciones ---------- */
 .sections-layout {
     width: 100%;
 }
 
+/* Columnas */
 .sections-layout-columns {
     column-count: 2;
     column-gap: 16px;
@@ -201,8 +632,7 @@
     gap: 16px;
 }
 
-
-/* ---------- Tarjeta de sección ---------- */
+/* ---------- 5. Tarjeta de sección ---------- */
 .section-card {
     min-width: 0;
     margin: 0;
@@ -258,12 +688,13 @@
     text-align: right;
 }
 
+/* ---------- 6. Cifrado: acorde encima del texto que le sigue ---------- */
+
 /* Tamaño del texto: lo controla el botón A− / A+ (la variable la pone ViewerFrame). */
 .viewer-sheet {
     font-size: calc(1rem * var(--viewer-scale, 1));
 }
 
-/* ---------- Cifrado: acorde encima del texto que le sigue ---------- */
 .chord-line {
     display: flex;
     flex-wrap: wrap;
@@ -293,6 +724,11 @@
     padding-right: 0.8em;
 }
 
+.lyrics-only .ly {
+    white-space: pre-wrap;
+    font-size: 0.9em;
+}
+
 .chord {
     font-weight: 700;
     color: var(--cm-chord);
@@ -313,13 +749,7 @@
     color: var(--cm-dim);
 }
 
-
-.lyrics-only .ly {
-    white-space: pre-wrap;
-    font-size: 0.9em;
-}
-
-/* ---------- Hoja exportable (PDF / PNG) ---------- */
+/* ---------- 7. Hoja exportable (PDF / PNG) ---------- */
 .export-only {
     display: none;
 }

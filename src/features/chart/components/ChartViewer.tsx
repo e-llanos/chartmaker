@@ -12,6 +12,7 @@ import { useChordMapper, useResolvedSettings } from '@/shared/viewer/useChordMap
 import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
 import ViewerFrame from '@/shared/viewer/ViewerFrame';
 import type { SectionsLayout } from '@/shared/viewer/ViewerToolbar';
+import Select from '@/shared/ui/Select';
 import AdvancedSection from './AdvancedSection';
 import MeasureBox from './MeasureBox';
 
@@ -47,16 +48,15 @@ export default function ChartViewer({
     const exportSong = useMemo<SongCreate>(() => ({ ...song, chart }), [song, chart]);
 
     const styleControl = forcedStyle ? null : (
-        <select
+        <Select
+            label="Estilo del chart"
             value={style}
-            onChange={(e) => setChosen(e.target.value as ChartStyle)}
-            aria-label="Estilo del chart"
-            title="Cómo se muestra el chart (no se guarda)"
-        >
-            {(Object.keys(CHART_STYLE_LABELS) as ChartStyle[]).map((s) => (
-                <option key={s} value={s}>Estilo {CHART_STYLE_LABELS[s].toLowerCase()}</option>
-            ))}
-        </select>
+            onChange={setChosen}
+            options={(Object.keys(CHART_STYLE_LABELS) as ChartStyle[]).map((s) => ({
+                value: s,
+                label: `Estilo ${CHART_STYLE_LABELS[s].toLowerCase()}`,
+            }))}
+        />
     );
 
     return (

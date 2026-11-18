@@ -1,8 +1,19 @@
 /* ==========================================================================
-   Layout: estructura de la app (body, contenedores, navbar, footer)
+   Layout: estructura de la app (body, contenedores, navbar, footer, barra lateral)
+
+   1. Estructura general y contenedores
+   2. Menú móvil compartido (botón y fondo, navbar y barra lateral)
+   3. Navbar
+   4. Footer
+   5. Barra lateral (rail) y menú de perfil
    ========================================================================== */
 
-/* ---------- Estructura general ---------- */
+:root {
+    --rail-w: 64px;
+    --topbar-h: 56px;
+}
+
+/* ---------- 1. Estructura general y contenedores ---------- */
 body.app-body {
     min-height: 100dvh;
     display: flex;
@@ -11,6 +22,13 @@ body.app-body {
 
 .app-content {
     flex: 1 0 auto;
+}
+
+.app-shell {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
 }
 
 .page-container {
@@ -41,7 +59,53 @@ body.app-body {
     padding: 1.5rem 1.25rem 4rem;
 }
 
-/* ---------- Navbar ---------- */
+.brand-mark {
+    display: block;
+    border-radius: 8px;
+}
+
+/* ---------- 2. Menú móvil compartido ---------- */
+/* Solo existen en pantallas estrechas. */
+.navbar-toggle,
+.navbar-backdrop,
+.nav-drawer,
+.rail-toggle,
+.rail-backdrop {
+    display: none;
+}
+
+@media (max-width: 720px) {
+
+    /* Botón fijo en la esquina superior izquierda */
+    .navbar-toggle,
+    .rail-toggle {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 90;
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--cm-border);
+        border-radius: 12px;
+        background: var(--cm-card);
+        color: var(--cm-text-strong);
+        cursor: pointer;
+    }
+
+    /* Fondo oscuro detrás del panel abierto */
+    .navbar-backdrop,
+    .rail-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 55;
+        background: rgba(0, 0, 0, 0.55);
+    }
+}
+
+/* ---------- 3. Navbar ---------- */
 .navbar {
     position: sticky;
     top: 0;
@@ -89,7 +153,87 @@ body.app-body {
     background: rgba(128, 128, 128, 0.15);
 }
 
-/* ---------- Footer ---------- */
+/* Los iconos solo se ven en el panel móvil */
+.navbar-link .nav-link-icon {
+    display: none;
+}
+
+@media (max-width: 720px) {
+    .navbar-inner {
+        min-height: var(--topbar-h);
+        padding: 0 12px 0 60px;
+        /* deja sitio al botón, que va fijo en la esquina */
+    }
+
+    .navbar-links,
+    .navbar-user {
+        display: none;
+    }
+
+    /* Panel con las opciones */
+    .nav-drawer {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 70;
+        width: min(280px, 85vw);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: calc(var(--topbar-h) + 8px) 12px 16px;
+        background: var(--cm-bg);
+        border-right: 1px solid var(--cm-border);
+        transform: translateX(-100%);
+        visibility: hidden;
+        /* cerrado: fuera del orden de tabulación y de los lectores de pantalla */
+        transition: transform 0.2s ease, visibility 0s linear 0.2s;
+    }
+
+    .nav-drawer[data-open='true'] {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.2s ease;
+    }
+
+    .nav-drawer-links {
+        display: grid;
+        gap: 2px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .nav-drawer .navbar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        font-size: 1.02rem;
+    }
+
+    .nav-drawer .nav-link-icon {
+        display: block;
+        flex-shrink: 0;
+    }
+
+    .nav-drawer .navbar-link[aria-current='page'] {
+        background: color-mix(in srgb, var(--cm-accent) 24%, transparent);
+        color: var(--cm-accent);
+    }
+
+    /* Entrar / salir, al pie del panel */
+    .nav-drawer-footer {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--cm-border);
+    }
+
+    .nav-drawer-footer .navbar-link {
+        justify-content: center;
+        border: 1px solid var(--cm-border);
+    }
+}
+
+/* ---------- 4. Footer ---------- */
 .footer {
     flex-shrink: 0;
     margin-top: auto;
@@ -112,29 +256,19 @@ body.app-body {
     opacity: 0.7;
 }
 
-/* Menú móvil de la navbar: solo existe en pantallas estrechas (ver el final del archivo). */
-.navbar-toggle,
-.navbar-backdrop,
-.nav-drawer {
-    display: none;
+@media (max-width: 720px) {
+    .footer-inner {
+        flex-direction: column;
+        gap: 2px;
+        white-space: normal;
+    }
+
+    .footer-sep {
+        display: none;
+    }
 }
 
-.navbar-link .nav-link-icon {
-    display: none;
-}
-
-/* ---------- Estructura con barra lateral ---------- */
-:root {
-    --rail-w: 64px;
-    --topbar-h: 56px;
-}
-
-.app-shell {
-    flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
-}
+/* ---------- 5. Barra lateral (rail) y menú de perfil ---------- */
 
 /* Con la barra lateral, el contenido se desplaza y el editor recupera el alto de la navbar. */
 .app-shell:has(.rail) {
@@ -143,11 +277,6 @@ body.app-body {
 
 .app-shell:has(.rail) .editor-layout {
     height: calc(100dvh - 86px);
-}
-
-.brand-mark {
-    display: block;
-    border-radius: 8px;
 }
 
 .rail {
@@ -199,6 +328,37 @@ body.app-body {
 .rail-link[aria-current='page'] {
     background: color-mix(in srgb, var(--cm-accent) 24%, transparent);
     color: var(--cm-accent);
+}
+
+/* Etiqueta al pasar el ratón o enfocar con el teclado */
+.rail-link::after,
+.rail-avatar::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 12px);
+    padding: 4px 10px;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    background: var(--cm-card);
+    color: var(--cm-text-strong);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    pointer-events: none;
+    transition: opacity 0.12s, transform 0.12s;
+}
+
+.rail-link:hover::after,
+.rail-link:focus-visible::after,
+.rail-avatar:hover::after,
+.rail-avatar:focus-visible::after {
+    opacity: 1;
+    transform: none;
+}
+
+.rail-avatar[aria-expanded='true']::after {
+    display: none;
 }
 
 /* Avatar con su menú */
@@ -292,43 +452,6 @@ body.app-body {
     color: var(--cm-danger-text);
 }
 
-/* Etiqueta al pasar el ratón o enfocar con el teclado */
-.rail-link::after,
-.rail-avatar::after {
-    content: attr(data-label);
-    position: absolute;
-    left: calc(100% + 12px);
-    padding: 4px 10px;
-    border: 1px solid var(--cm-border);
-    border-radius: 8px;
-    background: var(--cm-card);
-    color: var(--cm-text-strong);
-    font-size: 0.8rem;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateX(-4px);
-    pointer-events: none;
-    transition: opacity 0.12s, transform 0.12s;
-}
-
-.rail-link:hover::after,
-.rail-link:focus-visible::after,
-.rail-avatar:hover::after,
-.rail-avatar:focus-visible::after {
-    opacity: 1;
-    transform: none;
-}
-
-.rail-avatar[aria-expanded='true']::after {
-    display: none;
-}
-
-/* El botón de menú y el fondo oscuro solo existen en móvil. */
-.rail-toggle,
-.rail-backdrop {
-    display: none;
-}
-
 /* En pantallas estrechas la barra es un panel que se abre desde la esquina superior izquierda. */
 @media (max-width: 720px) {
     .app-shell:has(.rail) {
@@ -338,34 +461,6 @@ body.app-body {
 
     .app-shell:has(.rail) .editor-layout {
         height: calc(100dvh - 86px - var(--topbar-h));
-    }
-
-    .rail-toggle,
-    .navbar-toggle {
-        position: fixed;
-        position: fixed;
-        top: 8px;
-        left: 8px;
-        z-index: 90;
-        display: grid;
-        place-items: center;
-        width: 42px;
-        height: 42px;
-        border: 1px solid var(--cm-border);
-        border-radius: 12px;
-        background: var(--cm-card);
-        color: var(--cm-text-strong);
-        cursor: pointer;
-    }
-
-    .rail-backdrop,
-    .navbar-backdrop {
-        display: block;
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 55;
-        background: rgba(0, 0, 0, 0.55);
     }
 
     .rail {
@@ -389,88 +484,6 @@ body.app-body {
 
     .rail-link::after,
     .rail-avatar::after {
-        display: none;
-    }
-
-    .navbar-inner {
-        min-height: var(--topbar-h);
-        padding: 0 12px 0 60px;
-        /* deja sitio al botón, que va fijo en la esquina */
-    }
-
-    .navbar-links,
-    .navbar-user {
-        display: none;
-    }
-
-    .nav-drawer {
-        position: fixed;
-        inset: 0 auto 0 0;
-        z-index: 70;
-        width: min(280px, 85vw);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding: calc(var(--topbar-h) + 8px) 12px 16px;
-        background: var(--cm-bg);
-        border-right: 1px solid var(--cm-border);
-        transform: translateX(-100%);
-        visibility: hidden;
-        /* cerrado: fuera del orden de tabulación y de los lectores de pantalla */
-        transition: transform 0.2s ease, visibility 0s linear 0.2s;
-    }
-
-    .nav-drawer[data-open='true'] {
-        transform: none;
-        visibility: visible;
-        transition: transform 0.2s ease;
-    }
-
-    .nav-drawer-links {
-        display: grid;
-        gap: 2px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .nav-drawer .navbar-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 14px;
-        font-size: 1.02rem;
-    }
-
-    .nav-drawer .nav-link-icon {
-        display: block;
-        flex-shrink: 0;
-    }
-
-    .nav-drawer .navbar-link[aria-current='page'] {
-        background: color-mix(in srgb, var(--cm-accent) 24%, transparent);
-        color: var(--cm-accent);
-    }
-
-    /* Entrar / salir, al pie del panel */
-    .nav-drawer-footer {
-        margin-top: auto;
-        padding-top: 12px;
-        border-top: 1px solid var(--cm-border);
-    }
-
-    .nav-drawer-footer .navbar-link {
-        justify-content: center;
-        border: 1px solid var(--cm-border);
-    }
-
-    .footer-inner {
-        flex-direction: column;
-        gap: 2px;
-        white-space: normal;
-    }
-
-    .footer-sep {
         display: none;
     }
 }

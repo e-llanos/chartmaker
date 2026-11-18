@@ -1,7 +1,15 @@
 /* ==========================================================================
    Canciones: catálogo público y biblioteca de quien ha entrado
+
+   1. Utilidades y piezas comunes
+   2. Buscador
+   3. Paginación
+   4. Migas de pan
+   5. Catálogo público (filas, artistas, álbumes)
+   6. Biblioteca (estructura, barra de herramientas, menús, tabla, cajón móvil)
    ========================================================================== */
 
+/* ---------- 1. Utilidades y piezas comunes ---------- */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -18,7 +26,6 @@
     min-height: 60vh;
 }
 
-/* ---------- Piezas comunes ---------- */
 .song-cover {
     display: block;
     flex: none;
@@ -72,7 +79,40 @@
     font-weight: 600;
 }
 
-/* Buscador */
+.heart-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cm-icon);
+    cursor: pointer;
+}
+
+.heart-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--cm-text-strong);
+}
+
+.heart-btn.is-on {
+    color: #ff5c7a;
+}
+
+.meta-link {
+    position: relative;
+    z-index: 1;
+    color: inherit;
+    text-decoration: none;
+}
+
+.meta-link:hover {
+    color: var(--cm-accent);
+    text-decoration: underline;
+}
+
+/* ---------- 2. Buscador ---------- */
 .search-bar {
     display: flex;
     align-items: center;
@@ -106,6 +146,7 @@
     color: var(--cm-text-strong);
 }
 
+/* Grande (portada del catálogo) */
 .search-bar.is-pill {
     height: 68px;
     padding: 0 26px;
@@ -122,6 +163,7 @@
     border-color: var(--cm-accent);
 }
 
+/* Compacto (barra de herramientas de la biblioteca) */
 .search-bar.is-compact {
     flex: 0 1 320px;
     min-width: 200px;
@@ -136,30 +178,18 @@
     border-color: var(--cm-accent);
 }
 
-/* Menús desplegables sin JavaScript */
+@media (max-width: 720px) {
+    .search-bar.is-pill {
+        height: 56px;
+        padding: 0 18px;
+    }
 
-.heart-btn {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--cm-icon);
-    cursor: pointer;
+    .search-bar.is-pill input {
+        font-size: 1.1rem;
+    }
 }
 
-.heart-btn:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: var(--cm-text-strong);
-}
-
-.heart-btn.is-on {
-    color: #ff5c7a;
-}
-
-/* Paginación */
+/* ---------- 3. Paginación ---------- */
 .pagination {
     display: flex;
     flex-wrap: wrap;
@@ -200,7 +230,76 @@ a.page-link:hover {
     padding: 0 4px;
 }
 
-/* ---------- Catálogo público ---------- */
+/* ---------- 4. Migas de pan (reutilizables) ---------- */
+.crumbs-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    padding: 14px 20px 0;
+}
+
+.lib-main .crumbs-bar {
+    padding: 0;
+}
+
+.crumbs-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--cm-border);
+}
+
+.crumbs {
+    flex: 1;
+    min-width: 0;
+}
+
+.crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.crumbs li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+    color: var(--cm-dim);
+    font-size: 0.85rem;
+}
+
+.crumbs li svg {
+    flex: none;
+}
+
+.crumbs a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.crumbs a:hover {
+    color: var(--cm-text-strong);
+    text-decoration: underline;
+}
+
+.crumbs [aria-current='page'] {
+    min-width: 0;
+    max-width: min(40ch, 100%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--cm-text-strong);
+    font-weight: 600;
+}
+
+/* ---------- 5. Catálogo público ---------- */
 .cat-page {
     max-width: 1100px;
     margin: 0 auto;
@@ -256,6 +355,35 @@ a.page-link:hover {
     font-size: 0.85rem;
 }
 
+.cat-results-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cat-count {
+    margin: 0;
+    color: var(--cm-dim);
+}
+
+.cat-empty {
+    color: var(--cm-dim);
+    text-align: center;
+    padding: 40px 0;
+}
+
+.cat-more {
+    display: flex;
+    justify-content: center;
+}
+
+/* Filas de canciones */
+.cat-list {
+    display: grid;
+}
+
 .cat-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -281,28 +409,30 @@ a.page-link:hover {
     flex: 1;
 }
 
-.cat-row-main strong {
-    color: var(--cm-text-strong);
+/* Textos de una línea con puntos suspensivos */
+.cat-row-main strong,
+.cat-row-main span,
+.cat-row-title,
+.cat-row-sub,
+.cat-row-album {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.cat-row-main strong {
+    color: var(--cm-text-strong);
+}
+
 .cat-row-main span {
     color: var(--cm-dim);
     font-size: 0.85rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .cat-row-title {
     color: var(--cm-text-strong);
     font-weight: 700;
     text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 /* Toda la fila abre la canción; el artista y el álbum, al quedar por encima, llevan a lo suyo. */
@@ -315,30 +445,12 @@ a.page-link:hover {
 .cat-row-sub {
     color: var(--cm-dim);
     font-size: 0.85rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .cat-row-album {
     flex: 1;
     min-width: 0;
     color: var(--cm-text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.meta-link {
-    position: relative;
-    z-index: 1;
-    color: inherit;
-    text-decoration: none;
-}
-
-.meta-link:hover {
-    color: var(--cm-accent);
-    text-decoration: underline;
 }
 
 .cat-row-meta {
@@ -358,34 +470,7 @@ a.page-link:hover {
     white-space: nowrap;
 }
 
-.cat-list {
-    display: grid;
-}
-
-.cat-results-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.cat-count {
-    margin: 0;
-    color: var(--cm-dim);
-}
-
-.cat-empty {
-    color: var(--cm-dim);
-    text-align: center;
-    padding: 40px 0;
-}
-
-.cat-more {
-    display: flex;
-    justify-content: center;
-}
-
+/* Artistas */
 .cat-artists {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -430,6 +515,12 @@ a.page-link:hover {
     font-weight: 700;
 }
 
+img.artist-avatar {
+    display: block;
+    object-fit: cover;
+    background: var(--cm-card);
+}
+
 .artist-card:hover .artist-avatar {
     outline: 2px solid var(--cm-accent);
     outline-offset: 3px;
@@ -441,11 +532,84 @@ a.page-link:hover {
     font-size: 1.2rem;
 }
 
-/* ---------- Biblioteca (con sesión) ---------- */
+/* Álbumes */
+.cat-albums {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 22px 16px;
+}
+
+.album-card {
+    display: grid;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.album-card .song-cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
+.album-card strong {
+    color: var(--cm-text-strong);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.album-card>span {
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+}
+
+.album-card:hover .song-cover {
+    outline: 2px solid var(--cm-accent);
+    outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+    .cat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cat-row-album {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .cat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cat-row-tempo {
+        display: none;
+    }
+}
+
+/* ---------- 6. Biblioteca (con sesión) ---------- */
+
+/* Estructura: panel lateral + contenido */
 .lib-page {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 260px minmax(0, 1fr);
     min-height: calc(100dvh - 60px);
+}
+
+.lib-page[data-sidebar='closed'] {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.lib-page[data-sidebar='closed'] .lib-side {
+    display: none;
+}
+
+/* Fondo oscuro del cajón: solo en móvil */
+.lib-backdrop {
+    display: none;
 }
 
 .lib-side {
@@ -509,11 +673,17 @@ a.lib-side-link:hover {
 }
 
 .lib-main {
-    padding: 18px 24px 40px;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     align-content: start;
     min-width: 0;
+    padding: 18px 24px 40px;
+}
+
+/* Los editores dentro de la biblioteca ceden el alto a las migas de pan. */
+.lib-page .editor-layout {
+    height: calc(100dvh - 160px);
 }
 
 .lib-head {
@@ -536,6 +706,12 @@ a.lib-side-link:hover {
     gap: 10px;
 }
 
+.lib-actions .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .lib-panel {
     border: 1px solid var(--cm-border);
     border-radius: 16px;
@@ -543,282 +719,37 @@ a.lib-side-link:hover {
     overflow: visible;
 }
 
+/* Barra de herramientas: buscador + filtros, orden y sentido */
+.lib-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px;
+    border-bottom: 1px solid var(--cm-border);
+}
 
 .lib-toolbar .search-bar.is-compact {
+    flex: 1 1 280px;
+    max-width: 420px;
+    min-width: 0;
     background: var(--cm-bg);
 }
 
-.lib-table-wrap {
-    overflow-x: auto;
+.lib-toolbar .lib-tools {
+    margin-left: auto;
 }
 
-.lib-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.lib-table th {
-    padding: 12px 14px;
-    text-align: left;
-    color: var(--cm-dim);
-    font-size: 0.78rem;
-    font-weight: 500;
-    border-bottom: 1px solid var(--cm-border);
-}
-
-.lib-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--cm-border);
-    color: var(--cm-text);
-}
-
-.lib-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.lib-table tbody tr:last-child td {
-    border-bottom: 0;
-}
-
-.lib-title {
+/* Filtros, orden y sentido: siempre en una sola fila */
+.lib-tools {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--cm-text-strong);
-    font-weight: 500;
-    text-decoration: none;
-}
-
-.col-actions>* {
-    display: inline-grid;
-    vertical-align: middle;
-}
-
-.col-actions {
-    white-space: nowrap;
-    text-align: right;
-}
-
-.col-actions form {
-    display: inline-grid;
-}
-
-.lib-empty {
-    display: grid;
-    justify-items: center;
-    gap: 8px;
-    padding: 64px 20px;
-    text-align: center;
-}
-
-.lib-empty h2 {
-    margin: 0;
-    color: var(--cm-text-strong);
-}
-
-.lib-empty p {
-    margin: 0 0 8px;
-    color: var(--cm-dim);
-}
-
-/* ---------- Pantallas estrechas ---------- */
-@media (max-width: 900px) {
-    .cat-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .cat-row-album {
-        display: none;
-    }
-}
-
-@media (max-width: 720px) {
-    .cat-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .search-bar.is-pill {
-        height: 56px;
-        padding: 0 18px;
-    }
-
-    .search-bar.is-pill input {
-        font-size: 1.1rem;
-    }
-
-    .cat-row-tempo {
-        display: none;
-    }
-
-    .lib-main {
-        padding: 14px 12px 32px;
-    }
-
-    .col-artist,
-    .col-tempo,
-    .col-date {
-        display: none;
-    }
-
-    .col-album {
-        display: none;
-    }
-
-    .lib-page .editor-layout {
-        height: calc(100dvh - 160px - var(--topbar-h));
-    }
-}
-
-/* ---------- Correcciones de la biblioteca ---------- */
-
-.lib-page[data-sidebar='closed'] {
-    grid-template-columns: 1fr;
-}
-
-.lib-page[data-sidebar='closed'] .lib-side {
-    display: none;
-}
-
-.lib-actions .primary-btn {
-    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 
-
-/* ---------- Álbumes y artistas con foto ---------- */
-.cat-albums {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 22px 16px;
-}
-
-.album-card {
-    display: grid;
-    gap: 4px;
-    color: inherit;
-    text-decoration: none;
-}
-
-.album-card .song-cover {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    border-radius: 10px;
-    margin-bottom: 6px;
-}
-
-.album-card strong {
-    color: var(--cm-text-strong);
-    font-size: 0.9rem;
-    overflow-wrap: anywhere;
-}
-
-.album-card>span {
-    color: var(--cm-dim);
-    font-size: 0.78rem;
-}
-
-.album-card:hover .song-cover {
-    outline: 2px solid var(--cm-accent);
-    outline-offset: 3px;
-}
-
-img.artist-avatar {
-    display: block;
-    object-fit: cover;
-    background: var(--cm-card);
-}
-
-
-/* ---------- Migas de pan (reutilizables) ---------- */
-.crumbs-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 36px;
-    padding: 14px 20px 0;
-}
-
-.lib-main .crumbs-bar {
-    padding: 0;
-}
-
-.crumbs-sep {
-    width: 1px;
-    height: 18px;
-    background: var(--cm-border);
-}
-
-.crumbs ol {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.crumbs li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--cm-dim);
-    font-size: 0.85rem;
-}
-
-.crumbs a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.crumbs a:hover {
-    color: var(--cm-text-strong);
-    text-decoration: underline;
-}
-
-.crumbs [aria-current='page'] {
-    max-width: 40ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--cm-text-strong);
-    font-weight: 600;
-}
-
-/* ---------- Filtros activos de la biblioteca ---------- */
-.active-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--cm-border);
-}
-
-.filter-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--cm-accent) 22%, transparent);
-    color: var(--cm-text-strong);
-    font-size: 0.82rem;
-    text-decoration: none;
-}
-
-.filter-chip:hover {
-    background: color-mix(in srgb, var(--cm-accent) 34%, transparent);
-}
-
-/* Los editores dentro de la biblioteca ceden el alto a las migas de pan. */
-.lib-page .editor-layout {
-    height: calc(100dvh - 160px);
-}
-
-
-/* ---------- Controles de la barra de herramientas ---------- */
 .lib-tool-btn {
     display: inline-flex;
     align-items: center;
@@ -842,35 +773,7 @@ img.artist-avatar {
     background: rgba(255, 255, 255, 0.06);
 }
 
-/* Filtros, orden y sentido: siempre en una sola fila */
-.lib-tools {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-}
-
-.lib-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 12px;
-    padding: 12px;
-    border-bottom: 1px solid var(--cm-border);
-}
-
-.lib-toolbar .search-bar.is-compact {
-    flex: 1 1 280px;
-    max-width: 420px;
-    min-width: 0;
-}
-
-.lib-toolbar .lib-tools {
-    margin-left: auto;
-}
-
+/* Menús desplegables sin JavaScript (<details>) */
 .lib-pop {
     position: relative;
 }
@@ -965,17 +868,113 @@ img.artist-avatar {
     color: var(--cm-dim);
 }
 
-/* Fondo oscuro del cajón de la biblioteca: solo en móvil */
-.lib-backdrop {
-    display: none;
+/* Filtros activos */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--cm-border);
 }
 
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--cm-accent) 22%, transparent);
+    color: var(--cm-text-strong);
+    font-size: 0.82rem;
+    text-decoration: none;
+}
+
+.filter-chip:hover {
+    background: color-mix(in srgb, var(--cm-accent) 34%, transparent);
+}
+
+/* Tabla */
+.lib-table-wrap {
+    overflow-x: auto;
+}
+
+.lib-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lib-table th {
+    padding: 12px 14px;
+    text-align: left;
+    color: var(--cm-dim);
+    font-size: 0.78rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.lib-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cm-border);
+    color: var(--cm-text);
+}
+
+.lib-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.lib-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.lib-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cm-text-strong);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.col-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.col-actions>* {
+    display: inline-grid;
+    vertical-align: middle;
+}
+
+.col-actions form {
+    display: inline-grid;
+}
+
+/* Biblioteca vacía */
+.lib-empty {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 64px 20px;
+    text-align: center;
+}
+
+.lib-empty h2 {
+    margin: 0;
+    color: var(--cm-text-strong);
+}
+
+.lib-empty p {
+    margin: 0 0 8px;
+    color: var(--cm-dim);
+}
+
+/* Móvil: la biblioteca es un cajón que entra por la izquierda */
 @media (max-width: 720px) {
 
-    /* La biblioteca es un cajón que entra por la izquierda */
+    /* minmax(0, 1fr): con 1fr la columna crece con el contenido y la página desborda */
     .lib-page,
     .lib-page[data-sidebar='closed'] {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .lib-page[data-sidebar='closed'] .lib-side {
@@ -1010,6 +1009,14 @@ img.artist-avatar {
         background: rgba(0, 0, 0, 0.5);
     }
 
+    .lib-main {
+        padding: 14px 12px 32px;
+    }
+
+    .lib-page .editor-layout {
+        height: calc(100dvh - 160px - var(--topbar-h));
+    }
+
     /* Buscador en su propia fila; filtros, orden y sentido juntos debajo */
     .lib-toolbar .search-bar.is-compact {
         flex-basis: 100%;
@@ -1024,5 +1031,13 @@ img.artist-avatar {
     .lib-tools .lib-tool-btn {
         padding: 0 10px;
         min-width: 0;
+    }
+
+    /* Columnas de la tabla que no caben */
+    .col-artist,
+    .col-album,
+    .col-tempo,
+    .col-date {
+        display: none;
     }
 }
