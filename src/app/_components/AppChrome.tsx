@@ -13,8 +13,15 @@ export default async function AppChrome() {
             <Navbar
                 userMenu={
                     <Link href="/login" className="navbar-link">
-                        <LuLogIn className="nav-link-icon" size={20} aria-hidden="true" />
                         Iniciar sesión
+                    </Link>
+                }
+                bottomTrailing={
+                    <Link href="/login" className="tab-item">
+                        <span className="tab-icon">
+                            <LuLogIn size={22} aria-hidden="true" />
+                        </span>
+                        <span className="tab-label">Entrar</span>
                     </Link>
                 }
             />

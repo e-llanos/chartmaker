@@ -21,7 +21,7 @@ export default function SongsTable({ songs, canEdit, favoriteAction }: SongsTabl
                         <th>Título</th>
                         <th className="col-artist">Artista</th>
                         <th className="col-album">Álbum</th>
-                        <th>Tonal.</th>
+                        <th className="col-key">Tonal.</th>
                         <th className="col-tempo">Tempo</th>
                         <th className="col-date">Modificada</th>
                         <th><span className="sr-only">Acciones</span></th>
@@ -33,13 +33,16 @@ export default function SongsTable({ songs, canEdit, favoriteAction }: SongsTabl
                             <td>
                                 <Link href={`/songs/${song.id}`} className="lib-title">
                                     <SongCover src={song.imageUrl} size={36} />
-                                    <span>
-                                        {song.title}
-                                        {song.hasChart && (
-                                            <span className="mini-tag">
-                                                {song.chartStyle === 'advanced' ? 'Avanzado' : 'Chart'}
-                                            </span>
-                                        )}
+                                    <span className="lib-title-text">
+                                        <span className="lib-title-name">
+                                            {song.title}
+                                            {song.hasChart && (
+                                                <span className="mini-tag">
+                                                    {song.chartStyle === 'advanced' ? 'Avanzado' : 'Chart'}
+                                                </span>
+                                            )}
+                                        </span>
+                                        {song.artist && <span className="lib-title-artist">{song.artist}</span>}
                                     </span>
                                 </Link>
                             </td>
@@ -57,7 +60,7 @@ export default function SongsTable({ songs, canEdit, favoriteAction }: SongsTabl
                                     song.album
                                 )}
                             </td>
-                            <td><span className="key-chip">{song.key}</span></td>
+                            <td className="col-key"><span className="key-chip">{song.key}</span></td>
                             <td className="col-tempo">{song.tempo}</td>
                             <td className="col-date">{timeAgo(song.updatedAt)}</td>
                             <td className="col-actions">

@@ -17,7 +17,7 @@ export default function SongPage({ params, searchParams }: PageProps) {
     return (
         <Suspense
             fallback={
-                <main className="page-container">
+                <main className="page-song">
                     <ViewSkeleton />
                 </main>
             }
@@ -36,7 +36,7 @@ async function SongLoader({ params, searchParams }: PageProps) {
         <>
             {/* Fuera de la columna centrada: arriba a la izquierda del área principal */}
             <SongsBreadcrumbs items={[{ label: 'Canciones', href: '/songs' }, { label: song.title || 'Sin título' }]} />
-            <main className="page-container">
+            <main className="page-song">
                 <SongWorkspace
                     song={song}
                     initialView={parseView(view)}

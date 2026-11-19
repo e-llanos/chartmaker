@@ -1,180 +1,173 @@
 /* ==========================================================================
-   Canciones: listado y cabecera de detalle
+   Canciones: cabecera del detalle, barra de opciones y pestañas de teoría
+
+   1. Cabecera del detalle
+   2. Barra de opciones (vista | tonalidad y preferencias | editar)
+   3. Pestañas (secciones de teoría)
    ========================================================================== */
 
-/* ---------- Portada (listado y cabecera) ---------- */
-.song-cover {
-    flex: none;
-    width: 52px;
-    height: 52px;
-    border-radius: 8px;
-    object-fit: cover;
+/* ---------- 1. Cabecera del detalle ---------- */
+.song-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'title tools'
+        'meta  meta';
+    align-items: center;
+    gap: 6px 16px;
+    margin-bottom: 12px;
 }
 
-.song-cover-empty {
-    display: grid;
-    place-items: center;
-    font-size: 1.4rem;
+/* Sin esto, un hijo con contenido ancho agranda la columna y desborda la página */
+.song-header>* {
+    min-width: 0;
+}
+
+.song-header-title {
+    grid-area: title;
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+/* Solo se usa si no hay fila de migas donde colocar la barra (entonces va aquí) */
+.song-header-tools {
+    grid-area: tools;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.song-header-tools:empty {
+    display: none;
+}
+
+.song-header-meta {
+    grid-area: meta;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--cm-dim);
+}
+
+.song-header-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.song-header-album {
+    opacity: 0.7;
+}
+
+@media (max-width: 720px) {
+    .song-header {
+        /* minmax(0, 1fr): con 1fr la columna crece con el título y la página desborda */
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'title'
+            'tools'
+            'meta';
+    }
+
+    .song-header-title {
+        font-size: 1.35rem;
+    }
+}
+
+/* ---------- 2. Barra de opciones ---------- */
+.song-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    max-width: 100%;
+    padding: 2px;
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    background: var(--cm-card);
+}
+
+.song-bar-sep {
+    align-self: stretch;
+    width: 1px;
+    margin: 6px 3px;
+    background: var(--cm-border);
+}
+
+/* El nodo no genera caja: la barra del visor queda como hija directa de .song-bar */
+.song-toolbar-slot {
+    display: contents;
+}
+
+.song-bar .song-tabs,
+.song-bar .viewer-toolbar {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin: 0;
+}
+
+.song-bar .viewer-controls {
+    flex-wrap: nowrap;
+    gap: 2px;
+}
+
+/* Todos los botones de la barra: sin borde propio, el borde es el de la píldora */
+.song-bar .select-trigger.song-view-select,
+.song-bar .viewer-controls button,
+.song-bar .edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 0.6rem;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+/* Selector Cifrado / Chart: texto y flecha juntos, sin relleno de sobra */
+.song-bar .select-trigger.song-view-select {
+    gap: 4px;
+    padding: 0 0.45rem 0 0.6rem;
+}
+
+.song-bar .viewer-controls button[aria-label='Preferencias'] {
+    width: 34px;
+    padding: 0;
+}
+
+.song-bar .select-trigger.song-view-select:hover,
+.song-bar .viewer-controls button:hover,
+.song-bar .edit-btn:hover,
+.song-bar .edit-btn:focus-visible {
+    background: color-mix(in srgb, var(--cm-accent) 14%, transparent);
+    border-color: transparent;
+}
+
+/* Tonalidad transpuesta: sigue marcada con el acento */
+.song-bar .viewer-controls .key-trigger.is-transposed {
     background: color-mix(in srgb, var(--cm-accent) 20%, transparent);
     color: var(--cm-accent);
 }
 
-/* ---------- Listado ---------- */
-.song-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 8px;
-}
-
-.song-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 16px 10px 10px;
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 10px;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.15s, border-color 0.15s;
-}
-
-.song-item:hover {
-    background: rgba(128, 128, 128, 0.1);
-    border-color: rgba(128, 128, 128, 0.6);
-}
-
-.song-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-}
-
-.song-title,
-.song-artist {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.song-artist {
-    font-size: 0.875rem;
-    opacity: 0.7;
-}
-
-.song-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 6px;
-}
-
-.song-key {
-    font-size: 0.85rem;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--cm-accent) 20%, transparent);
-}
-
-/* ---------- Cabecera del detalle ---------- */
-.song-header {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
-    padding-right: 96px;
-}
-
-.song-header-cover {
-    flex: none;
-    width: 96px;
-    height: 96px;
-    border-radius: 12px;
-    object-fit: cover;
-}
-
-.song-header-cover.song-cover-empty {
-    font-size: 2.4rem;
-}
-
-.song-header-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.song-header-info h1 {
-    margin: 0;
-    font-size: 1.6rem;
-    line-height: 1.2;
-}
-
-.song-header-info p {
-    margin: 2px 0 0;
-}
-
-.song-header-artist {
-    opacity: 0.85;
-}
-
-.song-header-album {
-    font-size: 0.875rem;
-    opacity: 0.6;
-}
-
-.song-header-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.song-header-edit {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.song-header-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    gap: 8px;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-
-
-.song-tab.muted {
-    opacity: 0.55;
-}
-
-.song-resources {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 4px;
-}
-
-.song-resources .song-tag {
-    font-size: 0.7rem;
-    padding: 1px 7px;
-}
-
-.chart-intro {
-    margin-bottom: 14px;
-}
-
+/* ---------- 3. Pestañas (secciones de teoría) ---------- */
 .song-tab {
     padding: 8px 14px;
     margin-bottom: -1px;
@@ -191,27 +184,11 @@
 }
 
 .song-tab[aria-current='true'] {
-    color: #fff;
+    color: var(--cm-text-strong);
     border-bottom-color: var(--cm-accent);
 }
 
+/* Formato sin contenido */
 .song-tab.muted {
     opacity: 0.55;
-}
-
-.song-tab {
-    padding: 8px 14px;
-    margin-bottom: -1px;
-    border-bottom: 2px solid transparent;
-    color: var(--cm-dim);
-    text-decoration: none;
-}
-
-.song-tab:hover {
-    color: var(--cm-text);
-}
-
-.song-tab[aria-current='page'] {
-    color: #fff;
-    border-bottom-color: var(--cm-accent);
 }

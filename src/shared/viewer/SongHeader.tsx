@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { LuClock, LuTimer, LuUser } from 'react-icons/lu';
 import type { SongInput } from '@/domain/song/types';
 
 export type SongMeta = Pick<SongInput, 'artist' | 'album' | 'imageUrl' | 'tempo' | 'compas'>;
@@ -12,25 +13,20 @@ interface SongHeaderProps {
 }
 
 export default function SongHeader({ title, meta, actions }: SongHeaderProps) {
-    const { artist, album, imageUrl, tempo, compas } = meta;
+    const { artist, album, tempo, compas } = meta;
     return (
         <header className="song-header">
-            {imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imageUrl} alt="" className="song-header-cover" />
-            ) : (
-                <span className="song-header-cover song-cover-empty" aria-hidden="true">♪</span>
-            )}
-            <div className="song-header-info">
-                <h1>{title || 'Sin título'}</h1>
-                <p className="song-header-artist">{artist || 'Artista desconocido'}</p>
-                {album && <p className="song-header-album">{album}</p>}
-                <div className="song-header-tags">
-                    <span className="song-tag">{tempo} BPM</span>
-                    <span className="song-tag">{compas}</span>
-                </div>
-            </div>
-            {actions && <div className="song-header-actions">{actions}</div>}
+            <h1 className="song-header-title">{title || 'Sin título'}</h1>
+            {actions && <div className="song-header-tools">{actions}</div>}
+            <ul className="song-header-meta">
+                <li><LuTimer size={14} aria-hidden="true" />{tempo} BPM</li>
+                <li><LuClock size={14} aria-hidden="true" />{compas}</li>
+                <li>
+                    <LuUser size={14} aria-hidden="true" />
+                    {artist || 'Artista desconocido'}
+                    {album ? <span className="song-header-album"> · {album}</span> : null}
+                </li>
+            </ul>
         </header>
     );
 }

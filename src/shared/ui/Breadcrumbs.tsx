@@ -12,9 +12,11 @@ interface BreadcrumbsProps {
     items: readonly Crumb[];
     /** Algo a la izquierda de la ruta (por ejemplo, el botón que contrae un panel). */
     leading?: ReactNode;
+    /** Algo a la derecha de la ruta (por ejemplo, una barra de herramientas). */
+    trailing?: ReactNode;
 }
 
-export default function Breadcrumbs({ items, leading }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, leading, trailing }: BreadcrumbsProps) {
     return (
         <div className="crumbs-bar">
             {leading}
@@ -35,6 +37,7 @@ export default function Breadcrumbs({ items, leading }: BreadcrumbsProps) {
                     })}
                 </ol>
             </nav>
+            {trailing}
         </div>
     );
 }
