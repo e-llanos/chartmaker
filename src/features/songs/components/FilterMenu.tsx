@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { LuListFilter } from 'react-icons/lu';
-import { SONG_KEYS } from '@/domain/music/core/key';
 import { songsHref, songsParams, type SongQuery, type SortDefaults } from '@/domain/song/query';
+import FilterFields from './FilterFields';
 import PopMenu from './PopMenu';
 
 interface FilterMenuProps {
@@ -16,10 +16,10 @@ export default function FilterMenu({ query, defaults }: FilterMenuProps) {
 
     return (
         <PopMenu
+            iconLabel="Filtros"
             label={
                 <>
-                    <LuListFilter size={16} aria-hidden="true" />
-                    Filtros
+                    <LuListFilter size={18} aria-hidden="true" />
                     {active > 0 && <span className="count-badge">{active}</span>}
                 </>
             }
@@ -28,19 +28,12 @@ export default function FilterMenu({ query, defaults }: FilterMenuProps) {
                 {Object.entries(keep).map(([name, value]) => (
                     <input key={name} type="hidden" name={name} value={value} />
                 ))}
-                <label className="lib-pop-field">
-                    <span>Tonalidad</span>
-                    <select name="key" defaultValue={query.key}>
-                        <option value="">Todas</option>
-                        {SONG_KEYS.map((k) => (
-                            <option key={k} value={k}>{k}</option>
-                        ))}
-                    </select>
-                </label>
-                <label className="lib-pop-check">
-                    <input type="checkbox" name="chart" value="1" defaultChecked={query.withChart} />
-                    Solo con chart
-                </label>
+                {/* key: si "Limpiar" cambia la consulta, los campos se reinician */}
+                <FilterFields
+                    key={`${query.key}|${query.withChart}`}
+                    initialKey={query.key}
+                    initialChart={query.withChart}
+                />
                 <div className="lib-pop-actions">
                     <button type="submit" className="primary-btn">Aplicar</button>
                     <Link href={songsHref(query, { key: '', withChart: false }, defaults)} className="lib-pop-clear">

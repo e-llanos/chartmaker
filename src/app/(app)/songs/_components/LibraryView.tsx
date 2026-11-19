@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { LuPlus, LuX } from 'react-icons/lu';
 import { can } from '@/domain/auth/roles';
-import { SONG_SORTS, songsHref, songsParams, type SongQuery, type SortDefaults } from '@/domain/song/query';
+import { songsHref, songsParams, type SongQuery, type SortDefaults, type SongSort } from '@/domain/song/query';
 import FilterMenu from '@/features/songs/components/FilterMenu';
 import ImportSongButton from '@/features/songs/components/ImportSongButton';
 import Pagination from '@/features/songs/components/Pagination';
@@ -14,6 +14,7 @@ import { getAlbumInfo, getArtistName, searchSongs } from '@/server/songs/catalog
 import { toggleFavoriteAction } from '../actions';
 
 export const LIBRARY_DEFAULTS: SortDefaults = { sort: 'title' };
+const LIBRARY_SORTS: readonly SongSort[] = ['created', 'recent', 'title', 'artist'];
 
 export default async function LibraryView({ query, user }: { query: SongQuery; user: CurrentUser }) {
     const [page, artistName, albumInfo] = await Promise.all([
@@ -29,7 +30,7 @@ export default async function LibraryView({ query, user }: { query: SongQuery; u
     const filtered = Boolean(query.q || query.key || query.withChart || query.artist || query.album);
     const keep = Object.fromEntries(songsParams({ ...query, q: '' }, {}, LIBRARY_DEFAULTS));
     // "Relevancia" solo tiene sentido cuando hay una búsqueda.
-    const sorts = SONG_SORTS.filter((sort) => sort !== 'relevance' || query.q);
+    const sorts = query.q ? (['relevance', ...LIBRARY_SORTS] as const) : LIBRARY_SORTS;
 
     return (
         <>
@@ -51,9 +52,11 @@ export default async function LibraryView({ query, user }: { query: SongQuery; u
 
             <div className="lib-panel">
                 <div className="lib-toolbar">
-                    <SearchBar variant="compact" placeholder="Buscar por título, artista o letra" defaultValue={query.q} keep={keep} />
-                    <div className="lib-tools">
+                    <div className="lib-search-row">
+                        <SearchBar variant="compact" placeholder="Buscar por título o artista" defaultValue={query.q} keep={keep} />
                         <FilterMenu query={query} defaults={LIBRARY_DEFAULTS} />
+                    </div>
+                    <div className="lib-tools">
                         <SortMenu query={query} defaults={LIBRARY_DEFAULTS} sorts={sorts} />
                     </div>
                 </div>

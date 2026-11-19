@@ -5,6 +5,8 @@ import { useEffect, useRef, type ReactNode } from 'react';
 interface PopMenuProps {
     /** Contenido del botón que lo abre. */
     label: ReactNode;
+    /** Si se indica, el botón muestra solo el icono y usa este texto como nombre accesible. */
+    iconLabel?: string;
     /** Alinea el panel al borde derecho del botón (para los controles de la derecha). */
     alignEnd?: boolean;
     /** 'menu' es una lista de opciones; 'form' es un panel con campos. */
@@ -13,7 +15,7 @@ interface PopMenuProps {
 }
 
 /** Menú desplegable: se cierra al pulsar fuera, con Escape o al elegir una opción. */
-export default function PopMenu({ label, alignEnd = false, variant = 'form', children }: PopMenuProps) {
+export default function PopMenu({ label, iconLabel, alignEnd = false, variant = 'form', children }: PopMenuProps) {
     const ref = useRef<HTMLDetailsElement>(null);
 
     useEffect(() => {
@@ -40,7 +42,13 @@ export default function PopMenu({ label, alignEnd = false, variant = 'form', chi
 
     return (
         <details className="lib-pop" ref={ref}>
-            <summary className="lib-tool-btn">{label}</summary>
+            <summary
+                className={`lib-tool-btn${iconLabel ? ' is-icon' : ''}`}
+                aria-label={iconLabel}
+                title={iconLabel}
+            >
+                {label}
+            </summary>
             <div
                 className={classes}
                 // Elegir una opción o enviar el formulario cierra el menú.

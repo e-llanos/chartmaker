@@ -326,6 +326,7 @@ a.page-link:hover {
     margin: 0 auto;
     padding: 32px 20px 64px;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
 }
 
@@ -609,6 +610,26 @@ img.artist-avatar {
     .cat-row-tempo {
         display: none;
     }
+
+    /* Todos · Canciones · Artistas · Álbumes: una sola fila que se desliza, sin barra visible */
+    .chips {
+        flex-wrap: nowrap;
+        min-width: 0;
+        padding: 2px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    .chip {
+        flex: none;
+        white-space: nowrap;
+    }
 }
 
 /* ---------- 6. Biblioteca (con sesión) ---------- */
@@ -750,18 +771,52 @@ a.lib-side-link:hover {
     border-bottom: 1px solid var(--cm-border);
 }
 
-.lib-toolbar .search-bar.is-compact {
+/* Buscador + botón de filtros en una misma fila */
+.lib-search-row {
+    position: relative;
+    /* ancla del panel de filtros en móvil */
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex: 1 1 280px;
-    max-width: 420px;
+    max-width: 470px;
     min-width: 0;
+}
+
+.lib-search-row .search-bar.is-compact {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
     background: var(--cm-bg);
+}
+
+.lib-search-row .lib-pop {
+    flex: none;
+}
+
+/* Botón de solo icono (filtros) */
+.lib-tool-btn.is-icon {
+    position: relative;
+    justify-content: center;
+    width: 42px;
+    padding: 0;
+}
+
+.lib-tool-btn.is-icon .count-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.68rem;
+    line-height: 18px;
 }
 
 .lib-toolbar .lib-tools {
     margin-left: auto;
 }
 
-/* Filtros, orden y sentido: siempre en una sola fila */
 .lib-tools {
     display: flex;
     flex-direction: row;
@@ -861,20 +916,19 @@ a.lib-side-link:hover {
     color: var(--cm-dim);
 }
 
-.lib-pop-field select {
+.lib-pop-field .select-trigger {
+    width: 100%;
     height: 38px;
-    padding: 0 10px;
-    border: 1px solid var(--cm-border);
-    border-radius: 10px;
-    background: var(--cm-bg);
-    color: var(--cm-text-strong);
-    font: inherit;
+    justify-content: space-between;
+    font-size: 0.9rem;
 }
 
-.lib-pop-check {
+/* Fila con interruptor (Solo con chart) */
+.lib-pop-switch {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 12px;
     color: var(--cm-text);
 }
 
@@ -954,6 +1008,19 @@ a.lib-side-link:hover {
     color: var(--cm-text-strong);
     font-weight: 500;
     text-decoration: none;
+    min-width: 0;
+}
+
+.lib-title-text {
+    display: grid;
+    min-width: 0;
+}
+
+/* El artista bajo el título solo se ve en móvil (en escritorio tiene su columna) */
+.lib-title-artist {
+    display: none;
+    color: var(--cm-dim);
+    font-size: 0.82rem;
 }
 
 .col-actions {
@@ -1007,7 +1074,7 @@ a.lib-side-link:hover {
         inset: 0 auto 0 0;
         z-index: 65;
         width: min(300px, 82vw);
-        padding-top: calc(var(--topbar-h) + 8px);
+        padding-top: 20px;
         background: var(--cm-bg);
         border-right: 1px solid var(--cm-border);
         transform: translateX(-100%);
@@ -1035,11 +1102,10 @@ a.lib-side-link:hover {
     }
 
     .lib-page .editor-layout {
-        height: calc(100dvh - 160px - var(--topbar-h));
+        height: calc(100dvh - 160px - var(--bottom-nav-h));
     }
 
-    /* Buscador en su propia fila; filtros, orden y sentido juntos debajo */
-    .lib-toolbar .search-bar.is-compact {
+    .lib-search-row {
         flex-basis: 100%;
         max-width: none;
     }
@@ -1047,6 +1113,12 @@ a.lib-side-link:hover {
     .lib-toolbar .lib-tools {
         margin-left: 0;
         flex: 1 1 100%;
+    }
+
+    .lib-tools {
+        position: relative;
+        flex-wrap: wrap;
+        max-width: 100%;
     }
 
     .lib-tools .lib-tool-btn {
@@ -1057,8 +1129,47 @@ a.lib-side-link:hover {
     /* Columnas de la tabla que no caben */
     .col-artist,
     .col-album,
+    .col-key,
     .col-tempo,
     .col-date {
         display: none;
+    }
+
+    /* En móvil el listado muestra solo la imagen, el nombre de la canción y el corazón */
+    .lib-title .mini-tag,
+    .col-actions .icon-btn {
+        display: none;
+    }
+
+    .lib-pop {
+        position: static;
+    }
+
+    .lib-pop-panel,
+    .lib-pop-panel.is-end {
+        left: 0;
+        right: 0;
+        width: auto;
+        min-width: 0;
+        max-width: calc(100vw - 24px);
+    }
+
+    /* Listado: el título ocupa una sola línea y se corta con "…" */
+    .lib-table {
+        table-layout: fixed;
+    }
+
+    .lib-table th:last-child,
+    .lib-table td:last-child {
+        width: 56px;
+        padding-left: 4px;
+    }
+
+    .lib-title-name,
+    .lib-title-artist {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
