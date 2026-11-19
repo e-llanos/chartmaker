@@ -2,12 +2,14 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LuFileX } from 'react-icons/lu';
 
 interface DeleteSongButtonProps {
     id: string;
     title: string;
 }
 
+/** Fila "Eliminar canción" de las preferencias, con ventana de confirmación. */
 export default function DeleteSongButton({ id, title }: DeleteSongButtonProps) {
     const router = useRouter();
     const dialogRef = useRef<HTMLDialogElement>(null);
@@ -42,20 +44,11 @@ export default function DeleteSongButton({ id, title }: DeleteSongButtonProps) {
 
     return (
         <>
-            <button
-                type="button"
-                className="icon-btn danger"
-                onClick={openDialog}
-                aria-label="Eliminar canción"
-                title="Eliminar canción"
-            >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6M14 11v6" />
-                </svg>
+            <button type="button" className="pref-row pref-action pref-danger" onClick={openDialog}>
+                <span className="pref-label">
+                    <LuFileX size={18} aria-hidden="true" />
+                    Eliminar canción
+                </span>
             </button>
 
             <dialog

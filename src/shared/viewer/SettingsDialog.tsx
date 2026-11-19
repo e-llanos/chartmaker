@@ -1,14 +1,15 @@
 'use client';
 
-import { useId, type ReactNode, type RefObject } from 'react';
+import { useContext, useId, type ReactNode, type RefObject } from 'react';
 import { LuColumns2, LuMusic, LuType, LuX } from 'react-icons/lu';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
 import type { KeyReference } from '@/domain/music/core/analysis';
 import { parseKey, relativeKey } from '@/domain/music/core/key';
 import { NOTATION_LABELS, formatKeyLabel, type Notation } from '@/domain/music/notation/engine';
+import Select from '@/shared/ui/Select';
+import { SongMenuContext } from './SongMenuContext';
 import { FONT_DEFAULT, FONT_MAX, FONT_MIN, FONT_STEP } from './useViewerSettings';
 import type { SectionsLayout } from './ViewerToolbar';
-import Select from '@/shared/ui/Select';
 
 const MODE_LABELS: Record<ViewMode, string> = {
     full: 'Ambos',
@@ -42,6 +43,7 @@ export default function SettingsDialog({
     layout, onLayoutChange, mode, onModeChange, controls, actions,
 }: SettingsDialogProps) {
     const titleId = useId();
+    const songMenu = useContext(SongMenuContext);
     const notationEntries = Object.entries(NOTATION_LABELS) as [Notation, string][];
     const modeEntries = Object.entries(MODE_LABELS) as [ViewMode, string][];
 
@@ -72,6 +74,7 @@ export default function SettingsDialog({
                 </header>
 
                 <div className="settings-body">
+                    {songMenu?.edit && <div className="pref-card">{songMenu.edit}</div>}
                     {mode !== undefined && (
                         <section>
                             <h3 className="pref-title">Vista de canción</h3>
@@ -112,8 +115,8 @@ export default function SettingsDialog({
                                     <span className="pref-label">Numerar desde</span>
                                     <Select
                                         label="Numerar desde"
-                                        value={reference}
-                                        onChange={onReferenceChange ?? (() => { })}
+                                        value={reference as KeyReference}
+                                        onChange={(v) => onReferenceChange?.(v)}
                                         options={[
                                             { value: 'tonic', label: `Tónica (${formatKeyLabel(currentKey, 'symbol')})` },
                                             { value: 'relativeMajor', label: `Relativa (${formatKeyLabel(relative.tonic, 'symbol')})` },
@@ -200,6 +203,7 @@ export default function SettingsDialog({
                             <div className="pref-card">{actions}</div>
                         </section>
                     )}
+                    {songMenu?.remove && <div className="pref-card pref-card-danger">{songMenu.remove}</div>}
                 </div>
             </div>
         </dialog>

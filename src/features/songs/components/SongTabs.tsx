@@ -2,28 +2,31 @@
 
 import type { SongView } from '@/config/routes';
 import { SONG_FORMAT_LIST } from '@/features/songs/formats';
+import Select from '@/shared/ui/Select';
 
 interface SongTabsProps {
     view: SongView;
     onChange: (view: SongView) => void;
-    /** Qué formatos tienen contenido (las pestañas sin contenido se atenúan). */
+    /** Qué formatos tienen contenido (los que no tienen se atenúan). */
     available: Record<SongView, boolean>;
 }
 
+/** Selector del formato de la canción (Cifrado / Chart). */
 export default function SongTabs({ view, onChange, available }: SongTabsProps) {
     return (
-        <nav className="song-tabs" aria-label="Vista de la canción">
-            {SONG_FORMAT_LIST.map((format) => (
-                <button
-                    key={format.id}
-                    type="button"
-                    className={`song-tab${available[format.id] ? '' : ' muted'}`}
-                    aria-current={view === format.id ? 'true' : undefined}
-                    onClick={() => onChange(format.id)}
-                >
-                    {format.label}
-                </button>
-            ))}
-        </nav>
+        <div className="song-tabs">
+            <Select
+                label="Vista de la canción"
+                className="song-view-select"
+                align="start"
+                value={view}
+                onChange={onChange}
+                options={SONG_FORMAT_LIST.map((format) => ({
+                    value: format.id,
+                    label: format.label,
+                    muted: !available[format.id],
+                }))}
+            />
+        </div>
     );
 }

@@ -295,7 +295,11 @@ body:has(dialog[open]) {
 }
 
 .settings-body {
+    flex: 1;
+    min-height: 0;
     display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
     gap: 14px;
     padding: 6px 18px 18px;
     overflow-y: auto;
@@ -390,6 +394,25 @@ body:has(dialog[open]) {
 
 .pref-action small {
     color: var(--cm-dim);
+}
+
+/* Fila que es un enlace (Editar) */
+a.pref-row {
+    text-decoration: none;
+}
+
+/* Eliminar: tarjeta propia, siempre al final */
+.pref-card-danger {
+    border-color: color-mix(in srgb, var(--cm-danger) 40%, var(--cm-border));
+}
+
+.pref-danger,
+.pref-danger .pref-label svg {
+    color: var(--cm-danger-text);
+}
+
+.pref-card-danger .pref-action:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--cm-danger) 14%, transparent);
 }
 
 .pref-error {
@@ -493,7 +516,7 @@ body:has(dialog[open]) {
 }
 
 /* Selector propio (botón + lista) */
-.pref-row .select-trigger {
+.select-trigger {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -512,26 +535,26 @@ body:has(dialog[open]) {
     transition: border-color 0.15s;
 }
 
-.pref-row .select-trigger svg {
+.select-trigger svg {
     flex: none;
     color: var(--cm-dim);
     transition: transform 0.15s;
 }
 
-.pref-row .select-trigger:hover {
+.select-trigger:hover {
     border-color: color-mix(in srgb, var(--cm-accent) 55%, var(--cm-border));
 }
 
-.pref-row .select-trigger:focus-visible {
+.select-trigger:focus-visible {
     outline: 2px solid var(--cm-accent);
     outline-offset: 2px;
 }
 
-.pref-row .select-trigger[aria-expanded='true'] {
+.select-trigger[aria-expanded='true'] {
     border-color: var(--cm-accent);
 }
 
-.pref-row .select-trigger[aria-expanded='true'] svg {
+.select-trigger[aria-expanded='true'] svg {
     transform: rotate(180deg);
 }
 
@@ -587,12 +610,68 @@ body:has(dialog[open]) {
     font-weight: 600;
 }
 
+.select-option.is-muted {
+    opacity: 0.55;
+}
+
+/* Selector de formato de la canción (Cifrado / Chart) */
+.select-trigger.song-view-select {
+    height: 38px;
+    padding: 0 0.85rem 0 1rem;
+    font-size: 0.95rem;
+}
+
 /* ---------- 4. Navegación por insignias y disposición de secciones ---------- */
+/* Resumen de secciones: una sola fila con scroll horizontal, fija bajo la navbar */
 .section-nav {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    padding-bottom: 1rem;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.75rem 4px 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.section-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.section-nav .badge {
+    width: 38px;
+    height: 38px;
+    border-width: 2.5px;
+    font-size: 0.82rem;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Sección que se está leyendo */
+.section-nav .badge.is-active {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 28%, transparent);
+}
+
+/* En el detalle de la canción se queda arriba al bajar */
+.page-song .section-nav {
+    position: sticky;
+    top: var(--navbar-h, 57px);
+    z-index: 20;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    background: color-mix(in srgb, var(--cm-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+}
+
+.page-song .section-card {
+    scroll-margin-top: calc(var(--navbar-h, 57px) + 84px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-nav .badge {
+        transition: none;
+    }
 }
 
 .sections-layout {
@@ -640,6 +719,7 @@ body:has(dialog[open]) {
     background: var(--cm-card);
     border: 1px solid var(--cm-border);
     border-radius: 6px;
+    scroll-margin-top: 72px;
 }
 
 .section-card.highlighted {

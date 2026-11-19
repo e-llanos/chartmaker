@@ -5,19 +5,29 @@ export default function SectionBadge({
   text,
   color,
   small = false,
+  active = false,
   onClick,
   label,
 }: {
   text: string;
   color: string;
   small?: boolean;
+  /** Sección que se está leyendo (la resalta). */
+  active?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   label?: string;
 }) {
-  const cls = `badge${small ? ' badge-sm' : ''}`;
+  const cls = `badge${small ? ' badge-sm' : ''}${active ? ' is-active' : ''}`;
   const style: CSSProperties & { '--c': string } = { '--c': color };
   return onClick ? (
-    <button type="button" className={cls} style={style} onClick={onClick} aria-label={label || text}>
+    <button
+      type="button"
+      className={cls}
+      style={style}
+      onClick={onClick}
+      aria-label={label || text}
+      aria-current={active ? 'true' : undefined}
+    >
       {text}
     </button>
   ) : (

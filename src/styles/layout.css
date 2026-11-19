@@ -11,6 +11,7 @@
 :root {
     --rail-w: 64px;
     --topbar-h: 56px;
+    --navbar-h: 57px;
 }
 
 /* ---------- 1. Estructura general y contenedores ---------- */

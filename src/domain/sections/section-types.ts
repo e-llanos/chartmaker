@@ -30,12 +30,14 @@ export const SECTION_TYPE_KEYS = Object.keys(SECTION_TYPES) as SectionType[];
 export interface Section {
     id: string | number;
     type: SectionType;
+    label?: string;
 }
 
 export interface Badge {
     id: Section['id'];
     text: string;
     color: string;
+    label?: string;
 }
 
 /** Etiqueta sugerida para una sección nueva: "Verso 2", "Coro", "Coro 2"... */
@@ -54,6 +56,7 @@ export function computeBadges(sections: Section[]): Badge[] {
             id: s.id,
             text: t.numbered ? `${t.abbr}${counts[s.type]}` : t.abbr,
             color: t.color,
+            label: s.label || t.label,
         };
     });
 }

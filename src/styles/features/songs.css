@@ -1,8 +1,9 @@
 /* ==========================================================================
-   Canciones: cabecera del detalle y pestañas de formato
+   Canciones: cabecera del detalle, barra de opciones y pestañas de teoría
 
    1. Cabecera del detalle
-   2. Pestañas (formatos de la canción y secciones de teoría)
+   2. Barra de opciones (vista | tonalidad y preferencias | editar)
+   3. Pestañas (secciones de teoría)
    ========================================================================== */
 
 /* ---------- 1. Cabecera del detalle ---------- */
@@ -30,32 +31,17 @@
     overflow-wrap: anywhere;
 }
 
-/* Barra de controles del visor + editar / eliminar */
+/* Solo se usa si no hay fila de migas donde colocar la barra (entonces va aquí) */
 .song-header-tools {
     grid-area: tools;
     justify-self: end;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
-    min-height: 34px;
-    /* reserva el alto mientras la barra se monta */
 }
 
-.song-header-tools .viewer-toolbar {
-    min-width: 0;
-}
-
-/* El nodo no genera caja: la barra queda como hija directa de .song-header-tools */
-.song-toolbar-slot {
-    display: contents;
-}
-
-.song-header-tools .icon-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
+.song-header-tools:empty {
+    display: none;
 }
 
 .song-header-meta {
@@ -81,7 +67,6 @@
     opacity: 0.7;
 }
 
-/* En móvil: título, barra de controles (a la derecha) y datos, en ese orden */
 @media (max-width: 720px) {
     .song-header {
         /* minmax(0, 1fr): con 1fr la columna crece con el título y la página desborda */
@@ -97,7 +82,92 @@
     }
 }
 
-/* ---------- 2. Pestañas ---------- */
+/* ---------- 2. Barra de opciones ---------- */
+.song-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    max-width: 100%;
+    padding: 2px;
+    border: 1px solid var(--cm-border);
+    border-radius: 12px;
+    background: var(--cm-card);
+}
+
+.song-bar-sep {
+    align-self: stretch;
+    width: 1px;
+    margin: 6px 3px;
+    background: var(--cm-border);
+}
+
+/* El nodo no genera caja: la barra del visor queda como hija directa de .song-bar */
+.song-toolbar-slot {
+    display: contents;
+}
+
+.song-bar .song-tabs,
+.song-bar .viewer-toolbar {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    margin: 0;
+}
+
+.song-bar .viewer-controls {
+    flex-wrap: nowrap;
+    gap: 2px;
+}
+
+/* Todos los botones de la barra: sin borde propio, el borde es el de la píldora */
+.song-bar .select-trigger.song-view-select,
+.song-bar .viewer-controls button,
+.song-bar .edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 0.6rem;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--cm-text-strong);
+    font: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+/* Selector Cifrado / Chart: texto y flecha juntos, sin relleno de sobra */
+.song-bar .select-trigger.song-view-select {
+    gap: 4px;
+    padding: 0 0.45rem 0 0.6rem;
+}
+
+.song-bar .viewer-controls button[aria-label='Preferencias'] {
+    width: 34px;
+    padding: 0;
+}
+
+.song-bar .select-trigger.song-view-select:hover,
+.song-bar .viewer-controls button:hover,
+.song-bar .edit-btn:hover,
+.song-bar .edit-btn:focus-visible {
+    background: color-mix(in srgb, var(--cm-accent) 14%, transparent);
+    border-color: transparent;
+}
+
+/* Tonalidad transpuesta: sigue marcada con el acento */
+.song-bar .viewer-controls .key-trigger.is-transposed {
+    background: color-mix(in srgb, var(--cm-accent) 20%, transparent);
+    color: var(--cm-accent);
+}
+
+/* ---------- 3. Pestañas (secciones de teoría) ---------- */
 .song-tab {
     padding: 8px 14px;
     margin-bottom: -1px;
