@@ -12,6 +12,9 @@ import { useChordMapper, useResolvedSettings } from '@/shared/viewer/useChordMap
 import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
 import ViewerFrame from '@/shared/viewer/ViewerFrame';
 import type { SectionsLayout } from '@/shared/viewer/ViewerToolbar';
+import { exportMetaItems } from '@/shared/export/export-meta';
+import { buildPdfSong, type PdfSong } from '@/shared/export/pdf/pdf-song';
+import { songPdfExport } from '@/shared/export/pdf/pdf-export';
 import ChordLine from './ChordLine';
 
 interface ChordSheetViewerProps {
@@ -47,6 +50,18 @@ export default function ChordSheetViewer({
         [meta, title, originalKey, chordProText, chart]
     );
 
+    const pdfSong = useMemo<PdfSong | null>(
+        () => song ? buildPdfSong({
+            title: song.title,
+            artist: song.artist,
+            meta: exportMetaItems(song, displayKey, settings.notation, settings.reference),
+            mode, layout, sections, badges, mapChord,
+        }) : null,
+        [song, displayKey, settings.notation, settings.reference, mode, layout, sections, badges, mapChord]
+    );
+
+    const pdfExport = useMemo(() => (pdfSong ? songPdfExport(pdfSong) : null), [pdfSong]);
+
     return (
         <ViewerFrame
             header={meta && !hideHeader ? <SongHeader title={title} meta={meta} /> : null}
@@ -64,6 +79,7 @@ export default function ChordSheetViewer({
             onModeChange={setMode}
             isEmpty={sections.length === 0}
             emptyMessage="Agrega una sección para ver el cifrado aquí."
+            pdf={pdfExport}
         >
             <div className={`sections-layout sections-layout-${layout}`}>
                 {sections.map((s, i) => (
