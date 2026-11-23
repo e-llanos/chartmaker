@@ -26,12 +26,13 @@ export default function ExportList({ sheetRef, song }: ExportListProps) {
     const [busy, setBusy] = useState<ExportKind | null>(null);
     const [error, setError] = useState<string | null>(null);
     const openPdf = useContext(PdfExportContext);
+    const openExport = useContext(PdfExportContext);
 
     async function run(kind: ExportKind, dialog: HTMLDialogElement | null) {
-        // PDF con exportador propio: cierra las preferencias y abre sus opciones. No captura nada.
-        if (kind === 'pdf' && openPdf) {
+        // PDF e imagen salen del exportador propio; solo el .chartmaker se descarga directo.
+        if (kind !== 'chartmaker' && openExport) {
             dialog?.close();
-            openPdf();
+            openExport(kind);
             return;
         }
 

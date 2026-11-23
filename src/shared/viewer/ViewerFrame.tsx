@@ -9,9 +9,7 @@ import type { SongCreate } from '@/domain/song/types';
 import ExportHead from '@/shared/export/ExportHead';
 import ExportList from '@/shared/export/ExportList';
 import PdfExportDialog from '@/shared/export/pdf/PdfExportDialog';
-import type { PdfSong } from '@/shared/export/pdf/pdf-song';
-import { safeFilename } from '@/shared/export/export-sheet';
-import { PdfExportContext } from '@/shared/export/pdf/PdfExportContext';
+import { PdfExportContext, type ExportFormat } from '@/shared/export/pdf/PdfExportContext';
 import type { PdfExport } from '@/shared/export/pdf/pdf-export';
 import SectionNav from './SectionNav';
 import { ToolbarSlotContext } from './ToolbarSlot';
@@ -56,8 +54,8 @@ export default function ViewerFrame({
     const sheetRef = useRef<HTMLDivElement>(null);
     const toolbarSlot = useContext(ToolbarSlotContext);
     const { setSemitones, notation, setNotation, reference, setReference, fontPercent, setFontPercent } = settings;
-    const [pdfOpen, setPdfOpen] = useState(false);
-    const openPdf = useMemo(() => (pdf ? () => setPdfOpen(true) : null), [pdf]);
+    const [exportFormat, setExportFormat] = useState<ExportFormat | null>(null);
+    const openExport = useMemo(() => (pdf ? (f: ExportFormat) => setExportFormat(f) : null), [pdf]);
 
     const toolbar = (
         <ViewerToolbar
@@ -82,7 +80,7 @@ export default function ViewerFrame({
     );
 
     return (
-        <PdfExportContext.Provider value={openPdf}>
+        <PdfExportContext.Provider value={openExport}>
             <div className="viewer">
                 {header}
                 {/* Dentro de la cabecera de la canción (portal) o, sin ella, en línea sobre la hoja.
@@ -99,7 +97,14 @@ export default function ViewerFrame({
                     {song && <ExportHead song={song} displayKey={displayKey} notation={notation} reference={reference} />}
                     {isEmpty ? <p className="empty-state">{emptyMessage}</p> : children}
                 </div>
-                {pdf && <PdfExportDialog pdf={pdf} open={pdfOpen} onClose={() => setPdfOpen(false)} />}
+                {pdf && (
+                    <PdfExportDialog
+                        pdf={pdf}
+                        format={exportFormat ?? 'pdf'}
+                        open={exportFormat !== null}
+                        onClose={() => setExportFormat(null)}
+                    />
+                )}
             </div>
         </PdfExportContext.Provider>
     );

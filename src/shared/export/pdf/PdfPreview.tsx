@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PdfExport } from './pdf-export';
 import type { PdfOptions } from './pdf-options';
+import { loadPdfjs } from './pdfjs';
 
 interface PdfPreviewProps {
     pdf: PdfExport;
@@ -14,17 +15,6 @@ interface PdfPreviewProps {
 
 /** Relleno lateral del panel (debe coincidir con .pdf-preview-scroll en el CSS). */
 const PAD = 16;
-
-type Pdfjs = typeof import('pdfjs-dist');
-let pdfjsPromise: Promise<Pdfjs> | null = null;
-
-function loadPdfjs(): Promise<Pdfjs> {
-    pdfjsPromise ??= import('pdfjs-dist').then((lib) => {
-        lib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
-        return lib;
-    });
-    return pdfjsPromise;
-}
 
 /**
  * Vista previa sin parpadeo: genera el PDF, dibuja cada página en un canvas fuera de pantalla

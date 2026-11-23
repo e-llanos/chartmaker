@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import type { IconType } from 'react-icons';
 import {
     LuBold, LuContrast, LuDownload, LuEye, LuFileText, LuMinus, LuPalette, LuPlus,
-    LuRotateCcw, LuRuler, LuSlidersHorizontal, LuType, LuX,
+    LuRotateCcw, LuRuler, LuSlidersHorizontal, LuType, LuX, LuImage,
 } from 'react-icons/lu';
 import Select from '@/shared/ui/Select';
 import type { PdfExport } from './pdf-export';
@@ -12,14 +12,18 @@ import { PDF_FONTS } from './pdf-fonts';
 import { CHORD_COLORS } from './pdf-options';
 import PdfPreview from './PdfPreview';
 import { usePdfOptions } from './usePdfOptions';
+import { downloadBlob } from '@/shared/export/export-sheet';
+import type { ExportFormat } from './PdfExportContext';
+import { pdfToPng } from './pdf-image';
 
 interface PdfExportDialogProps {
     pdf: PdfExport;
+    format: ExportFormat;
     open: boolean;
     onClose: () => void;
 }
 
-export default function PdfExportDialog({ pdf, open, onClose }: PdfExportDialogProps) {
+export default function PdfExportDialog({ pdf, format, open, onClose }: PdfExportDialogProps) {
     const ref = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -37,7 +41,7 @@ export default function PdfExportDialog({ pdf, open, onClose }: PdfExportDialogP
             onClose={onClose}
             onClick={(e) => { if (e.target === ref.current) onClose(); }}
         >
-            {open && <PdfPanel pdf={pdf} onClose={onClose} />}
+            {open && <PdfPanel pdf={pdf} format={format} onClose={onClose} />}
         </dialog>
     );
 }
@@ -57,7 +61,7 @@ function useWide(): boolean {
     );
 }
 
-function PdfPanel({ pdf, onClose }: Omit<PdfExportDialogProps, 'open'>) {
+function PdfPanel({ pdf, format, onClose }: Omit<PdfExportDialogProps, 'open'>) {
     const { options, update, reset } = usePdfOptions();
     const wide = useWide();
     const [view, setView] = useState<'options' | 'preview'>('options');
@@ -71,7 +75,8 @@ function PdfPanel({ pdf, onClose }: Omit<PdfExportDialogProps, 'open'>) {
         setDownloadError(null);
         try {
             const doc = await pdf.render(options);
-            doc.save(`${pdf.filename}.pdf`);
+            if (format === 'png') downloadBlob(await pdfToPng(doc), `${pdf.filename}.png`);
+            else doc.save(`${pdf.filename}.pdf`);
             onClose();
         } catch (e) {
             setDownloadError(e instanceof Error ? e.message : 'No se pudo exportar');
@@ -87,7 +92,7 @@ function PdfPanel({ pdf, onClose }: Omit<PdfExportDialogProps, 'open'>) {
         <>
             <header className="pdf-head">
                 <span className="pdf-head-icon" aria-hidden="true"><LuFileText size={18} /></span>
-                <h2>Exportar PDF</h2>
+                <h2>{format === 'png' ? 'Exportar imagen' : 'Exportar PDF'}</h2>
                 <button type="button" className="icon-btn" onClick={onClose} aria-label="Cerrar">
                     <LuX size={18} aria-hidden="true" />
                 </button>
@@ -215,8 +220,8 @@ function PdfPanel({ pdf, onClose }: Omit<PdfExportDialogProps, 'open'>) {
                     <LuRotateCcw size={15} aria-hidden="true" /> Restablecer
                 </button>
                 <button type="button" className="primary-btn pdf-download" onClick={download} disabled={busy}>
-                    <LuDownload size={16} aria-hidden="true" />
-                    {busy ? 'Generando…' : 'Descargar PDF'}
+                    {format === 'png' ? <LuImage size={16} aria-hidden="true" /> : <LuDownload size={16} aria-hidden="true" />}
+                    {busy ? 'Generando…' : format === 'png' ? 'Descargar imagen' : 'Descargar PDF'}
                 </button>
             </footer>
         </>
