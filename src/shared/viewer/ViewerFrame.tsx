@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useContext, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useContext, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { ViewMode } from '@/domain/chordsheet/view-mode';
 import { semitoneDistance } from '@/domain/music/notation/engine';
@@ -54,8 +54,8 @@ export default function ViewerFrame({
     const sheetRef = useRef<HTMLDivElement>(null);
     const toolbarSlot = useContext(ToolbarSlotContext);
     const { setSemitones, notation, setNotation, reference, setReference, fontPercent, setFontPercent } = settings;
-    const [exportFormat, setExportFormat] = useState<ExportFormat | null>(null);
-    const openExport = useMemo(() => (pdf ? (f: ExportFormat) => setExportFormat(f) : null), [pdf]);
+    const [exportOpen, setExportOpen] = useState(false);
+    const openExport = useCallback(() => setExportOpen(true), []);
 
     const toolbar = (
         <ViewerToolbar
@@ -98,12 +98,7 @@ export default function ViewerFrame({
                     {isEmpty ? <p className="empty-state">{emptyMessage}</p> : children}
                 </div>
                 {pdf && (
-                    <PdfExportDialog
-                        pdf={pdf}
-                        format={exportFormat ?? 'pdf'}
-                        open={exportFormat !== null}
-                        onClose={() => setExportFormat(null)}
-                    />
+                    <PdfExportDialog pdf={pdf} open={exportOpen} onClose={() => setExportOpen(false)} />
                 )}
             </div>
         </PdfExportContext.Provider>

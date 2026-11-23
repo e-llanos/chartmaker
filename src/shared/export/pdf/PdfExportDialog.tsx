@@ -18,12 +18,11 @@ import { pdfToPng } from './pdf-image';
 
 interface PdfExportDialogProps {
     pdf: PdfExport;
-    format: ExportFormat;
     open: boolean;
     onClose: () => void;
 }
 
-export default function PdfExportDialog({ pdf, format, open, onClose }: PdfExportDialogProps) {
+export default function PdfExportDialog({ pdf, open, onClose }: PdfExportDialogProps) {
     const ref = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -37,11 +36,11 @@ export default function PdfExportDialog({ pdf, format, open, onClose }: PdfExpor
         <dialog
             ref={ref}
             className="pdf-dialog"
-            aria-label="Exportar PDF"
+            aria-label="Exportar canción"
             onClose={onClose}
             onClick={(e) => { if (e.target === ref.current) onClose(); }}
         >
-            {open && <PdfPanel pdf={pdf} format={format} onClose={onClose} />}
+            {open && <PdfPanel pdf={pdf} onClose={onClose} />}
         </dialog>
     );
 }
@@ -61,17 +60,17 @@ function useWide(): boolean {
     );
 }
 
-function PdfPanel({ pdf, format, onClose }: Omit<PdfExportDialogProps, 'open'>) {
+function PdfPanel({ pdf, onClose }: Omit<PdfExportDialogProps, 'open'>) {
     const { options, update, reset } = usePdfOptions();
     const wide = useWide();
     const [view, setView] = useState<'options' | 'preview'>('options');
-    const [busy, setBusy] = useState(false);
+    const [busy, setBusy] = useState<ExportFormat | null>(null);
     const [downloadError, setDownloadError] = useState<string | null>(null);
     const [previewError, setPreviewError] = useState<string | null>(null);
     const error = downloadError ?? previewError;
 
-    async function download() {
-        setBusy(true);
+    async function download(format: ExportFormat) {
+        setBusy(format);
         setDownloadError(null);
         try {
             const doc = await pdf.render(options);
@@ -81,7 +80,7 @@ function PdfPanel({ pdf, format, onClose }: Omit<PdfExportDialogProps, 'open'>) 
         } catch (e) {
             setDownloadError(e instanceof Error ? e.message : 'No se pudo exportar');
         } finally {
-            setBusy(false);
+            setBusy(null);
         }
     }
 
@@ -92,7 +91,7 @@ function PdfPanel({ pdf, format, onClose }: Omit<PdfExportDialogProps, 'open'>) 
         <>
             <header className="pdf-head">
                 <span className="pdf-head-icon" aria-hidden="true"><LuFileText size={18} /></span>
-                <h2>{format === 'png' ? 'Exportar imagen' : 'Exportar PDF'}</h2>
+                <h2>Exportar canción</h2>
                 <button type="button" className="icon-btn" onClick={onClose} aria-label="Cerrar">
                     <LuX size={18} aria-hidden="true" />
                 </button>
@@ -219,9 +218,13 @@ function PdfPanel({ pdf, format, onClose }: Omit<PdfExportDialogProps, 'open'>) 
                 <button type="button" className="pdf-reset" onClick={reset}>
                     <LuRotateCcw size={15} aria-hidden="true" /> Restablecer
                 </button>
-                <button type="button" className="primary-btn pdf-download" onClick={download} disabled={busy}>
-                    {format === 'png' ? <LuImage size={16} aria-hidden="true" /> : <LuDownload size={16} aria-hidden="true" />}
-                    {busy ? 'Generando…' : format === 'png' ? 'Descargar imagen' : 'Descargar PDF'}
+                <button type="button" className="pdf-download is-secondary" onClick={() => download('png')} disabled={busy !== null}>
+                    <LuImage size={16} aria-hidden="true" />
+                    {busy === 'png' ? 'Generando…' : 'Descargar imagen'}
+                </button>
+                <button type="button" className="primary-btn pdf-download" onClick={() => download('pdf')} disabled={busy !== null}>
+                    <LuDownload size={16} aria-hidden="true" />
+                    {busy === 'pdf' ? 'Generando…' : 'Descargar PDF'}
                 </button>
             </footer>
         </>

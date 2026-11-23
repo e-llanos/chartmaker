@@ -42,6 +42,7 @@ async function SongLoader({ params, searchParams }: PageProps) {
                     initialView={parseView(view)}
                     canEdit={can(user?.role, 'song:update')}
                     canDelete={can(user?.role, 'song:delete')}
+                    canExportFile={can(user?.role, 'song:export')}
                 />
             </main>
         </>
