@@ -7,6 +7,7 @@
 @import './features/songs.css';
 @import './shared/viewer.css';
 @import './shared/editor.css';
+@import './shared/pdf-dialog.css';
 @import './features/chart.css';
 @import './features/score.css';
 @import './features/theory.css';

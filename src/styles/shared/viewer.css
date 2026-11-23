@@ -403,22 +403,27 @@ a.pref-row {
 
 /* Eliminar: tarjeta propia, siempre al final */
 .pref-card-danger {
-    border-color: color-mix(in srgb, var(--cm-danger) 40%, var(--cm-border));
+    border-color: color-mix(in srgb, var(--cm-danger-strong) 55%, var(--cm-border));
 }
 
 .pref-danger,
 .pref-danger .pref-label svg {
-    color: var(--cm-danger-text);
+    color: var(--cm-danger-strong);
 }
 
 .pref-card-danger .pref-action:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--cm-danger) 14%, transparent);
+    background: color-mix(in srgb, var(--cm-danger-strong) 16%, transparent);
 }
 
 .pref-error {
     margin: 0;
     padding: 8px 14px;
     font-size: 0.8rem;
+}
+
+.pref-chevron {
+    flex: none;
+    color: var(--cm-dim);
 }
 
 /* Control segmentado (Ambos / Solo acordes / Solo letra) */

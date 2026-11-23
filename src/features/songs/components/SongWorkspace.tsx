@@ -15,12 +15,14 @@ import SongHeader from '@/shared/viewer/SongHeader';
 import { SongMenuContext, type SongMenu } from '@/shared/viewer/SongMenuContext';
 import { ToolbarSlotContext } from '@/shared/viewer/ToolbarSlot';
 import { useViewerSettings } from '@/shared/viewer/useViewerSettings';
+import ChartmakerFileRow from '@/shared/export/ChartmakerFileRow';
 
 interface SongWorkspaceProps {
     song: Song;
     initialView: SongView;
     canEdit: boolean;
     canDelete: boolean;
+    canExportFile: boolean;
 }
 
 /**
@@ -33,7 +35,7 @@ const noopSubscribe = () => () => { };
 const getBarHost = (): HTMLElement | null => document.getElementById(SONG_BAR_SLOT_ID);
 const getServerBarHost = (): undefined => undefined;
 
-export default function SongWorkspace({ song, initialView, canEdit, canDelete }: SongWorkspaceProps) {
+export default function SongWorkspace({ song, initialView, canEdit, canDelete, canExportFile }: SongWorkspaceProps) {
     const [view, setView] = useState<SongView>(initialView);
     const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
     const settings = useViewerSettings(); // compartido por todas las vistas
@@ -49,8 +51,9 @@ export default function SongWorkspace({ song, initialView, canEdit, canDelete }:
         () => ({
             edit: canEdit ? <EditSongLink id={song.id} view={view} variant="row" /> : null,
             remove: canDelete ? <DeleteSongButton id={song.id} title={input.title} /> : null,
+            file: canExportFile ? <ChartmakerFileRow song={input} /> : null,
         }),
-        [canEdit, canDelete, song.id, view, input.title],
+        [canEdit, canDelete, canExportFile, song.id, view, input],
     );
 
     const available = Object.fromEntries(

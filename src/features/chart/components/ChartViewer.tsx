@@ -13,6 +13,9 @@ import type { ViewerSettings } from '@/shared/viewer/useViewerSettings';
 import ViewerFrame from '@/shared/viewer/ViewerFrame';
 import type { SectionsLayout } from '@/shared/viewer/ViewerToolbar';
 import Select from '@/shared/ui/Select';
+import { exportMetaItems } from '@/shared/export/export-meta';
+import { buildPdfChart } from '@/shared/export/pdf/pdf-chart';
+import { chartPdfExport } from '@/shared/export/pdf/pdf-export';
 import AdvancedSection from './AdvancedSection';
 import MeasureBox from './MeasureBox';
 
@@ -47,6 +50,22 @@ export default function ChartViewer({
 
     const exportSong = useMemo<SongCreate>(() => ({ ...song, chart }), [song, chart]);
 
+    const pdfExport = useMemo(
+        () => chartPdfExport(buildPdfChart({
+            title: song.title,
+            artist: song.artist,
+            meta: exportMetaItems(song, displayKey, settings.notation, settings.reference),
+            style,
+            layout: advanced ? 'list' : layout,
+            time,
+            count,
+            sections: chart.sections,
+            badges,
+            mapChord,
+        })),
+        [song, displayKey, settings.notation, settings.reference, style, time, count, chart.sections, badges, mapChord]
+    );
+
     const styleControl = forcedStyle ? null : (
         <Select
             label="Estilo del chart"
@@ -75,6 +94,7 @@ export default function ChartViewer({
             controls={styleControl}
             isEmpty={chart.sections.length === 0}
             emptyMessage="Este chart está vacío."
+            pdf={pdfExport}
         >
             {advanced ? (
                 <div className="score">

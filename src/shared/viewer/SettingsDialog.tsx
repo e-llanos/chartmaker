@@ -197,10 +197,13 @@ export default function SettingsDialog({
                         </section>
                     )}
 
-                    {actions && (
+                    {(actions || songMenu?.file) && (
                         <section>
                             <h3 className="pref-title">Exportar</h3>
-                            <div className="pref-card">{actions}</div>
+                            <div className="pref-card">
+                                {actions}
+                                {songMenu?.file}
+                            </div>
                         </section>
                     )}
                     {songMenu?.remove && <div className="pref-card pref-card-danger">{songMenu.remove}</div>}

@@ -16,11 +16,11 @@ export const isRole = (value: unknown): value is Role =>
 /** Un valor desconocido o ausente cuenta como el rol por defecto. */
 export const toRole = (value: unknown): Role => (isRole(value) ? value : DEFAULT_ROLE);
 
-export type Permission = 'song:create' | 'song:update' | 'song:delete' | 'user:manage';
+export type Permission = 'song:create' | 'song:update' | 'song:delete' | 'song:export' | 'user:manage';
 
 /** Qué puede hacer cada rol. Para cambiar una regla, edita esta tabla. */
 const PERMISSIONS: Record<Role, readonly Permission[]> = {
-    admin: ['song:create', 'song:update', 'song:delete', 'user:manage'],
+    admin: ['song:create', 'song:update', 'song:delete', 'song:export', 'user:manage'],
     leader: ['song:create', 'song:update', 'song:delete'],
     musician: [],
 };
